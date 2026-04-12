@@ -18,11 +18,11 @@ public class DentistaService : IDentistaService
 
     public async Task<IEnumerable<DentistaResponse>> ListarTodosAsync()
     {
-        return await _context.Dentistas
+        var lista = await _context.Dentistas
             .Include(d => d.Especialidade)
             .Include(d => d.Login)
-            .Select(d => MapearResponse(d))
             .ToListAsync();
+        return lista.Select(MapearResponse);
     }
 
     public async Task<DentistaResponse?> BuscarPorIdAsync(int id)

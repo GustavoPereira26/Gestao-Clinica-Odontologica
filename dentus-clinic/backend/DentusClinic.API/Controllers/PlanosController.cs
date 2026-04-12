@@ -61,6 +61,6 @@ public class PlanosController : ControllerBase
         if (!removido)
             return NotFound(ApiResponse<object>.Erro("Plano não encontrado."));
 
-        return Ok(ApiResponse<object>.Ok(null, "Plano removido com sucesso."));
+        return Ok(ApiResponse<object>.Ok("Plano removido com sucesso."));
     }
 }

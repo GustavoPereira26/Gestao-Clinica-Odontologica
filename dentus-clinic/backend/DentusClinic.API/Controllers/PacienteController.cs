@@ -61,6 +61,6 @@ public class PacienteController : ControllerBase
         if (!removido)
             return NotFound(ApiResponse<object>.Erro("Paciente não encontrado."));
 
-        return Ok(ApiResponse<object>.Ok(null, "Paciente removido com sucesso."));
+        return Ok(ApiResponse<object>.Ok("Paciente removido com sucesso."));
     }
 }

@@ -63,6 +63,6 @@ public class EspecialidadeController : ControllerBase
         if (!removido)
             return NotFound(ApiResponse<object>.Erro("Especialidade não encontrada."));
 
-        return Ok(ApiResponse<object>.Ok(null, "Especialidade removida com sucesso."));
+        return Ok(ApiResponse<object>.Ok("Especialidade removida com sucesso."));
     }
 }

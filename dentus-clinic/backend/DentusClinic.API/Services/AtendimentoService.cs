@@ -18,9 +18,8 @@ public class AtendimentoService : IAtendimentoService
 
     public async Task<IEnumerable<AtendimentoResponse>> ListarTodosAsync()
     {
-        return await _context.Atendimentos
-            .Select(a => MapearResponse(a))
-            .ToListAsync();
+        var lista = await _context.Atendimentos.ToListAsync();
+        return lista.Select(MapearResponse);
     }
 
     public async Task<AtendimentoResponse?> BuscarPorIdAsync(int id)

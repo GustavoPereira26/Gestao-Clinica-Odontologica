@@ -63,6 +63,6 @@ public class ServicoController : ControllerBase
         if (!removido)
             return NotFound(ApiResponse<object>.Erro("Serviço não encontrado."));
 
-        return Ok(ApiResponse<object>.Ok(null, "Serviço removido com sucesso."));
+        return Ok(ApiResponse<object>.Ok("Serviço removido com sucesso."));
     }
 }

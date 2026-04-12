@@ -18,10 +18,10 @@ public class PlanosService : IPlanosService
 
     public async Task<IEnumerable<PlanosResponse>> ListarTodosAsync()
     {
-        return await _context.Planos
+        var lista = await _context.Planos
             .Include(p => p.Servico)
-            .Select(p => MapearResponse(p))
             .ToListAsync();
+        return lista.Select(MapearResponse);
     }
 
     public async Task<PlanosResponse?> BuscarPorIdAsync(int id)

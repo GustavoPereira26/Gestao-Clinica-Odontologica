@@ -16,10 +16,10 @@ public class ProntuarioService : IProntuarioService
 
     public async Task<IEnumerable<ProntuarioResponse>> ListarTodosAsync()
     {
-        return await _context.Prontuarios
+        var lista = await _context.Prontuarios
             .Include(p => p.Paciente)
-            .Select(p => MapearResponse(p))
             .ToListAsync();
+        return lista.Select(MapearResponse);
     }
 
     public async Task<ProntuarioResponse?> BuscarPorIdAsync(int id)
