@@ -61,6 +61,6 @@ public class AtendimentoController : ControllerBase
         if (!removido)
             return NotFound(ApiResponse<object>.Erro("Atendimento não encontrado."));
 
-        return Ok(ApiResponse<object>.Ok(null, "Atendimento removido com sucesso."));
+        return Ok(ApiResponse<object>.Ok("Atendimento removido com sucesso."));
     }
 }

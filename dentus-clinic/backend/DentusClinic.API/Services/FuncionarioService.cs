@@ -15,11 +15,12 @@ public class FuncionarioService : IFuncionarioService {
         _context = context;
     }
 
-    public async Task<IEnumerable<FuncionarioResponse>> ListarTodosAsync() {
-        return await _context.Funcionarios
+    public async Task<IEnumerable<FuncionarioResponse>> ListarTodosAsync()
+    {
+        var lista = await _context.Funcionarios
             .Include(f => f.Login)
-            .Select(f => MapearResponse(f))
             .ToListAsync();
+        return lista.Select(MapearResponse);
     }
 
     public async Task<FuncionarioResponse?> BuscarPorIdAsync(int id)  // ← long

@@ -18,9 +18,8 @@ public class PacienteService : IPacienteService
 
     public async Task<IEnumerable<PacienteResponse>> ListarTodosAsync()
     {
-        return await _context.Pacientes
-            .Select(p => MapearResponse(p))
-            .ToListAsync();
+        var lista = await _context.Pacientes.ToListAsync();
+        return lista.Select(MapearResponse);
     }
 
     public async Task<PacienteResponse?> BuscarPorIdAsync(int id)

@@ -18,11 +18,11 @@ public class ConsultaService : IConsultaService
 
     public async Task<IEnumerable<ConsultaResponse>> ListarTodosAsync()
     {
-        return await _context.Consultas
+        var lista = await _context.Consultas
             .Include(c => c.Dentista)
             .Include(c => c.Paciente)
-            .Select(c => MapearResponse(c))
             .ToListAsync();
+        return lista.Select(MapearResponse);
     }
 
     public async Task<ConsultaResponse?> BuscarPorIdAsync(int id)

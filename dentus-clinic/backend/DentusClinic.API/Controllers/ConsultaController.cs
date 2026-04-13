@@ -61,7 +61,7 @@ public class ConsultaController : ControllerBase
         if (!sucesso)
             return NotFound(ApiResponse<object>.Erro("Consulta não encontrada."));
 
-        return Ok(ApiResponse<object>.Ok(null, "Chegada do paciente registrada."));
+        return Ok(ApiResponse<object>.Ok("Chegada do paciente registrada."));
     }
 
     [HttpPut("{id}/cancelar")]
@@ -72,6 +72,6 @@ public class ConsultaController : ControllerBase
         if (!sucesso)
             return NotFound(ApiResponse<object>.Erro("Consulta não encontrada."));
 
-        return Ok(ApiResponse<object>.Ok(null, "Consulta cancelada com sucesso."));
+        return Ok(ApiResponse<object>.Ok("Consulta cancelada com sucesso."));
     }
 }
