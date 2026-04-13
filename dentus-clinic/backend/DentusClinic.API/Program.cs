@@ -10,9 +10,14 @@ using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DbContext
+//carrega as variáveis de ambiente
+DotNetEnv.Env.Load();
+
+var connectionString = Environment.GetEnvironmentVariable("DB_CONNECTION_STRING");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(connectionString));
+
+var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
 
 // Services (injeção de dependência)
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -28,7 +33,6 @@ builder.Services.AddScoped<IPlanosService, PlanosService>();
 
 // JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"]!;
 
 builder.Services.AddAuthentication(options =>
 {

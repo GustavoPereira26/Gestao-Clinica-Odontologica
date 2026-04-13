@@ -36,7 +36,7 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Cadastrar([FromBody] FuncionarioRequest request)
     {
         var funcionario = await _funcionarioService.CadastrarAsync(request);
@@ -45,7 +45,7 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Editar(int id, [FromBody] FuncionarioRequest request)
     {
         var funcionario = await _funcionarioService.EditarAsync(id, request);
@@ -56,7 +56,7 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _funcionarioService.RemoverAsync(id);

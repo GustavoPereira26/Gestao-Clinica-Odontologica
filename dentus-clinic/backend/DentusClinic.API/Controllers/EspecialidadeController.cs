@@ -36,7 +36,7 @@ public class EspecialidadeController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Cadastrar([FromBody] EspecialidadeRequest request)
     {
         var esp = await _especialidadeService.CadastrarAsync(request);
@@ -45,7 +45,7 @@ public class EspecialidadeController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Editar(int id, [FromBody] EspecialidadeRequest request)
     {
         var esp = await _especialidadeService.EditarAsync(id, request);
@@ -56,7 +56,7 @@ public class EspecialidadeController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _especialidadeService.RemoverAsync(id);
