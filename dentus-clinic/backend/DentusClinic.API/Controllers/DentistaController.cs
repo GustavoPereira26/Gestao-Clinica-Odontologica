@@ -36,7 +36,7 @@ public class DentistaController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Cadastrar([FromBody] DentistaRequest request)
     {
         var dentista = await _dentistaService.CadastrarAsync(request);
@@ -45,7 +45,7 @@ public class DentistaController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Editar(int id, [FromBody] DentistaRequest request)
     {
         var dentista = await _dentistaService.EditarAsync(id, request);
@@ -56,7 +56,7 @@ public class DentistaController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _dentistaService.RemoverAsync(id);
