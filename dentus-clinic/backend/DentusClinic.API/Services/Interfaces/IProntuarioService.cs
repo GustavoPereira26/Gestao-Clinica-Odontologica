@@ -1,6 +1,6 @@
 using DentusClinic.API.DTOs.Response;
 
-namespace DentusClinic.API.Interfaces;
+namespace DentusClinic.API.Services.Interfaces;
 
 public interface IProntuarioService
 {

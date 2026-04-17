@@ -1,36 +1,37 @@
-using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Request;
 using DentusClinic.API.DTOs.Response;
-using DentusClinic.API.Interfaces;
 using DentusClinic.API.Models;
-using Microsoft.EntityFrameworkCore;
+using DentusClinic.API.Repositories.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 
 namespace DentusClinic.API.Services;
 
 public class PacienteService : IPacienteService
 {
-    private readonly AppDbContext _context;
+    private readonly IPacienteRepository _pacienteRepository;
+    private readonly IProntuarioRepository _prontuarioRepository;
 
-    public PacienteService(AppDbContext context)
+    public PacienteService(IPacienteRepository pacienteRepository, IProntuarioRepository prontuarioRepository)
     {
-        _context = context;
+        _pacienteRepository = pacienteRepository;
+        _prontuarioRepository = prontuarioRepository;
     }
 
     public async Task<IEnumerable<PacienteResponse>> ListarTodosAsync()
     {
-        var lista = await _context.Pacientes.ToListAsync();
+        var lista = await _pacienteRepository.ListarTodosAsync();
         return lista.Select(MapearResponse);
     }
 
     public async Task<PacienteResponse?> BuscarPorIdAsync(int id)
     {
-        var paciente = await _context.Pacientes.FindAsync(id);
+        var paciente = await _pacienteRepository.BuscarPorIdAsync(id);
         return paciente is null ? null : MapearResponse(paciente);
     }
 
     public async Task<PacienteResponse> CadastrarAsync(PacienteRequest request)
     {
-        if (await _context.Pacientes.AnyAsync(p => p.Cpf == request.Cpf))
+        if (await _pacienteRepository.ExisteCpfAsync(request.Cpf))
             throw new InvalidOperationException("CPF já cadastrado no sistema.");
 
         var paciente = new Paciente
@@ -43,8 +44,7 @@ public class PacienteService : IPacienteService
             Endereco = request.Endereco
         };
 
-        _context.Pacientes.Add(paciente);
-        await _context.SaveChangesAsync();
+        await _pacienteRepository.AdicionarAsync(paciente);
 
         // Prontuário criado automaticamente ao cadastrar paciente
         var prontuario = new Prontuario
@@ -52,18 +52,17 @@ public class PacienteService : IPacienteService
             IdPaciente = paciente.Id,
             DataAbertura = DateOnly.FromDateTime(DateTime.Today)
         };
-        _context.Prontuarios.Add(prontuario);
-        await _context.SaveChangesAsync();
+        await _prontuarioRepository.AdicionarAsync(prontuario);
 
         return MapearResponse(paciente);
     }
 
     public async Task<PacienteResponse?> EditarAsync(int id, PacienteRequest request)
     {
-        var paciente = await _context.Pacientes.FindAsync(id);
+        var paciente = await _pacienteRepository.BuscarPorIdAsync(id);
         if (paciente is null) return null;
 
-        if (await _context.Pacientes.AnyAsync(p => p.Cpf == request.Cpf && p.Id != id))
+        if (await _pacienteRepository.ExisteCpfAsync(request.Cpf, id))
             throw new InvalidOperationException("CPF já cadastrado no sistema.");
 
         paciente.Nome = request.Nome;
@@ -73,17 +72,16 @@ public class PacienteService : IPacienteService
         paciente.DataNascimento = request.DataNascimento;
         paciente.Endereco = request.Endereco;
 
-        await _context.SaveChangesAsync();
+        await _pacienteRepository.AtualizarAsync(paciente);
         return MapearResponse(paciente);
     }
 
     public async Task<bool> RemoverAsync(int id)
     {
-        var paciente = await _context.Pacientes.FindAsync(id);
+        var paciente = await _pacienteRepository.BuscarPorIdAsync(id);
         if (paciente is null) return false;
 
-        _context.Pacientes.Remove(paciente);
-        await _context.SaveChangesAsync();
+        await _pacienteRepository.RemoverAsync(paciente);
         return true;
     }
 

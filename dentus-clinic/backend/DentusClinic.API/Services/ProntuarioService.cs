@@ -1,40 +1,33 @@
-using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Response;
-using DentusClinic.API.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using DentusClinic.API.Repositories.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 
 namespace DentusClinic.API.Services;
 
 public class ProntuarioService : IProntuarioService
 {
-    private readonly AppDbContext _context;
+    private readonly IProntuarioRepository _prontuarioRepository;
 
-    public ProntuarioService(AppDbContext context)
+    public ProntuarioService(IProntuarioRepository prontuarioRepository)
     {
-        _context = context;
+        _prontuarioRepository = prontuarioRepository;
     }
 
     public async Task<IEnumerable<ProntuarioResponse>> ListarTodosAsync()
     {
-        var lista = await _context.Prontuarios
-            .Include(p => p.Paciente)
-            .ToListAsync();
+        var lista = await _prontuarioRepository.ListarTodosAsync();
         return lista.Select(MapearResponse);
     }
 
     public async Task<ProntuarioResponse?> BuscarPorIdAsync(int id)
     {
-        var prontuario = await _context.Prontuarios
-            .Include(p => p.Paciente)
-            .FirstOrDefaultAsync(p => p.Id == id);
+        var prontuario = await _prontuarioRepository.BuscarPorIdAsync(id);
         return prontuario is null ? null : MapearResponse(prontuario);
     }
 
     public async Task<ProntuarioResponse?> BuscarPorPacienteAsync(int idPaciente)
     {
-        var prontuario = await _context.Prontuarios
-            .Include(p => p.Paciente)
-            .FirstOrDefaultAsync(p => p.IdPaciente == idPaciente);
+        var prontuario = await _prontuarioRepository.BuscarPorPacienteAsync(idPaciente);
         return prontuario is null ? null : MapearResponse(prontuario);
     }
 

@@ -1,8 +1,10 @@
 using System.Text;
 using DentusClinic.API.Data;
-using DentusClinic.API.Interfaces;
 using DentusClinic.API.Middleware;
+using DentusClinic.API.Repositories;
+using DentusClinic.API.Repositories.Interfaces;
 using DentusClinic.API.Services;
+using DentusClinic.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -18,6 +20,18 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY");
+
+// Repositories (injeção de dependência)
+builder.Services.AddScoped<ILoginRepository, LoginRepository>();
+builder.Services.AddScoped<IPacienteRepository, PacienteRepository>();
+builder.Services.AddScoped<IFuncionarioRepository, FuncionarioRepository>();
+builder.Services.AddScoped<IDentistaRepository, DentistaRepository>();
+builder.Services.AddScoped<IEspecialidadeRepository, EspecialidadeRepository>();
+builder.Services.AddScoped<IConsultaRepository, ConsultaRepository>();
+builder.Services.AddScoped<IAtendimentoRepository, AtendimentoRepository>();
+builder.Services.AddScoped<IProntuarioRepository, ProntuarioRepository>();
+builder.Services.AddScoped<IPlanosRepository, PlanosRepository>();
+builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
 
 // Services (injeção de dependência)
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -66,8 +80,8 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Controllers
-builder.Services.AddControllers();
+// Controllers com suporte a Views
+builder.Services.AddControllersWithViews();
 
 // Swagger com suporte a Bearer Token
 builder.Services.AddEndpointsApiExplorer();
@@ -119,9 +133,11 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
 app.UseCors("FrontendPolicy");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

@@ -1,32 +1,29 @@
-using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Request;
 using DentusClinic.API.DTOs.Response;
-using DentusClinic.API.Interfaces;
 using DentusClinic.API.Models;
-using Microsoft.EntityFrameworkCore;
+using DentusClinic.API.Repositories.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 
 namespace DentusClinic.API.Services;
 
 public class PlanosService : IPlanosService
 {
-    private readonly AppDbContext _context;
+    private readonly IPlanosRepository _planosRepository;
 
-    public PlanosService(AppDbContext context)
+    public PlanosService(IPlanosRepository planosRepository)
     {
-        _context = context;
+        _planosRepository = planosRepository;
     }
 
     public async Task<IEnumerable<PlanosResponse>> ListarTodosAsync()
     {
-        var lista = await _context.Planos
-            .Include(p => p.Servico)
-            .ToListAsync();
+        var lista = await _planosRepository.ListarTodosAsync();
         return lista.Select(MapearResponse);
     }
 
     public async Task<PlanosResponse?> BuscarPorIdAsync(int id)
     {
-        var plano = await _context.Planos.Include(p => p.Servico).FirstOrDefaultAsync(p => p.Id == id);
+        var plano = await _planosRepository.BuscarPorIdAsync(id);
         return plano is null ? null : MapearResponse(plano);
     }
 
@@ -42,15 +39,15 @@ public class PlanosService : IPlanosService
             Observacao = request.Observacao
         };
 
-        _context.Planos.Add(plano);
-        await _context.SaveChangesAsync();
-        await _context.Entry(plano).Reference(p => p.Servico).LoadAsync();
-        return MapearResponse(plano);
+        await _planosRepository.AdicionarAsync(plano);
+
+        var planoSalvo = await _planosRepository.BuscarPorIdAsync(plano.Id);
+        return MapearResponse(planoSalvo!);
     }
 
     public async Task<PlanosResponse?> EditarAsync(int id, PlanosRequest request)
     {
-        var plano = await _context.Planos.Include(p => p.Servico).FirstOrDefaultAsync(p => p.Id == id);
+        var plano = await _planosRepository.BuscarPorIdAsync(id);
         if (plano is null) return null;
 
         plano.IdServico = request.IdServico;
@@ -59,18 +56,18 @@ public class PlanosService : IPlanosService
         plano.Status = request.Status;
         plano.Observacao = request.Observacao;
 
-        await _context.SaveChangesAsync();
-        await _context.Entry(plano).Reference(p => p.Servico).LoadAsync();
-        return MapearResponse(plano);
+        await _planosRepository.AtualizarAsync(plano);
+
+        var planoAtualizado = await _planosRepository.BuscarPorIdAsync(id);
+        return MapearResponse(planoAtualizado!);
     }
 
     public async Task<bool> RemoverAsync(int id)
     {
-        var plano = await _context.Planos.FindAsync(id);
+        var plano = await _planosRepository.BuscarPorIdAsync(id);
         if (plano is null) return false;
 
-        _context.Planos.Remove(plano);
-        await _context.SaveChangesAsync();
+        await _planosRepository.RemoverAsync(plano);
         return true;
     }
 

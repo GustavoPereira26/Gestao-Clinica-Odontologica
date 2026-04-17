@@ -1,28 +1,37 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Request;
 using DentusClinic.API.DTOs.Response;
 using DentusClinic.API.Enums;
-using DentusClinic.API.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using DentusClinic.API.Repositories.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DentusClinic.API.Services;
 
-public class AuthService : IAuthService {
-    private readonly AppDbContext _context;
+public class AuthService : IAuthService
+{
+    private readonly ILoginRepository _loginRepository;
+    private readonly IFuncionarioRepository _funcionarioRepository;
+    private readonly IDentistaRepository _dentistaRepository;
     private readonly IConfiguration _config;
 
-    public AuthService(AppDbContext context, IConfiguration config) {
-        _context = context;
+    public AuthService(
+        ILoginRepository loginRepository,
+        IFuncionarioRepository funcionarioRepository,
+        IDentistaRepository dentistaRepository,
+        IConfiguration config)
+    {
+        _loginRepository = loginRepository;
+        _funcionarioRepository = funcionarioRepository;
+        _dentistaRepository = dentistaRepository;
         _config = config;
     }
 
-    public async Task<LoginResponse?> LoginAsync(LoginRequest request) {
-        var login = await _context.Logins
-            .FirstOrDefaultAsync(x => x.Email == request.Email);
+    public async Task<LoginResponse?> LoginAsync(LoginRequest request)
+    {
+        var login = await _loginRepository.BuscarPorEmailAsync(request.Email);
 
         if (login is null || !BCrypt.Net.BCrypt.Verify(request.Senha, login.Senha))
             return null;
@@ -31,31 +40,33 @@ public class AuthService : IAuthService {
 
         // Busca o nome do usuário conforme o tipo de acesso
         if (login.TipoAcesso == TiposAcessoEnum.ADMINISTRADOR ||
-            login.TipoAcesso == TiposAcessoEnum.RECEPCIONISTA) {
-            var func = await _context.Funcionarios
-                .FirstOrDefaultAsync(x => x.IdAcesso == login.Id);
+            login.TipoAcesso == TiposAcessoEnum.RECEPCIONISTA)
+        {
+            var func = await _funcionarioRepository.BuscarPorLoginIdAsync(login.Id);
             if (func is not null) nome = func.Nome;
         }
-        else if (login.TipoAcesso == TiposAcessoEnum.DENTISTA) {
-            var dent = await _context.Dentistas
-                .FirstOrDefaultAsync(x => x.IdAcesso == login.Id);
+        else if (login.TipoAcesso == TiposAcessoEnum.DENTISTA)
+        {
+            var dent = await _dentistaRepository.BuscarPorLoginIdAsync(login.Id);
             if (dent is not null) nome = dent.Nome;
         }
 
         var token = GerarToken(
             (int)login.Id,
             nome,
-            login.TipoAcesso.ToString()  // converte Enum para string só aqui para o JWT
+            login.TipoAcesso.ToString()
         );
 
-        return new LoginResponse {
+        return new LoginResponse
+        {
             Token = token,
             TipoAcesso = login.TipoAcesso.ToString(),
             Nome = nome
         };
     }
 
-    private string GerarToken(int id, string nome, string tipoAcesso) {
+    private string GerarToken(int id, string nome, string tipoAcesso)
+    {
         var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")!;
         var issuer = _config["JwtSettings:Issuer"]!;
         var audience = _config["JwtSettings:Audience"]!;

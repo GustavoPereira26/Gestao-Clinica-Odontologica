@@ -1,40 +1,41 @@
-using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Request;
 using DentusClinic.API.DTOs.Response;
-using DentusClinic.API.Interfaces;
 using DentusClinic.API.Models;
-using Microsoft.EntityFrameworkCore;
+using DentusClinic.API.Repositories.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 
 namespace DentusClinic.API.Services;
 
 public class AtendimentoService : IAtendimentoService
 {
-    private readonly AppDbContext _context;
+    private readonly IAtendimentoRepository _atendimentoRepository;
+    private readonly IConsultaRepository _consultaRepository;
 
-    public AtendimentoService(AppDbContext context)
+    public AtendimentoService(IAtendimentoRepository atendimentoRepository, IConsultaRepository consultaRepository)
     {
-        _context = context;
+        _atendimentoRepository = atendimentoRepository;
+        _consultaRepository = consultaRepository;
     }
 
     public async Task<IEnumerable<AtendimentoResponse>> ListarTodosAsync()
     {
-        var lista = await _context.Atendimentos.ToListAsync();
+        var lista = await _atendimentoRepository.ListarTodosAsync();
         return lista.Select(MapearResponse);
     }
 
     public async Task<AtendimentoResponse?> BuscarPorIdAsync(int id)
     {
-        var atendimento = await _context.Atendimentos.FindAsync(id);
+        var atendimento = await _atendimentoRepository.BuscarPorIdAsync(id);
         return atendimento is null ? null : MapearResponse(atendimento);
     }
 
     public async Task<AtendimentoResponse> RegistrarAsync(AtendimentoRequest request)
     {
         // Regra: atendimento só pode ser registrado vinculado a consulta existente
-        var consulta = await _context.Consultas.FindAsync(request.IdConsulta)
+        var consulta = await _consultaRepository.BuscarPorIdAsync(request.IdConsulta)
             ?? throw new InvalidOperationException("Consulta não encontrada.");
 
-        if (await _context.Atendimentos.AnyAsync(a => a.IdConsulta == request.IdConsulta))
+        if (await _atendimentoRepository.ExistePorConsultaAsync(request.IdConsulta))
             throw new InvalidOperationException("Já existe um atendimento registrado para esta consulta.");
 
         var atendimento = new Atendimento
@@ -47,15 +48,15 @@ public class AtendimentoService : IAtendimentoService
         };
 
         consulta.Status = "Concluida";
+        await _consultaRepository.AtualizarAsync(consulta);
 
-        _context.Atendimentos.Add(atendimento);
-        await _context.SaveChangesAsync();
+        await _atendimentoRepository.AdicionarAsync(atendimento);
         return MapearResponse(atendimento);
     }
 
     public async Task<AtendimentoResponse?> EditarAsync(int id, AtendimentoRequest request)
     {
-        var atendimento = await _context.Atendimentos.FindAsync(id);
+        var atendimento = await _atendimentoRepository.BuscarPorIdAsync(id);
         if (atendimento is null) return null;
 
         atendimento.Descricao = request.Descricao;
@@ -63,17 +64,16 @@ public class AtendimentoService : IAtendimentoService
         atendimento.DataAtendimento = request.DataAtendimento;
         atendimento.Observacao = request.Observacao;
 
-        await _context.SaveChangesAsync();
+        await _atendimentoRepository.AtualizarAsync(atendimento);
         return MapearResponse(atendimento);
     }
 
     public async Task<bool> RemoverAsync(int id)
     {
-        var atendimento = await _context.Atendimentos.FindAsync(id);
+        var atendimento = await _atendimentoRepository.BuscarPorIdAsync(id);
         if (atendimento is null) return false;
 
-        _context.Atendimentos.Remove(atendimento);
-        await _context.SaveChangesAsync();
+        await _atendimentoRepository.RemoverAsync(atendimento);
         return true;
     }
 

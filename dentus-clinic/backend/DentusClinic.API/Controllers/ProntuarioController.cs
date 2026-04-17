@@ -1,4 +1,4 @@
-using DentusClinic.API.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 using DentusClinic.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,5 +1,5 @@
 using DentusClinic.API.DTOs.Request;
-using DentusClinic.API.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 using DentusClinic.API.Models;
 using Microsoft.AspNetCore.Mvc;
 

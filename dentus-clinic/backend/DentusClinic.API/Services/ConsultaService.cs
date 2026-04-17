@@ -1,53 +1,42 @@
-using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Request;
 using DentusClinic.API.DTOs.Response;
-using DentusClinic.API.Interfaces;
 using DentusClinic.API.Models;
-using Microsoft.EntityFrameworkCore;
+using DentusClinic.API.Repositories.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 
 namespace DentusClinic.API.Services;
 
 public class ConsultaService : IConsultaService
 {
-    private readonly AppDbContext _context;
+    private readonly IConsultaRepository _consultaRepository;
+    private readonly IPacienteRepository _pacienteRepository;
 
-    public ConsultaService(AppDbContext context)
+    public ConsultaService(IConsultaRepository consultaRepository, IPacienteRepository pacienteRepository)
     {
-        _context = context;
+        _consultaRepository = consultaRepository;
+        _pacienteRepository = pacienteRepository;
     }
 
     public async Task<IEnumerable<ConsultaResponse>> ListarTodosAsync()
     {
-        var lista = await _context.Consultas
-            .Include(c => c.Dentista)
-            .Include(c => c.Paciente)
-            .ToListAsync();
+        var lista = await _consultaRepository.ListarTodosAsync();
         return lista.Select(MapearResponse);
     }
 
     public async Task<ConsultaResponse?> BuscarPorIdAsync(int id)
     {
-        var consulta = await _context.Consultas
-            .Include(c => c.Dentista)
-            .Include(c => c.Paciente)
-            .FirstOrDefaultAsync(c => c.Id == id);
+        var consulta = await _consultaRepository.BuscarPorIdAsync(id);
         return consulta is null ? null : MapearResponse(consulta);
     }
 
     public async Task<ConsultaResponse> AgendarAsync(ConsultaRequest request)
     {
         // Regra: paciente deve estar cadastrado
-        var paciente = await _context.Pacientes.FindAsync(request.IdPaciente)
+        var paciente = await _pacienteRepository.BuscarPorIdAsync(request.IdPaciente)
             ?? throw new InvalidOperationException("Paciente não encontrado.");
 
         // Regra: dentista não pode ter duas consultas no mesmo horário na mesma data
-        var conflito = await _context.Consultas.AnyAsync(c =>
-            c.IdDentista == request.IdDentista &&
-            c.DataConsulta == request.DataConsulta &&
-            c.HoraConsulta == request.HoraConsulta &&
-            c.Status != "Cancelada");
-
-        if (conflito)
+        if (await _consultaRepository.ExisteConflitoAsync(request.IdDentista, request.DataConsulta, request.HoraConsulta))
             throw new InvalidOperationException("Dentista já possui consulta agendada nesse horário.");
 
         var consulta = new Consulta
@@ -60,31 +49,18 @@ public class ConsultaService : IConsultaService
             IdPaciente = request.IdPaciente
         };
 
-        _context.Consultas.Add(consulta);
-        await _context.SaveChangesAsync();
-        await _context.Entry(consulta).Reference(c => c.Dentista).LoadAsync();
-        consulta.Paciente = paciente;
+        await _consultaRepository.AdicionarAsync(consulta);
 
-        return MapearResponse(consulta);
+        var consultaSalva = await _consultaRepository.BuscarPorIdAsync(consulta.Id);
+        return MapearResponse(consultaSalva!);
     }
 
     public async Task<ConsultaResponse?> EditarAsync(int id, ConsultaRequest request)
     {
-        var consulta = await _context.Consultas
-            .Include(c => c.Dentista)
-            .Include(c => c.Paciente)
-            .FirstOrDefaultAsync(c => c.Id == id);
-
+        var consulta = await _consultaRepository.BuscarPorIdAsync(id);
         if (consulta is null) return null;
 
-        var conflito = await _context.Consultas.AnyAsync(c =>
-            c.IdDentista == request.IdDentista &&
-            c.DataConsulta == request.DataConsulta &&
-            c.HoraConsulta == request.HoraConsulta &&
-            c.Status != "Cancelada" &&
-            c.Id != id);
-
-        if (conflito)
+        if (await _consultaRepository.ExisteConflitoAsync(request.IdDentista, request.DataConsulta, request.HoraConsulta, id))
             throw new InvalidOperationException("Dentista já possui consulta agendada nesse horário.");
 
         consulta.DataConsulta = request.DataConsulta;
@@ -93,30 +69,29 @@ public class ConsultaService : IConsultaService
         consulta.IdDentista = request.IdDentista;
         consulta.IdPaciente = request.IdPaciente;
 
-        await _context.SaveChangesAsync();
-        await _context.Entry(consulta).Reference(c => c.Dentista).LoadAsync();
-        await _context.Entry(consulta).Reference(c => c.Paciente).LoadAsync();
+        await _consultaRepository.AtualizarAsync(consulta);
 
-        return MapearResponse(consulta);
+        var consultaAtualizada = await _consultaRepository.BuscarPorIdAsync(id);
+        return MapearResponse(consultaAtualizada!);
     }
 
     public async Task<bool> RegistrarChegadaAsync(int id)
     {
-        var consulta = await _context.Consultas.FindAsync(id);
+        var consulta = await _consultaRepository.BuscarPorIdAsync(id);
         if (consulta is null) return false;
 
         consulta.Status = "Aguardando";
-        await _context.SaveChangesAsync();
+        await _consultaRepository.AtualizarAsync(consulta);
         return true;
     }
 
     public async Task<bool> CancelarAsync(int id)
     {
-        var consulta = await _context.Consultas.FindAsync(id);
+        var consulta = await _consultaRepository.BuscarPorIdAsync(id);
         if (consulta is null) return false;
 
         consulta.Status = "Cancelada";
-        await _context.SaveChangesAsync();
+        await _consultaRepository.AtualizarAsync(consulta);
         return true;
     }
 
