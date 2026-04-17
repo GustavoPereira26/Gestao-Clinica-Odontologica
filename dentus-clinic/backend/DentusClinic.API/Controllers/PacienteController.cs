@@ -8,7 +8,7 @@ namespace DentusClinic.API.Controllers;
 
 [ApiController]
 [Route("api/pacientes")]
-[Authorize]
+[Authorize(Roles = "RECEPCIONISTA")]
 public class PacienteController : ControllerBase
 {
     private readonly IPacienteService _pacienteService;
@@ -35,22 +35,37 @@ public class PacienteController : ControllerBase
         return Ok(ApiResponse<object>.Ok(paciente));
     }
 
-    [HttpPost]
+    [HttpPost("cadastrar")]
+    [Authorize(Roles = "RECEPCIONISTA")]
     public async Task<IActionResult> Cadastrar([FromBody] PacienteRequest request)
     {
-        var paciente = await _pacienteService.CadastrarAsync(request);
-        return CreatedAtAction(nameof(BuscarPorId), new { id = paciente.Id },
-            ApiResponse<object>.Ok(paciente, "Paciente cadastrado com sucesso."));
+        try
+        {
+            var paciente = await _pacienteService.CadastrarAsync(request);
+            return CreatedAtAction(nameof(BuscarPorId), new { id = paciente.Id },
+                ApiResponse<object>.Ok(paciente, "Paciente cadastrado com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponse<object>.Erro(ex.Message));
+        }
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Editar(int id, [FromBody] PacienteRequest request)
+    public async Task<IActionResult> Editar(int id, [FromBody] PacienteEditarRequest request)
     {
-        var paciente = await _pacienteService.EditarAsync(id, request);
-        if (paciente is null)
-            return NotFound(ApiResponse<object>.Erro("Paciente não encontrado."));
+        try
+        {
+            var paciente = await _pacienteService.EditarAsync(id, request);
+            if (paciente is null)
+                return NotFound(ApiResponse<object>.Erro("Paciente não encontrado."));
 
-        return Ok(ApiResponse<object>.Ok(paciente, "Paciente atualizado com sucesso."));
+            return Ok(ApiResponse<object>.Ok(paciente, "Paciente atualizado com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponse<object>.Erro(ex.Message));
+        }
     }
 
     [HttpDelete("{id}")]

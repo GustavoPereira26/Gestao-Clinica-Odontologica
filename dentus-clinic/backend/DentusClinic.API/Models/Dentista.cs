@@ -14,6 +14,7 @@ public class Dentista : Usuario
     public Especialidade Especialidade { get; set; } = null!;
 
     public int IdAcesso { get; set; }
+    public Login Login { get; set; } = null!;
 
     public ICollection<Consulta> Consultas { get; set; } = new List<Consulta>();
 }

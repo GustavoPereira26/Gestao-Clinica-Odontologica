@@ -28,6 +28,8 @@ builder.Services.AddScoped<IEspecialidadeService, EspecialidadeService>();
 builder.Services.AddScoped<IConsultaService, ConsultaService>();
 builder.Services.AddScoped<IAtendimentoService, AtendimentoService>();
 builder.Services.AddScoped<IProntuarioService, ProntuarioService>();
+
+
 builder.Services.AddScoped<IServicoService, ServicoService>();
 builder.Services.AddScoped<IPlanosService, PlanosService>();
 

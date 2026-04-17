@@ -32,6 +32,8 @@ public class PacienteService : IPacienteService
     {
         if (await _context.Pacientes.AnyAsync(p => p.Cpf == request.Cpf))
             throw new InvalidOperationException("CPF já cadastrado no sistema.");
+        if (await _context.Pacientes.AnyAsync(p => p.Email == request.Email))
+            throw new InvalidOperationException("Email já cadastrado no sistema.");
 
         var paciente = new Paciente
         {
@@ -58,20 +60,29 @@ public class PacienteService : IPacienteService
         return MapearResponse(paciente);
     }
 
-    public async Task<PacienteResponse?> EditarAsync(int id, PacienteRequest request)
+    public async Task<PacienteResponse?> EditarAsync(int id, PacienteEditarRequest request)
     {
         var paciente = await _context.Pacientes.FindAsync(id);
         if (paciente is null) return null;
 
-        if (await _context.Pacientes.AnyAsync(p => p.Cpf == request.Cpf && p.Id != id))
-            throw new InvalidOperationException("CPF já cadastrado no sistema.");
+        if (request.Email != null)
+        {
+            if (await _context.Pacientes.AnyAsync(p => p.Email == request.Email && p.Id != id))
+                throw new InvalidOperationException("E-mail já cadastrado no sistema.");
+            paciente.Email = request.Email;
+        }
 
-        paciente.Nome = request.Nome;
-        paciente.Cpf = request.Cpf;
-        paciente.Telefone = request.Telefone;
-        paciente.Email = request.Email;
-        paciente.DataNascimento = request.DataNascimento;
-        paciente.Endereco = request.Endereco;
+        if (request.Nome != null)
+            paciente.Nome = request.Nome;
+
+        if (request.Telefone != null)
+            paciente.Telefone = request.Telefone;
+
+        if (request.DataNascimento != null)
+            paciente.DataNascimento = request.DataNascimento.Value;
+
+        if (request.Endereco != null)
+            paciente.Endereco = request.Endereco;
 
         await _context.SaveChangesAsync();
         return MapearResponse(paciente);

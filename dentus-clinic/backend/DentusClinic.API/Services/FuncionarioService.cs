@@ -65,27 +65,36 @@ public class FuncionarioService : IFuncionarioService {
         return MapearResponse(funcionario);
     }
 
-    public async Task<FuncionarioResponse?> EditarAsync(int id, FuncionarioRequest request)  // ← long
+    public async Task<FuncionarioResponse?> EditarAsync(int id, FuncionarioEditarRequest request)
     {
         var funcionario = await _context.Funcionarios
             .Include(f => f.Login)
             .FirstOrDefaultAsync(f => f.Id == id);
         if (funcionario is null) return null;
 
-        if (await _context.Funcionarios.AnyAsync(f => f.Cpf == request.Cpf && f.Id != id))
-            throw new InvalidOperationException("CPF já cadastrado no sistema.");
+        if (request.Nome != null)
+            funcionario.Nome = request.Nome;
 
-        // Converte string do Cargo para Enum
-        if (!Enum.TryParse<TiposAcessoEnum>(request.Cargo, ignoreCase: true, out var tipoAcesso))
-            throw new InvalidOperationException("Cargo inválido.");
+        if (request.DataNascimento != null)
+            funcionario.DataNascimento = request.DataNascimento.Value;
 
-        funcionario.Nome = request.Nome;
-        funcionario.Cpf = request.Cpf;
-        funcionario.DataNascimento = request.DataNascimento;
-        funcionario.Telefone = request.Telefone ?? string.Empty;
-        funcionario.Cargo = request.Cargo;
-        funcionario.Login.Email = request.Email;
-        funcionario.Login.TipoAcesso = tipoAcesso;  // ← Enum
+        if (request.Telefone != null)
+            funcionario.Telefone = request.Telefone;
+
+        if (request.Cargo != null)
+        {
+            if (!Enum.TryParse<TiposAcessoEnum>(request.Cargo, ignoreCase: true, out var tipoAcesso))
+                throw new InvalidOperationException("Cargo inválido. Valores aceitos: RECEPCIONISTA, ADMINISTRADOR.");
+            funcionario.Cargo = request.Cargo.ToUpper();
+            funcionario.Login.TipoAcesso = tipoAcesso;
+        }
+
+        if (request.Email != null)
+        {
+            if (await _context.Logins.AnyAsync(l => l.Email == request.Email && l.Id != funcionario.IdAcesso))
+                throw new InvalidOperationException("E-mail já cadastrado no sistema.");
+            funcionario.Login.Email = request.Email;
+        }
 
         if (!string.IsNullOrWhiteSpace(request.Senha))
             funcionario.Login.Senha = BCrypt.Net.BCrypt.HashPassword(request.Senha);

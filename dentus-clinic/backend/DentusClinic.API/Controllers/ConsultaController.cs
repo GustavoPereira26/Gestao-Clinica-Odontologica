@@ -38,20 +38,34 @@ public class ConsultaController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Agendar([FromBody] ConsultaRequest request)
     {
-        var consulta = await _consultaService.AgendarAsync(request);
-        return CreatedAtAction(nameof(BuscarPorId), new { id = consulta.Id },
-            ApiResponse<object>.Ok(consulta, "Consulta agendada com sucesso."));
+        try
+        {
+            var consulta = await _consultaService.AgendarAsync(request);
+            return CreatedAtAction(nameof(BuscarPorId), new { id = consulta.Id },
+                ApiResponse<object>.Ok(consulta, "Consulta agendada com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponse<object>.Erro(ex.Message));
+        }
     }
 
     [HttpPut("{id}")]
     [Authorize(Roles = "ADM,Secretaria")]
     public async Task<IActionResult> Editar(int id, [FromBody] ConsultaRequest request)
     {
-        var consulta = await _consultaService.EditarAsync(id, request);
-        if (consulta is null)
-            return NotFound(ApiResponse<object>.Erro("Consulta não encontrada."));
+        try
+        {
+            var consulta = await _consultaService.EditarAsync(id, request);
+            if (consulta is null)
+                return NotFound(ApiResponse<object>.Erro("Consulta não encontrada."));
 
-        return Ok(ApiResponse<object>.Ok(consulta, "Consulta atualizada com sucesso."));
+            return Ok(ApiResponse<object>.Ok(consulta, "Consulta atualizada com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponse<object>.Erro(ex.Message));
+        }
     }
 
     [HttpPut("{id}/chegada")]

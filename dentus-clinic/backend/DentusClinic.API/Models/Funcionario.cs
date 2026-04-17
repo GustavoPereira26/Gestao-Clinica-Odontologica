@@ -13,4 +13,5 @@ public class Funcionario : Usuario
     public string Cargo { get; set; } = string.Empty; 
 
     public int IdAcesso { get; set; }
+    public Login Login { get; set; } = null!;
 }

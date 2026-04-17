@@ -81,6 +81,9 @@ public class DentistaService : IDentistaService {
         if (await _context.Dentistas.AnyAsync(d => d.Cro == request.Cro && d.Id != id))
             throw new InvalidOperationException("CRO já cadastrado no sistema.");
 
+        if (await _context.Logins.AnyAsync(l => l.Email == request.Email && l.Id != dentista.IdAcesso))
+            throw new InvalidOperationException("E-mail já cadastrado no sistema.");
+
         dentista.Nome = request.Nome;
         dentista.Cpf = request.Cpf;
         dentista.Cro = request.Cro;
