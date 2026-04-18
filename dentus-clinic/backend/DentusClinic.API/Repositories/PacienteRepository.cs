@@ -7,34 +7,37 @@ namespace DentusClinic.API.Repositories;
 
 public class PacienteRepository : IPacienteRepository
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _contexto;
 
-    public PacienteRepository(AppDbContext context)
+    public PacienteRepository(AppDbContext contexto)
     {
-        _context = context;
+        _contexto = contexto;
     }
 
     public async Task<IEnumerable<Paciente>> ListarTodosAsync()
-        => await _context.Pacientes.ToListAsync();
+        => await _contexto.Pacientes.ToListAsync();
 
     public async Task<Paciente?> BuscarPorIdAsync(int id)
-        => await _context.Pacientes.FindAsync(id);
+        => await _contexto.Pacientes.FindAsync(id);
 
-    public async Task<bool> ExisteCpfAsync(string cpf, int? excludeId = null)
-        => await _context.Pacientes.AnyAsync(p => p.Cpf == cpf && (excludeId == null || p.Id != excludeId));
+    public async Task<bool> ExisteCpfAsync(string cpf, int? idExcluido = null)
+        => await _contexto.Pacientes.AnyAsync(p => p.Cpf == cpf && (idExcluido == null || p.Id != idExcluido));
+
+    public async Task<bool> ExisteEmailAsync(string email, int? idExcluido = null)
+        => await _contexto.Pacientes.AnyAsync(p => p.Email == email && (idExcluido == null || p.Id != idExcluido));
 
     public async Task AdicionarAsync(Paciente paciente)
     {
-        _context.Pacientes.Add(paciente);
-        await _context.SaveChangesAsync();
+        _contexto.Pacientes.Add(paciente);
+        await _contexto.SaveChangesAsync();
     }
 
     public async Task AtualizarAsync(Paciente paciente)
-        => await _context.SaveChangesAsync();
+        => await _contexto.SaveChangesAsync();
 
     public async Task RemoverAsync(Paciente paciente)
     {
-        _context.Pacientes.Remove(paciente);
-        await _context.SaveChangesAsync();
+        _contexto.Pacientes.Remove(paciente);
+        await _contexto.SaveChangesAsync();
     }
 }

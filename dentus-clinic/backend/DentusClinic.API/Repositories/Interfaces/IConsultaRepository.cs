@@ -6,7 +6,7 @@ public interface IConsultaRepository
 {
     Task<IEnumerable<Consulta>> ListarTodosAsync();
     Task<Consulta?> BuscarPorIdAsync(int id);
-    Task<bool> ExisteConflitoAsync(int idDentista, DateOnly data, TimeOnly hora, int? excludeId = null);
+    Task<bool> ExisteConflitoAsync(int idDentista, DateOnly data, TimeOnly hora, int? idExcluido = null);
     Task AdicionarAsync(Consulta consulta);
     Task AtualizarAsync(Consulta consulta);
 }

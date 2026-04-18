@@ -12,10 +12,16 @@ public class Paciente
     [Required]
     public string Cpf { get; set; } = string.Empty;
 
-    public string? Telefone { get; set; }
-    public string? Email { get; set; }
+    [Required]
+    public string Telefone { get; set; } = string.Empty;
+
+    [Required]
+    public string Email { get; set; } = string.Empty;
+
     public DateOnly DataNascimento { get; set; }
-    public string? Endereco { get; set; }
+
+    [Required]
+    public string Endereco { get; set; } = string.Empty;
 
     public ICollection<Consulta> Consultas { get; set; } = new List<Consulta>();
     public Prontuario? Prontuario { get; set; }

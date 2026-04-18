@@ -7,31 +7,31 @@ namespace DentusClinic.API.Repositories;
 
 public class PlanosRepository : IPlanosRepository
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _contexto;
 
-    public PlanosRepository(AppDbContext context)
+    public PlanosRepository(AppDbContext contexto)
     {
-        _context = context;
+        _contexto = contexto;
     }
 
     public async Task<IEnumerable<Planos>> ListarTodosAsync()
-        => await _context.Planos.Include(p => p.Servico).ToListAsync();
+        => await _contexto.Planos.Include(p => p.Servico).ToListAsync();
 
     public async Task<Planos?> BuscarPorIdAsync(int id)
-        => await _context.Planos.Include(p => p.Servico).FirstOrDefaultAsync(p => p.Id == id);
+        => await _contexto.Planos.Include(p => p.Servico).FirstOrDefaultAsync(p => p.Id == id);
 
     public async Task AdicionarAsync(Planos plano)
     {
-        _context.Planos.Add(plano);
-        await _context.SaveChangesAsync();
+        _contexto.Planos.Add(plano);
+        await _contexto.SaveChangesAsync();
     }
 
     public async Task AtualizarAsync(Planos plano)
-        => await _context.SaveChangesAsync();
+        => await _contexto.SaveChangesAsync();
 
     public async Task RemoverAsync(Planos plano)
     {
-        _context.Planos.Remove(plano);
-        await _context.SaveChangesAsync();
+        _contexto.Planos.Remove(plano);
+        await _contexto.SaveChangesAsync();
     }
 }

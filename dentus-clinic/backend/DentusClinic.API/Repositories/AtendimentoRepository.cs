@@ -7,34 +7,34 @@ namespace DentusClinic.API.Repositories;
 
 public class AtendimentoRepository : IAtendimentoRepository
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _contexto;
 
-    public AtendimentoRepository(AppDbContext context)
+    public AtendimentoRepository(AppDbContext contexto)
     {
-        _context = context;
+        _contexto = contexto;
     }
 
     public async Task<IEnumerable<Atendimento>> ListarTodosAsync()
-        => await _context.Atendimentos.ToListAsync();
+        => await _contexto.Atendimentos.ToListAsync();
 
     public async Task<Atendimento?> BuscarPorIdAsync(int id)
-        => await _context.Atendimentos.FindAsync(id);
+        => await _contexto.Atendimentos.FindAsync(id);
 
     public async Task<bool> ExistePorConsultaAsync(int idConsulta)
-        => await _context.Atendimentos.AnyAsync(a => a.IdConsulta == idConsulta);
+        => await _contexto.Atendimentos.AnyAsync(a => a.IdConsulta == idConsulta);
 
     public async Task AdicionarAsync(Atendimento atendimento)
     {
-        _context.Atendimentos.Add(atendimento);
-        await _context.SaveChangesAsync();
+        _contexto.Atendimentos.Add(atendimento);
+        await _contexto.SaveChangesAsync();
     }
 
     public async Task AtualizarAsync(Atendimento atendimento)
-        => await _context.SaveChangesAsync();
+        => await _contexto.SaveChangesAsync();
 
     public async Task RemoverAsync(Atendimento atendimento)
     {
-        _context.Atendimentos.Remove(atendimento);
-        await _context.SaveChangesAsync();
+        _contexto.Atendimentos.Remove(atendimento);
+        await _contexto.SaveChangesAsync();
     }
 }

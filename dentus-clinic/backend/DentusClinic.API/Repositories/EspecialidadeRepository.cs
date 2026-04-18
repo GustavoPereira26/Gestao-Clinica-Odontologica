@@ -7,31 +7,31 @@ namespace DentusClinic.API.Repositories;
 
 public class EspecialidadeRepository : IEspecialidadeRepository
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _contexto;
 
-    public EspecialidadeRepository(AppDbContext context)
+    public EspecialidadeRepository(AppDbContext contexto)
     {
-        _context = context;
+        _contexto = contexto;
     }
 
     public async Task<IEnumerable<Especialidade>> ListarTodosAsync()
-        => await _context.Especialidades.ToListAsync();
+        => await _contexto.Especialidades.ToListAsync();
 
     public async Task<Especialidade?> BuscarPorIdAsync(int id)
-        => await _context.Especialidades.FindAsync(id);
+        => await _contexto.Especialidades.FindAsync(id);
 
     public async Task AdicionarAsync(Especialidade especialidade)
     {
-        _context.Especialidades.Add(especialidade);
-        await _context.SaveChangesAsync();
+        _contexto.Especialidades.Add(especialidade);
+        await _contexto.SaveChangesAsync();
     }
 
     public async Task AtualizarAsync(Especialidade especialidade)
-        => await _context.SaveChangesAsync();
+        => await _contexto.SaveChangesAsync();
 
     public async Task RemoverAsync(Especialidade especialidade)
     {
-        _context.Especialidades.Remove(especialidade);
-        await _context.SaveChangesAsync();
+        _contexto.Especialidades.Remove(especialidade);
+        await _contexto.SaveChangesAsync();
     }
 }

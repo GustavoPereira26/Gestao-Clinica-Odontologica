@@ -7,25 +7,25 @@ namespace DentusClinic.API.Repositories;
 
 public class ProntuarioRepository : IProntuarioRepository
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _contexto;
 
-    public ProntuarioRepository(AppDbContext context)
+    public ProntuarioRepository(AppDbContext contexto)
     {
-        _context = context;
+        _contexto = contexto;
     }
 
     public async Task<IEnumerable<Prontuario>> ListarTodosAsync()
-        => await _context.Prontuarios.Include(p => p.Paciente).ToListAsync();
+        => await _contexto.Prontuarios.Include(p => p.Paciente).ToListAsync();
 
     public async Task<Prontuario?> BuscarPorIdAsync(int id)
-        => await _context.Prontuarios.Include(p => p.Paciente).FirstOrDefaultAsync(p => p.Id == id);
+        => await _contexto.Prontuarios.Include(p => p.Paciente).FirstOrDefaultAsync(p => p.Id == id);
 
     public async Task<Prontuario?> BuscarPorPacienteAsync(int idPaciente)
-        => await _context.Prontuarios.Include(p => p.Paciente).FirstOrDefaultAsync(p => p.IdPaciente == idPaciente);
+        => await _contexto.Prontuarios.Include(p => p.Paciente).FirstOrDefaultAsync(p => p.IdPaciente == idPaciente);
 
     public async Task AdicionarAsync(Prontuario prontuario)
     {
-        _context.Prontuarios.Add(prontuario);
-        await _context.SaveChangesAsync();
+        _contexto.Prontuarios.Add(prontuario);
+        await _contexto.SaveChangesAsync();
     }
 }

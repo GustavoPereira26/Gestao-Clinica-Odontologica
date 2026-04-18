@@ -35,7 +35,7 @@ public class PacienteController : ControllerBase
         return Ok(ApiResponse<object>.Ok(paciente));
     }
 
-    [HttpPost]
+    [HttpPost("cadastrar")]
     public async Task<IActionResult> Cadastrar([FromBody] PacienteRequest request)
     {
         var paciente = await _pacienteService.CadastrarAsync(request);

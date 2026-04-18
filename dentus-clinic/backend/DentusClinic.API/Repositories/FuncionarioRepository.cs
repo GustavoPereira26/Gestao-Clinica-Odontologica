@@ -7,37 +7,37 @@ namespace DentusClinic.API.Repositories;
 
 public class FuncionarioRepository : IFuncionarioRepository
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _contexto;
 
-    public FuncionarioRepository(AppDbContext context)
+    public FuncionarioRepository(AppDbContext contexto)
     {
-        _context = context;
+        _contexto = contexto;
     }
 
     public async Task<IEnumerable<Funcionario>> ListarTodosAsync()
-        => await _context.Funcionarios.Include(f => f.Login).ToListAsync();
+        => await _contexto.Funcionarios.Include(f => f.Login).ToListAsync();
 
     public async Task<Funcionario?> BuscarPorIdAsync(int id)
-        => await _context.Funcionarios.Include(f => f.Login).FirstOrDefaultAsync(f => f.Id == id);
+        => await _contexto.Funcionarios.Include(f => f.Login).FirstOrDefaultAsync(f => f.Id == id);
 
-    public async Task<Funcionario?> BuscarPorLoginIdAsync(int loginId)
-        => await _context.Funcionarios.FirstOrDefaultAsync(f => f.IdAcesso == loginId);
+    public async Task<Funcionario?> BuscarPorLoginIdAsync(int idLogin)
+        => await _contexto.Funcionarios.FirstOrDefaultAsync(f => f.IdAcesso == idLogin);
 
-    public async Task<bool> ExisteCpfAsync(string cpf, int? excludeId = null)
-        => await _context.Funcionarios.AnyAsync(f => f.Cpf == cpf && (excludeId == null || f.Id != excludeId));
+    public async Task<bool> ExisteCpfAsync(string cpf, int? idExcluido = null)
+        => await _contexto.Funcionarios.AnyAsync(f => f.Cpf == cpf && (idExcluido == null || f.Id != idExcluido));
 
     public async Task AdicionarAsync(Funcionario funcionario)
     {
-        _context.Funcionarios.Add(funcionario);
-        await _context.SaveChangesAsync();
+        _contexto.Funcionarios.Add(funcionario);
+        await _contexto.SaveChangesAsync();
     }
 
     public async Task AtualizarAsync(Funcionario funcionario)
-        => await _context.SaveChangesAsync();
+        => await _contexto.SaveChangesAsync();
 
     public async Task RemoverAsync(Funcionario funcionario)
     {
-        _context.Funcionarios.Remove(funcionario);
-        await _context.SaveChangesAsync();
+        _contexto.Funcionarios.Remove(funcionario);
+        await _contexto.SaveChangesAsync();
     }
 }

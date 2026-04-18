@@ -7,31 +7,31 @@ namespace DentusClinic.API.Repositories;
 
 public class ServicoRepository : IServicoRepository
 {
-    private readonly AppDbContext _context;
+    private readonly AppDbContext _contexto;
 
-    public ServicoRepository(AppDbContext context)
+    public ServicoRepository(AppDbContext contexto)
     {
-        _context = context;
+        _contexto = contexto;
     }
 
     public async Task<IEnumerable<Servico>> ListarTodosAsync()
-        => await _context.Servicos.ToListAsync();
+        => await _contexto.Servicos.ToListAsync();
 
     public async Task<Servico?> BuscarPorIdAsync(int id)
-        => await _context.Servicos.FindAsync(id);
+        => await _contexto.Servicos.FindAsync(id);
 
     public async Task AdicionarAsync(Servico servico)
     {
-        _context.Servicos.Add(servico);
-        await _context.SaveChangesAsync();
+        _contexto.Servicos.Add(servico);
+        await _contexto.SaveChangesAsync();
     }
 
     public async Task AtualizarAsync(Servico servico)
-        => await _context.SaveChangesAsync();
+        => await _contexto.SaveChangesAsync();
 
     public async Task RemoverAsync(Servico servico)
     {
-        _context.Servicos.Remove(servico);
-        await _context.SaveChangesAsync();
+        _contexto.Servicos.Remove(servico);
+        await _contexto.SaveChangesAsync();
     }
 }

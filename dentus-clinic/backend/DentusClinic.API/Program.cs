@@ -1,11 +1,14 @@
 using System.Text;
+using DentusClinic.API.Attributes;
 using DentusClinic.API.Data;
 using DentusClinic.API.Middleware;
+using DentusClinic.API.Models;
 using DentusClinic.API.Repositories;
 using DentusClinic.API.Repositories.Interfaces;
 using DentusClinic.API.Services;
 using DentusClinic.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -81,7 +84,57 @@ builder.Services.AddCors(options =>
 });
 
 // Controllers com suporte a Views
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews()
+    .AddJsonOptions(opts =>
+    {
+        opts.JsonSerializerOptions.Converters.Add(new DateOnlyConverterLeniente());
+        opts.JsonSerializerOptions.Converters.Add(new TimeOnlyConverterLeniente());
+    });
+
+// Substitui o formato padrão de erros de validação pelo padrão da API
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = contextoAcao =>
+    {
+        var erros = contextoAcao.ModelState
+            .Where(x => x.Value?.Errors.Count > 0)
+            .SelectMany(x => x.Value!.Errors.Select(e => new { Campo = x.Key, e.ErrorMessage }))
+            .Select(x => SanitizarMensagemValidacao(x.Campo, x.ErrorMessage))
+            .Where(m => !string.IsNullOrWhiteSpace(m))
+            .Distinct()
+            .ToList();
+
+        return new BadRequestObjectResult(new { error = erros });
+    };
+
+static string SanitizarMensagemValidacao(string campo, string mensagem)
+{
+    var ehErroInterno = mensagem.Contains("JSON") ||
+                        mensagem.Contains("could not be converted") ||
+                        mensagem.Contains("Path:") ||
+                        mensagem.Contains("LineNumber") ||
+                        mensagem.Contains("System.") ||
+                        mensagem.Contains("The request");
+
+    if (!ehErroInterno) return mensagem;
+
+    var campoNormalizado = campo.Replace("$.", "").Replace("$", "").Trim();
+
+    return campoNormalizado switch
+    {
+        "DataNascimento"  => "Data de nascimento inválida.",
+        "DataConsulta"    => "Data da consulta inválida.",
+        "HoraConsulta"    => "Horário da consulta inválido.",
+        "DataAtendimento" => "Data do atendimento inválida.",
+        "Nome"            => "Nome inválido.",
+        "Cpf"             => "CPF inválido.",
+        "Email"           => "E-mail inválido.",
+        "Telefone"        => "Telefone inválido.",
+        "request" or ""   => string.Empty,
+        _                 => $"{campoNormalizado} inválido."
+    };
+}
+});
 
 // Swagger com suporte a Bearer Token
 builder.Services.AddEndpointsApiExplorer();

@@ -15,18 +15,18 @@ public class AuthService : IAuthService
     private readonly ILoginRepository _loginRepository;
     private readonly IFuncionarioRepository _funcionarioRepository;
     private readonly IDentistaRepository _dentistaRepository;
-    private readonly IConfiguration _config;
+    private readonly IConfiguration _configuracao;
 
     public AuthService(
         ILoginRepository loginRepository,
         IFuncionarioRepository funcionarioRepository,
         IDentistaRepository dentistaRepository,
-        IConfiguration config)
+        IConfiguration configuracao)
     {
         _loginRepository = loginRepository;
         _funcionarioRepository = funcionarioRepository;
         _dentistaRepository = dentistaRepository;
-        _config = config;
+        _configuracao = configuracao;
     }
 
     public async Task<LoginResponse?> LoginAsync(LoginRequest request)
@@ -42,13 +42,13 @@ public class AuthService : IAuthService
         if (login.TipoAcesso == TiposAcessoEnum.ADMINISTRADOR ||
             login.TipoAcesso == TiposAcessoEnum.RECEPCIONISTA)
         {
-            var func = await _funcionarioRepository.BuscarPorLoginIdAsync(login.Id);
-            if (func is not null) nome = func.Nome;
+            var funcionario = await _funcionarioRepository.BuscarPorLoginIdAsync(login.Id);
+            if (funcionario is not null) nome = funcionario.Nome;
         }
         else if (login.TipoAcesso == TiposAcessoEnum.DENTISTA)
         {
-            var dent = await _dentistaRepository.BuscarPorLoginIdAsync(login.Id);
-            if (dent is not null) nome = dent.Nome;
+            var dentista = await _dentistaRepository.BuscarPorLoginIdAsync(login.Id);
+            if (dentista is not null) nome = dentista.Nome;
         }
 
         var token = GerarToken(
@@ -67,13 +67,13 @@ public class AuthService : IAuthService
 
     private string GerarToken(int id, string nome, string tipoAcesso)
     {
-        var secretKey = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")!;
-        var issuer = _config["JwtSettings:Issuer"]!;
-        var audience = _config["JwtSettings:Audience"]!;
-        var expiracaoHoras = int.Parse(_config["JwtSettings:ExpiracaoHoras"]!);
+        var chaveSecreta = Environment.GetEnvironmentVariable("JWT_SECRET_KEY")!;
+        var emissor = _configuracao["JwtSettings:Issuer"]!;
+        var audiencia = _configuracao["JwtSettings:Audience"]!;
+        var expiracaoHoras = int.Parse(_configuracao["JwtSettings:ExpiracaoHoras"]!);
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(chaveSecreta));
+        var credenciais = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
         {
@@ -83,11 +83,11 @@ public class AuthService : IAuthService
         };
 
         var token = new JwtSecurityToken(
-            issuer: issuer,
-            audience: audience,
+            issuer: emissor,
+            audience: audiencia,
             claims: claims,
             expires: DateTime.UtcNow.AddHours(expiracaoHoras),
-            signingCredentials: creds
+            signingCredentials: credenciais
         );
 
         return new JwtSecurityTokenHandler().WriteToken(token);

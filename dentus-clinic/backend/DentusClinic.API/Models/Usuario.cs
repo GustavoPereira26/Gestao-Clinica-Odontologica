@@ -24,7 +24,6 @@ namespace DentusClinic.API.Models {
         [DataType(DataType.Date)]
         public DateOnly DataNascimento { get; set; }
 
-        public long LoginId { get; set; }
         public virtual Login Login { get; set; } = null!;
 
 

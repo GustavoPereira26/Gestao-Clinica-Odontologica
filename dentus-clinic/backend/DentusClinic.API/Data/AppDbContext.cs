@@ -78,7 +78,9 @@ public class AppDbContext : DbContext
             e.HasKey(x => x.Id);
             e.Property(x => x.Nome).IsRequired().HasMaxLength(150);
             e.Property(x => x.Cpf).IsRequired().HasMaxLength(14);
+            e.Property(x => x.Email).IsRequired().HasMaxLength(150);
             e.HasIndex(x => x.Cpf).IsUnique();
+            e.HasIndex(x => x.Email).IsUnique();
         });
 
         // Consulta

@@ -34,6 +34,9 @@ public class PacienteService : IPacienteService
         if (await _pacienteRepository.ExisteCpfAsync(request.Cpf))
             throw new InvalidOperationException("CPF já cadastrado no sistema.");
 
+        if (await _pacienteRepository.ExisteEmailAsync(request.Email))
+            throw new InvalidOperationException("E-mail já cadastrado no sistema.");
+
         var paciente = new Paciente
         {
             Nome = request.Nome,
@@ -64,6 +67,9 @@ public class PacienteService : IPacienteService
 
         if (await _pacienteRepository.ExisteCpfAsync(request.Cpf, id))
             throw new InvalidOperationException("CPF já cadastrado no sistema.");
+
+        if (await _pacienteRepository.ExisteEmailAsync(request.Email, id))
+            throw new InvalidOperationException("E-mail já cadastrado no sistema.");
 
         paciente.Nome = request.Nome;
         paciente.Cpf = request.Cpf;
