@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function initSidebar() {
     SidebarComponent.render('sidebarContainer', {
         perfil: 'recepcionista',
-        ativo:  'pacientes',  // ← só isso mudou em relação ao dashboard
+        ativo:  'consultas',  // ← só isso mudou em relação ao dashboard
         nome:   sessionStorage.getItem('nome')   || 'Ana Paula',
         cargo:  sessionStorage.getItem('perfil') || 'Secretaria'
     });
