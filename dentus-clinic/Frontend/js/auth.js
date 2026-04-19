@@ -1,13 +1,29 @@
 // js/auth.js
 
-// Salva dados da sessão após login
+// ── Salva dados da sessão após login ──
 function salvarSessao(data) {
-    localStorage.setItem('token',  data.token);
-    localStorage.setItem('perfil', data.perfil);
-    localStorage.setItem('nome',   data.nome);
+    sessionStorage.setItem('token',      data.token);
+    sessionStorage.setItem('perfil',     data.perfil);
+    sessionStorage.setItem('nome',       data.nome);
+    sessionStorage.setItem('expiracao',  data.expiracao);
 }
 
-// Redireciona conforme o perfil recebido da API
+// ── Recupera o token (usado pelo api.js) ──
+function getToken() {
+    return sessionStorage.getItem('token');
+}
+
+// ── Verifica se o token ainda é válido pela data ──
+function tokenValido() {
+    const token     = getToken();
+    const expiracao = sessionStorage.getItem('expiracao');
+
+    if (!token || !expiracao) return false;
+
+    return new Date(expiracao) > new Date();
+}
+
+// ── Redireciona conforme o perfil recebido da API ──
 function redirecionarPorPerfil(perfil) {
     const rotas = {
         'secretaria': './secretary/dashboard.html',
@@ -23,18 +39,20 @@ function redirecionarPorPerfil(perfil) {
     }
 }
 
-// Verifica se há sessão ativa (usado nas páginas internas)
+// ── Verifica autenticação (chamar no topo de toda página interna) ──
 function verificarAutenticacao() {
-    const token = localStorage.getItem('token');
-    if (!token) {
-        window.location.href = '../index.html'; // Volta para login
+    if (!tokenValido()) {
+        logout();
     }
 }
 
-// Logout
+// ── Logout ──
 function logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('perfil');
-    localStorage.removeItem('nome');
-    window.location.href = '../index.html';
+    sessionStorage.clear(); // limpa tudo de uma vez
+
+    const emSubpasta = window.location.pathname.includes('/secretary/') ||
+                       window.location.pathname.includes('/dentist/')   ||
+                       window.location.pathname.includes('/admin/');
+
+    window.location.href = emSubpasta ? '../index.html' : './index.html';
 }

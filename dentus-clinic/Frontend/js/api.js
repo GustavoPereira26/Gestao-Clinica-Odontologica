@@ -1,10 +1,12 @@
 // js/api.js
 
-const API_BASE = 'https://localhost:7000/api';
+const API_BASE = 'https://localhost:7000/api'; // ⚠️ ajuste a porta
 
-// Função base reutilizável para todas as requisições
+// ── Função base reutilizável ──
 async function request(endpoint, method = 'GET', body = null) {
-    const token = localStorage.getItem('token');
+
+    // 🔴 MUDANÇA: usa getToken() do auth.js em vez de localStorage direto
+    const token = getToken();
 
     const options = {
         method,
@@ -15,7 +17,19 @@ async function request(endpoint, method = 'GET', body = null) {
         ...(body && { body: JSON.stringify(body) })
     };
 
-    const response = await fetch(`${API_BASE}${endpoint}`, options);    // Renan tratar
+    const response = await fetch(`${API_BASE}${endpoint}`, options);
+
+    // 🔴 NOVO: token expirado — redireciona para login
+    if (response.status === 401) {
+        logout();
+        return;
+    }
+
+    // 🔴 NOVO: sem permissão para essa rota
+    if (response.status === 403) {
+        alert('Você não tem permissão para acessar este recurso.');
+        return;
+    }
 
     if (!response.ok) {
         const erro = await response.json();
@@ -35,8 +49,18 @@ async function apiGetConsultas() {
     return request('/consultas');
 }
 
+// 🔴 NOVA: consultas do dia (usada no dashboard da secretaria)
+async function apiGetConsultasDia() {
+    return request('/consultas/hoje');
+}
+
 async function apiAgendarConsulta(dados) {
     return request('/consultas', 'POST', dados);
+}
+
+// 🔴 NOVA: atualizar status de uma consulta (setas do dashboard)
+async function apiAtualizarStatusConsulta(id, status) {
+    return request(`/consultas/${id}/status`, 'PATCH', { status });
 }
 
 // ── Pacientes ──
