@@ -30,10 +30,6 @@ namespace DentusClinic.API.Migrations
                 oldType: "nvarchar(max)",
                 oldNullable: true);
 
-            migrationBuilder.DropIndex(
-                name: "IX_Pacientes_Email",
-                table: "Pacientes");
-
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
                 table: "Pacientes",
