@@ -1,10 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dentu's Clinic — Login</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="root.css">
+
 </head>
+
 <body>
 
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <!-- ═══ ESQUERDA — formulário ═══ -->
+        <div class="login-left">
+
+            <!-- Logo / boas-vindas -->
+            <div class="login-logo text-center">
+                <span class="tooth-icon"><i class="bi bi-tooth"></i></span>
+                <span class="welcome-sub">Bem-vindo ao</span>
+                <span class="brand-name">Dentu's Clinic</span>
+            </div>
+
+            <!-- Formulário -->
+            <form id="loginForm" class="login-form needs-validation" novalidate>
+
+                <!-- E-mail -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail</label>
+                    <div class="input-wrapper">
+                        <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                class="form-control"
+                                placeholder="usuario@dentusclinic.com"
+                                required
+                                autocomplete="email"
+                        />
+                        <i class="bi bi-envelope input-icon"></i>
+                    </div>
+                    <div class="invalid-feedback">Por favor, insira um e-mail válido.</div>
+                    <div class="valid-feedback">E-mail válido.</div>
+                </div>
+
+                <!-- Senha -->
+                <div class="mb-4">
+                    <label for="senha" class="form-label">Senha</label>
+                    <div class="input-wrapper">
+                        <input
+                                type="password"
+                                id="senha"
+                                name="senha"
+                                class="form-control"
+                                placeholder="••••••••"
+                                required
+                                minlength="6"
+                                autocomplete="current-password"
+                        />
+                        <i class="bi bi-eye-slash input-icon toggle-pw" id="togglePw" role="button" tabindex="0" aria-label="Mostrar/ocultar senha"></i>
+                    </div>
+                    <div class="invalid-feedback">A senha deve ter no mínimo 6 caracteres.</div>
+                    <div class="valid-feedback">Senha válida.</div>
+                </div>
+
+                <!-- Botão -->
+                <div class="d-flex justify-content-center">
+                    <button type="submit" class="btn-login" id="btnLogin">
+            <span id="btnLoginText">
+              <i class="bi bi-box-arrow-in-right me-1"></i> Entrar
+            </span>
+                        <span id="btnLoginSpinner" class="d-none">
+              <span class="spinner-border me-1" role="status" aria-hidden="true"></span>
+              Autenticando…
+            </span>
+                    </button>
+                </div>
+
+            </form>
+
+        </div><!-- /login-left -->
+
+        <!-- ═══ DIREITA — imagem ═══ -->
+        
+        <div class="login-right">
+            <!--
+              Para usar uma imagem real, substitua o bloco abaixo por:
+              <img src="~/images/login-banner.jpg" alt="Clínica Dentu's" />
+              (Em ASP.NET use Url.Content ou ~/caminho)
+            -->
+            <div class="img-placeholder">
+                <img src="img/logo1.png" alt="Dentu's Clinic"/>
+            </div>
+        </div><!-- /login-right -->
+
+    </div><!-- /login-card -->
+</div><!-- /login-wrapper -->
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/main.js"></script>
 </body>
 </html>

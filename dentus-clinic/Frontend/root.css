@@ -1,0 +1,14 @@
+:root {
+    --c1: #6e5430;
+    --c2: #8a783f;
+    --c3: #beb48b;
+    --c4: #e7e7db;
+    --c5: #f9f9f9;
+
+    --font-display: 'Merriweather', Georgia, serif;
+    --font-body:    'Inter', sans-serif;
+
+    --radius-card: 1rem;
+    --shadow-card: 0 8px 40px rgba(110,84,48,.15);
+    --transition:  180ms cubic-bezier(.16,1,.3,1);
+}
