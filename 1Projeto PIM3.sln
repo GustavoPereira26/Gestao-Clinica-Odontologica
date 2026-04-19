@@ -1,0 +1,32 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dentus-clinic", "dentus-clinic", "{9586C14D-FD9A-8DE5-DF19-FC7ECAED9B64}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{EA88171D-51B6-7980-0F86-BAC800349BA6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DentusClinic.API", "dentus-clinic\backend\DentusClinic.API\DentusClinic.API.csproj", "{855CCEE7-8B58-034D-6FE3-1FA13731CE38}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{855CCEE7-8B58-034D-6FE3-1FA13731CE38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{855CCEE7-8B58-034D-6FE3-1FA13731CE38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{855CCEE7-8B58-034D-6FE3-1FA13731CE38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{855CCEE7-8B58-034D-6FE3-1FA13731CE38}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EA88171D-51B6-7980-0F86-BAC800349BA6} = {9586C14D-FD9A-8DE5-DF19-FC7ECAED9B64}
+		{855CCEE7-8B58-034D-6FE3-1FA13731CE38} = {EA88171D-51B6-7980-0F86-BAC800349BA6}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {84A95975-3A95-46AD-BC82-779B0E331CAD}
+	EndGlobalSection
+EndGlobal
