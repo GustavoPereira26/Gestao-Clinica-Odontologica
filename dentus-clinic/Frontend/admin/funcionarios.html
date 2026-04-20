@@ -1,10 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Gerenciamento de funcionários da Dentus Clinic — visualize, adicione e gerencie sua equipe." />
+    <title>Funcionários — Dentus Clinic</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- CSS do projeto -->
+    <link rel="stylesheet" href="../root.css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/admin/funcionarios.css" />
 </head>
+
 <body>
 
+    <!-- ═══ LAYOUT ═══ -->
+    <div class="app-layout">
+
+        <!-- Botão Hamburger (mobile) -->
+        <button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <!-- Sidebar (renderizada via JS) -->
+        <div id="sidebarContainer"></div>
+
+        <!-- ═══ CONTEÚDO PRINCIPAL ═══ -->
+        <main class="app-content" id="mainContent">
+
+            <!-- Header da página -->
+            <header class="page-header" id="pageHeader">
+                <h1 class="page-title">Funcionários</h1>
+                <p class="page-subtitle">Gerencie a equipe da Dentus Clinic</p>
+            </header>
+
+            <!-- Barra de pesquisa e filtro -->
+            <div class="toolbar" id="toolbar">
+                <div class="search-box" id="searchBox">
+                    <i class="bi bi-search search-icon"></i>
+                    <input
+                        type="text"
+                        class="search-input"
+                        id="searchInput"
+                        placeholder="Buscar funcionário..."
+                        autocomplete="off"
+                    />
+                </div>
+                <div class="filter-group" id="filterGroup">
+                    <button class="filter-chip active" data-filter="todos" id="filterTodos">Todos</button>
+                    <button class="filter-chip" data-filter="secretaria" id="filterSecretaria">Secretária</button>
+                    <button class="filter-chip" data-filter="dentista" id="filterDentista">Dentista</button>
+                    <button class="filter-chip" data-filter="ti" id="filterTI">TI/ADM</button>
+                </div>
+            </div>
+
+            <!-- Grid de Funcionários -->
+            <section class="grid-funcionarios" id="gridFuncionarios">
+                <!-- Cards renderizados via JS -->
+            </section>
+
+            <!-- Botão Adicionar Funcionário (FAB) -->
+            <button class="btn-add-funcionario" id="btnAddFuncionario" title="Adicionar Funcionário">
+                <i class="bi bi-plus-lg"></i>
+                <span>Adicionar Funcionário</span>
+            </button>
+
+        </main>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Componentes -->
+    <script src="../components/sidebar.js"></script>
+    <!-- JS da página -->
+    <script src="../js/admin/funcionarios.js"></script>
 </body>
 </html>
