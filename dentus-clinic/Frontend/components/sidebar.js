@@ -51,7 +51,7 @@ const SidebarComponent = (() => {
 
         <!-- Logo -->
         <div class="sidebar-logo">
-          <i class="bi bi-tooth sidebar-tooth"></i>
+        <img src="../img/dental.svg" alt="Ícone de início" class="dente">
           <span class="sidebar-brand">Dentu's Clinic</span>
         </div>
         <hr class="sidebar-divider" />

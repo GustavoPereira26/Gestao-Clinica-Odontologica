@@ -1,4 +1,4 @@
-# Prompt da criação base da tela de login
+# Prompt da criação base da tela dashboard
 
 Essa tela de pagina inicial da recepcionista.  
 Use HTML, CSS, JavaScript e Bootstrap dentro do asp.net
