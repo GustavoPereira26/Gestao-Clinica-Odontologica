@@ -9,5 +9,5 @@ public interface IPacienteService
     Task<PacienteResponse?> BuscarPorIdAsync(int id);
     Task<PacienteResponse> CadastrarAsync(PacienteRequest request);
     Task<PacienteResponse?> EditarAsync(int id, PacienteRequest request);
-    Task<bool> RemoverAsync(int id);
+    Task<bool> InativarAsync(int id);
 }

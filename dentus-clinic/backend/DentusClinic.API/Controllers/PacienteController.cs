@@ -53,14 +53,14 @@ public class PacienteController : ControllerBase
         return Ok(ApiResponse<object>.Ok(paciente, "Paciente atualizado com sucesso."));
     }
 
-    [HttpDelete("{id}")]
+    [HttpPatch("{id}/inativar")]
     [Authorize(Roles = "ADMINISTRADOR")]
-    public async Task<IActionResult> Remover(int id)
+    public async Task<IActionResult> Inativar(int id)
     {
-        var removido = await _pacienteService.RemoverAsync(id);
-        if (!removido)
+        var inativado = await _pacienteService.InativarAsync(id);
+        if (!inativado)
             return NotFound(ApiResponse<object>.Erro("Paciente não encontrado."));
 
-        return Ok(ApiResponse<object>.Ok("Paciente removido com sucesso."));
+        return Ok(ApiResponse<object>.Ok("Paciente inativado com sucesso."));
     }
 }

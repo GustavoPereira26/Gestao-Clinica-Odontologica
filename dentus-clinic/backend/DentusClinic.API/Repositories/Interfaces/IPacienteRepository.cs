@@ -10,5 +10,5 @@ public interface IPacienteRepository
     Task<bool> ExisteEmailAsync(string email, int? idExcluido = null);
     Task AdicionarAsync(Paciente paciente);
     Task AtualizarAsync(Paciente paciente);
-    Task RemoverAsync(Paciente paciente);
+    Task InativarAsync(Paciente paciente);
 }

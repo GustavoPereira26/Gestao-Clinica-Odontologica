@@ -82,12 +82,12 @@ public class PacienteService : IPacienteService
         return MapearResponse(paciente);
     }
 
-    public async Task<bool> RemoverAsync(int id)
+    public async Task<bool> InativarAsync(int id)
     {
         var paciente = await _pacienteRepository.BuscarPorIdAsync(id);
         if (paciente is null) return false;
 
-        await _pacienteRepository.RemoverAsync(paciente);
+        await _pacienteRepository.InativarAsync(paciente);
         return true;
     }
 
@@ -99,6 +99,7 @@ public class PacienteService : IPacienteService
         Telefone = p.Telefone,
         Email = p.Email,
         DataNascimento = p.DataNascimento,
-        Endereco = p.Endereco
+        Endereco = p.Endereco,
+        Ativo = p.Ativo
     };
 }
