@@ -71,7 +71,7 @@ dentus-clinic/
 ## Fluxo Geral de Atendimento
 
 ```
-Paciente chega → Recepcionista registra chegada
+Paciente chega → SECRETARIA registra chegada
 → Dentista é notificado → Consulta realizada
 → Dentista registra atendimento + plano de tratamento
 → Prontuário atualizado → Retorno agendado (se necessário)

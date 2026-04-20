@@ -65,8 +65,8 @@ echo ""
 echo "--- /api/funcionarios ---"
 testar GET    "/api/funcionarios"
 testar GET    "/api/funcionarios/1"
-testar POST   "/api/funcionarios"   '{"nome":"Teste","cpf":"00011122233","dataNascimento":"1990-01-01","cargo":"RECEPCIONISTA","email":"x@x.com","senha":"Senha@123"}'
-testar PUT    "/api/funcionarios/1" '{"nome":"Teste","cpf":"00011122233","dataNascimento":"1990-01-01","cargo":"RECEPCIONISTA","email":"x@x.com","senha":"Senha@123"}'
+testar POST   "/api/funcionarios"   '{"nome":"Teste","cpf":"00011122233","dataNascimento":"1990-01-01","cargo":"SECRETARIA","email":"x@x.com","senha":"Senha@123"}'
+testar PUT    "/api/funcionarios/1" '{"nome":"Teste","cpf":"00011122233","dataNascimento":"1990-01-01","cargo":"SECRETARIA","email":"x@x.com","senha":"Senha@123"}'
 testar DELETE "/api/funcionarios/1"
 
 # ─── DENTISTAS ────────────────────────────────────────

@@ -67,7 +67,7 @@ RESP=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/funcionarios" \
     "cpf": "11122233344",
     "dataNascimento": "1990-06-15",
     "telefone": "11999990001",
-    "cargo": "RECEPCIONISTA",
+    "cargo": "SECRETARIA",
     "email": "carlos.teste@dentus.com",
     "senha": "Senha@123"
   }')
@@ -90,7 +90,7 @@ RESP=$(curl -s -w "\n%{http_code}" -X PUT "$BASE_URL/api/funcionarios/$FUNC_ID" 
     "cpf": "11122233344",
     "dataNascimento": "1990-06-15",
     "telefone": "11999990001",
-    "cargo": "RECEPCIONISTA",
+    "cargo": "SECRETARIA",
     "email": "carlos.teste@dentus.com",
     "senha": "Senha@123"
   }')

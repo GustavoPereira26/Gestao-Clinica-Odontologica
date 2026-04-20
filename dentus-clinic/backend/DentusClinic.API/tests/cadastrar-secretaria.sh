@@ -3,7 +3,7 @@
 BASE_URL="http://localhost:5081"
 
 echo "================================================="
-echo "  DentusClinic - Cadastrar Recepcionista"
+echo "  DentusClinic - Cadastrar SECRETARIA"
 echo "================================================="
 
 # LOGIN
@@ -28,7 +28,7 @@ if [ -z "$TOKEN" ]; then
 fi
 echo "Login realizado com sucesso! Token capturado."
 
-# CADASTRAR RECEPCIONISTA
+# CADASTRAR SECRETARIA
 echo ""
 echo "[2] POST /api/funcionarios"
 RESP=$(curl -s -w "\n%{http_code}" -X POST "$BASE_URL/api/funcionarios" \
@@ -54,7 +54,7 @@ echo "$BODY" | python -m json.tool 2>/dev/null || echo "$BODY"
 
 if [[ "$STATUS" -ge 200 && "$STATUS" -lt 300 ]]; then
   echo ""
-  echo ">> Recepcionista cadastrada com sucesso!"
+  echo ">> SECRETARIA cadastrada com sucesso!"
 else
   echo ""
   echo ">> FALHOU"
