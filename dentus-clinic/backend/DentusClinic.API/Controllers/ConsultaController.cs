@@ -19,6 +19,7 @@ public class ConsultaController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "DENTISTA, SECRETARIA")]
     public async Task<IActionResult> ListarTodos()
     {
         var consultas = await _consultaService.ListarTodosAsync();
@@ -26,6 +27,7 @@ public class ConsultaController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "DENTISTA, SECRETARIA")]
     public async Task<IActionResult> BuscarPorId(int id)
     {
         var consulta = await _consultaService.BuscarPorIdAsync(id);
@@ -35,7 +37,8 @@ public class ConsultaController : ControllerBase
         return Ok(ApiResponse<object>.Ok(consulta));
     }
 
-    [HttpPost]
+    [HttpPost("agendar")]
+    [Authorize(Roles = "SECRETARIA")]
     public async Task<IActionResult> Agendar([FromBody] ConsultaRequest request)
     {
         var consulta = await _consultaService.AgendarAsync(request);
@@ -44,7 +47,7 @@ public class ConsultaController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "ADM,Secretaria")]
+    [Authorize(Roles = "SECRETARIA")]
     public async Task<IActionResult> Editar(int id, [FromBody] ConsultaRequest request)
     {
         var consulta = await _consultaService.EditarAsync(id, request);
@@ -65,7 +68,7 @@ public class ConsultaController : ControllerBase
     }
 
     [HttpPut("{id}/cancelar")]
-    [Authorize(Roles = "ADM,Secretaria")]
+    [Authorize(Roles = "SECRETARIA")]
     public async Task<IActionResult> Cancelar(int id)
     {
         var sucesso = await _consultaService.CancelarAsync(id);
