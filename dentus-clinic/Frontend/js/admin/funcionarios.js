@@ -121,8 +121,17 @@ const FuncionariosPage = (() => {
   function visualizar(id) {
     const func = FUNCIONARIOS.find(f => f.id === id);
     if (func) {
-      console.log(`[Visualizar] Funcionário: ${func.nome} (${func.cargo})`);
-      alert(`👤 ${func.nome}\n💼 Cargo: ${func.cargo}\n\n(Funcionalidade em desenvolvimento)`);
+      // Toggle visibility
+      document.getElementById('listaFuncionarios').classList.add('d-none');
+      document.getElementById('visualizarFuncionario').classList.remove('d-none');
+      
+      // Update form values
+      document.getElementById('visCargo').value = func.cargo;
+      document.getElementById('visNome').value = func.nome;
+      
+      // Update headers
+      document.getElementById('pageTitle').textContent = `Visualizar: ${func.nome}`;
+      document.getElementById('pageSubtitle').textContent = func.cargo;
     }
   }
 
@@ -185,6 +194,18 @@ const FuncionariosPage = (() => {
     const btnAdd = document.getElementById('btnAddFuncionario');
     if (btnAdd) {
       btnAdd.addEventListener('click', adicionar);
+    }
+
+    // 7. Botão Voltar da visualização
+    const btnVoltarVis = document.getElementById('btnVoltarVisualizar');
+    if (btnVoltarVis) {
+      btnVoltarVis.addEventListener('click', () => {
+        document.getElementById('listaFuncionarios').classList.remove('d-none');
+        document.getElementById('visualizarFuncionario').classList.add('d-none');
+        
+        document.getElementById('pageTitle').textContent = 'Funcionários';
+        document.getElementById('pageSubtitle').textContent = 'Gerencie a equipe da Dentus Clinic';
+      });
     }
   }
 

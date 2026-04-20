@@ -40,11 +40,13 @@
 
             <!-- Header da página -->
             <header class="page-header" id="pageHeader">
-                <h1 class="page-title">Funcionários</h1>
-                <p class="page-subtitle">Gerencie a equipe da Dentus Clinic</p>
+                <h1 class="page-title" id="pageTitle">Funcionários</h1>
+                <p class="page-subtitle" id="pageSubtitle">Gerencie a equipe da Dentus Clinic</p>
             </header>
 
-            <!-- Barra de pesquisa e filtro -->
+            <!-- Lista de Funcionários -->
+            <div id="listaFuncionarios">
+                <!-- Barra de pesquisa e filtro -->
             <div class="toolbar" id="toolbar">
                 <div class="search-box" id="searchBox">
                     <i class="bi bi-search search-icon"></i>
@@ -74,6 +76,89 @@
                 <i class="bi bi-plus-lg"></i>
                 <span>Adicionar Funcionário</span>
             </button>
+            </div>
+
+            <!-- Visualizar Funcionário -->
+            <div id="visualizarFuncionario" class="d-none pb-5">
+                <div class="container-fluid px-0">
+                    <!-- Botão Voltar -->
+                    <div class="mb-4 mt-2">
+                        <button class="btn btn-outline-secondary d-inline-flex align-items-center gap-2" id="btnVoltarVisualizar">
+                            <i class="bi bi-arrow-left"></i> Voltar
+                        </button>
+                    </div>
+
+                    <!-- Card Central -->
+                    <div class="row justify-content-center">
+                        <div class="col-12 col-md-10 col-lg-8 col-xl-6">
+                            <div class="card shadow-sm p-4 border-0 rounded-3">
+                                
+                                <!-- Título -->
+                                <h4 class="fw-bold mb-4 text-center">Informações do Funcionário</h4>
+
+                                <!-- Foto do funcionário -->
+                                <div class="text-center mb-4">
+                                    <div class="d-inline-flex border rounded-3 justify-content-center align-items-center mb-3" style="width: 150px; height: 150px; background-color: #f8f9fa;">
+                                        <i class="bi bi-person text-secondary" style="font-size: 5rem;"></i>
+                                    </div>
+                                    <div>
+                                        <button class="btn btn-sm btn-primary">Subir Foto</button>
+                                    </div>
+                                </div>
+
+                                <!-- Formulário -->
+                                <form id="formVisualizar">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Cargo</label>
+                                        <input type="text" class="form-control" id="visCargo" value="Dentista" readonly />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Nome</label>
+                                        <input type="text" class="form-control" id="visNome" value="Ana Costa" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Telefone</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" value="(11) 98765-4321" />
+                                            <span class="input-group-text"><i class="bi bi-pencil"></i></span>
+                                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">CRO</label>
+                                        <input type="text" class="form-control" value="123456" />
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label fw-semibold">Especialidade</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" value="Aparelhos odontológicos" />
+                                            <span class="input-group-text"><i class="bi bi-pencil"></i></span>
+                                            <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Botões de Ação -->
+                                    <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4 pt-3 border-top">
+                                        <button type="button" class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2">
+                                            <i class="bi bi-arrow-clockwise"></i>
+                                            Restaurar Senha
+                                        </button>
+                                        <button type="button" class="btn btn-danger d-flex align-items-center justify-content-center gap-2">
+                                            <i class="bi bi-trash"></i>
+                                            Deletar Conta
+                                        </button>
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </main>
     </div>
