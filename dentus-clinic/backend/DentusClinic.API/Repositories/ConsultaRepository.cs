@@ -15,10 +15,10 @@ public class ConsultaRepository : IConsultaRepository
     }
 
     public async Task<IEnumerable<Consulta>> ListarTodosAsync()
-        => await _contexto.Consultas.Include(c => c.Dentista).Include(c => c.Paciente).ToListAsync();
+        => await _contexto.Consultas.Include(c => c.Dentista).Include(c => c.Paciente).Include(c => c.Servico).ToListAsync();
 
     public async Task<Consulta?> BuscarPorIdAsync(int id)
-        => await _contexto.Consultas.Include(c => c.Dentista).Include(c => c.Paciente).FirstOrDefaultAsync(c => c.Id == id);
+        => await _contexto.Consultas.Include(c => c.Dentista).Include(c => c.Paciente).Include(c => c.Servico).FirstOrDefaultAsync(c => c.Id == id);
 
     public async Task<bool> ExisteConflitoAsync(int idDentista, DateOnly data, TimeOnly hora, int? idExcluido = null)
         => await _contexto.Consultas.AnyAsync(c =>

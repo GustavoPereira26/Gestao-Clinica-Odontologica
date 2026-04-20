@@ -23,5 +23,8 @@ public class Consulta
     public int IdPaciente { get; set; }
     public Paciente Paciente { get; set; } = null!;
 
+    public int IdServico { get; set; }
+    public Servico Servico { get; set; } = null!;
+
     public Atendimento? Atendimento { get; set; }
 }

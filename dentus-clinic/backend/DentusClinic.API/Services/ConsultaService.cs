@@ -46,7 +46,8 @@ public class ConsultaService : IConsultaService
             Retorno = request.Retorno,
             Status = "Agendada",
             IdDentista = request.IdDentista,
-            IdPaciente = request.IdPaciente
+            IdPaciente = request.IdPaciente,
+            IdServico = request.IdServico
         };
 
         await _consultaRepository.AdicionarAsync(consulta);
@@ -68,6 +69,7 @@ public class ConsultaService : IConsultaService
         consulta.Retorno = request.Retorno;
         consulta.IdDentista = request.IdDentista;
         consulta.IdPaciente = request.IdPaciente;
+        consulta.IdServico = request.IdServico;
 
         await _consultaRepository.AtualizarAsync(consulta);
 
@@ -102,9 +104,8 @@ public class ConsultaService : IConsultaService
         HoraConsulta = c.HoraConsulta,
         Retorno = c.Retorno,
         Status = c.Status,
-        IdDentista = c.IdDentista,
         NomeDentista = c.Dentista?.Nome ?? string.Empty,
-        IdPaciente = c.IdPaciente,
-        NomePaciente = c.Paciente?.Nome ?? string.Empty
+        NomePaciente = c.Paciente?.Nome ?? string.Empty,
+        NomeServico = c.Servico?.Nome ?? string.Empty
     };
 }
