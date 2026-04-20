@@ -151,7 +151,7 @@ DELETE /api/pacientes/{id}     → Remove paciente (apenas ADM)
 | RN02   | Cada consulta tem apenas um dentista                                  | ConsultaService       |
 | RN03   | Dentista não pode ter duas consultas no mesmo horário                 | ConsultaService       |
 | RN04   | Apenas funcionários autenticados acessam o sistema                    | AuthService + JWT     |
-| RN05   | Recepcionista gerencia agendamentos e cadastros                       | Autorização por perfil|
+| RN05   | SECRETARIA gerencia agendamentos e cadastros                       | Autorização por perfil|
 | RN06   | Atendimento deve estar vinculado a uma consulta existente             | AtendimentoService    |
 | RN07   | Sistema mantém histórico de atendimentos por paciente                 | AtendimentoService    |
 | RN08   | Informações dos pacientes devem ser mantidas organizadas              | PacienteService       |

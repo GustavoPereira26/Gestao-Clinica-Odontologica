@@ -100,7 +100,7 @@ public class AuthServiceTests
             Id = 1,
             Email = "usuario@email.com",
             Senha = senhaHash,
-            TipoAcesso = TiposAcessoEnum.RECEPCIONISTA
+            TipoAcesso = TiposAcessoEnum.SECRETARIA
         };
 
         _loginRepositoryMock.Setup(r => r.BuscarPorEmailAsync("usuario@email.com")).ReturnsAsync(login);
@@ -115,7 +115,7 @@ public class AuthServiceTests
     }
 
     [Fact]
-    public async Task LoginAsync_DeveRetornarNomeFuncionario_QuandoTipoRecepcionista()
+    public async Task LoginAsync_DeveRetornarNomeFuncionario_QuandoTipoSECRETARIA()
     {
         // Arrange
         var senhaHash = BCrypt.Net.BCrypt.HashPassword("Senha@123");
@@ -124,7 +124,7 @@ public class AuthServiceTests
             Id = 2,
             Email = "secretaria@dentusclinic.com",
             Senha = senhaHash,
-            TipoAcesso = TiposAcessoEnum.RECEPCIONISTA
+            TipoAcesso = TiposAcessoEnum.SECRETARIA
         };
         var funcionario = new Funcionario { Id = 2, Nome = "Fernanda Lima", IdAcesso = 2 };
 
@@ -139,7 +139,7 @@ public class AuthServiceTests
         // Assert
         resultado.Should().NotBeNull();
         resultado!.Nome.Should().Be("Fernanda Lima");
-        resultado.TipoAcesso.Should().Be("RECEPCIONISTA");
+        resultado.TipoAcesso.Should().Be("SECRETARIA");
     }
 
     [Fact]
