@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dentu's Clinic — Página Inicial</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+
+  <!-- Tokens globais -->
+  <link rel="stylesheet" href="../root.css"/>
+  <!-- Base layout -->
+  <link rel="stylesheet" href="../css/base.css"/>
+  <!-- Sidebar -->
+  <link rel="stylesheet" href="../css/layout.css"/>
+  <!-- Estilos da página -->
+  <link rel="stylesheet" href="../css/recepcionista/dashboard.css"/>
+</head>
+<body>
+
+<!-- Botão hamburguer (mobile) -->
+<button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
+  <i class="bi bi-list"></i>
+</button>
+
+<!-- Layout principal -->
+<div class="app-layout">
+
+  <!-- ═══ SIDEBAR (renderizada pelo componente) ═══ -->
+  <div id="sidebarContainer"></div>
+
+  <!-- ═══ CONTEÚDO ═══ -->
+  <main class="app-content">
+
+    <!-- Botões de ação a esquerda-->
+    <div class="dashboard-actions">
+      <!-- Esquerda -->
+      <button class="btn-action" id="btnAgendar">
+        <i class="bi bi-calendar2-plus"></i>
+        Agendar Consulta
+      </button>
+
+      <!--Botões de ação a Direita -->
+      <div class="dashboard-actions-right">
+        <button class="btn-action" id="btnVisualizarPaciente">
+          <i class="bi bi-person-lines-fill"></i>
+          Visualizar Paciente
+        </button>
+        <button class="btn-action" id="btnCadastrarPaciente">
+          <i class="bi bi-person-plus"></i>
+          Cadastrar Paciente
+        </button>
+      </div>
+    </div>
+
+    <!-- Consultas do dia -->
+    <h2 class="section-title">Consultas do dia</h2>
+
+    <div class="table-wrapper">
+      <div class="table-scroll">
+        <table class="consultas-table" id="tabelaConsultas">
+          <thead>
+            <tr>
+              <th>Nome do paciente</th>
+              <th>Hora</th>
+              <th>Doutor responsável</th>
+              <th>Serviço Odontológico</th>
+              <th style="text-align:center;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <!-- Status: consulta-encerrada -->
+            <tr>
+              <td>Ricardo Henrique</td>
+              <td>08:00</td>
+              <td>Dra. Ana Costa</td>
+              <td>Limpeza</td>
+              <td>
+                <div class="status-cell">
+                  <button class="btn-status-arrow" data-dir="prev" title="Status anterior">
+                    <i class="bi bi-chevron-left"></i>
+                  </button>
+                  <span class="status-badge status-consulta-encerrada" data-status="consulta-encerrada">Consulta Encerrada</span>
+                  <button class="btn-status-arrow" data-dir="next" title="Próximo status">
+                    <i class="bi bi-chevron-right"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Status: em-consulta -->
+            <tr>
+              <td>Lilian Marques</td><td>08:20</td><td>Dr. Pedro Santos</td><td>Restauração</td>
+              <td><div class="status-cell">
+                  <button class="btn-status-arrow" data-dir="prev" title="Status anterior">
+                    <i class="bi bi-chevron-left"></i>
+                  </button>
+                  <span class="status-badge status-em-consulta" data-status="em-consulta">Em Consulta</span>
+                  <button class="btn-status-arrow" data-dir="next" title="Próximo status">
+                    <i class="bi bi-chevron-right"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Status: em-fila -->
+            <tr>
+              <td>Inês Ribeiro</td><td>09:00</td><td>Dra. Ana Costa</td><td>Extração</td>
+              <td><div class="status-cell">
+                  <button class="btn-status-arrow" data-dir="prev" title="Status anterior">
+                    <i class="bi bi-chevron-left"></i>
+                  </button>
+                  <span class="status-badge status-em-fila" data-status="em-fila">Em Fila</span>
+                  <button class="btn-status-arrow" data-dir="next" title="Próximo status">
+                    <i class="bi bi-chevron-right"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Os demais: agendada -->
+            <tr>
+              <td>Sofia Costa</td><td>09:30</td><td>Dr. Pedro Santos</td><td>Clareamento</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Catarina Lima</td><td>09:30</td><td>Dra. Ana Costa</td><td>Restauração</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>João Silva</td><td>10:00</td><td>Dr. Pedro Santos</td><td>Limpeza</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Tiago Carvalho</td><td>10:00</td><td>Dra. Ana Costa</td><td>Clareamento</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Ricardo Almeida</td><td>10:30</td><td>Dr. Pedro Santos</td><td>Extração</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Filipe Rocha</td><td>10:30</td><td>Dra. Ana Costa</td><td>Consulta</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Maria Souza</td><td>11:00</td><td>Dr. Pedro Santos</td><td>Limpeza</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Beatriz Mendes</td><td>11:00</td><td>Dra. Ana Costa</td><td>Restauração</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Mariana Fernandes</td><td>11:30</td><td>Dr. Pedro Santos</td><td>Consulta</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Vera Barros</td><td>11:30</td><td>Dra. Ana Costa</td><td>Consulta</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Pedro Santos</td><td>14:00</td><td>Dr. Pedro Santos</td><td>Canal</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>André Nunes</td><td>14:00</td><td>Dra. Ana Costa</td><td>Limpeza</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Luís Rodrigues</td><td>14:30</td><td>Dr. Pedro Santos</td><td>Canal</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Ana Oliveira</td><td>15:00</td><td>Dra. Ana Costa</td><td>Restauração</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Laura Pires</td><td>15:00</td><td>Dr. Pedro Santos</td><td>Extração</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Patrícia Gomes</td><td>15:30</td><td>Dra. Ana Costa</td><td>Limpeza</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+            <tr>
+              <td>Carlos Pereira</td><td>16:00</td><td>Dr. Pedro Santos</td><td>Canal</td>
+              <td><div class="status-cell">
+                <button class="btn-status-arrow" data-dir="prev"><i class="bi bi-chevron-left"></i></button>
+                <span class="status-badge status-agendada" data-status="agendada">Agendada</span>
+                <button class="btn-status-arrow" data-dir="next"><i class="bi bi-chevron-right"></i></button>
+              </div></td>
+            </tr>
+
+            <!-- Status: cancelada (sem setas) -->
+            <tr>
+              <td>Miguel Santos</td><td>16:00</td><td>Dra. Ana Costa</td><td>Restauração</td>
+              <td>
+                <div class="status-cell">
+                  <span class="status-badge status-cancelada" data-status="cancelada">Cancelada</span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>Daniel Martins</td><td>16:30</td><td>Dr. Pedro Santos</td><td>Clareamento</td>
+              <td>
+                <div class="status-cell">
+                  <span class="status-badge status-cancelada" data-status="cancelada">Cancelada</span>
+                </div>
+              </td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div><!-- /app-layout -->
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Componente Sidebar -->
+<script src="../components/sidebar.js"></script>
+<!-- API e Auth -->
+<script src="../js/api.js"></script>
+<script src="../js/auth.js"></script>
+<!-- Lógica da página -->
+<script src="../js/recepcionista/dashboard.js"></script>
+
+</body>
+</html>
