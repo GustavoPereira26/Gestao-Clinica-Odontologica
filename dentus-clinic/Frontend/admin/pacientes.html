@@ -144,19 +144,40 @@
         </main>
     </div>
 
-    <!-- ═══ MODAL DE CONFIRMAÇÃO (delete mock) ═══ -->
-    <div class="modal-overlay hidden" id="modalOverlay">
-        <div class="modal-box" id="modalBox">
-            <div class="modal-icon">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-            </div>
-            <h3 class="modal-title">Excluir paciente?</h3>
-            <p class="modal-text" id="modalText">Deseja realmente remover este paciente?</p>
-            <div class="modal-actions">
-                <button class="modal-btn modal-btn-cancel" id="modalBtnCancelar">Cancelar</button>
-                <button class="modal-btn modal-btn-confirm" id="modalBtnConfirmar">
-                    <i class="bi bi-trash3 me-1"></i> Excluir
-                </button>
+    <!-- ═══ MODAL DE CONFIRMAÇÃO (Bootstrap) ═══ -->
+    <div class="modal fade" id="modalDeletarPaciente" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <!-- Como no wireframe, o título ali em cima tá escrito "Restaurar Senha", vou colocar "Deletar Paciente" mas com o botão fechar -->
+                <div class="modal-header border-0 pb-0 pt-3 pe-3 justify-content-between align-items-center">
+                    <h5 class="modal-title fs-6 ms-2">Deletar Paciente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex flex-column align-items-center text-center mt-2 px-4 pb-4">
+                    <div class="d-flex align-items-center gap-3 w-100 mb-4 justify-content-center">
+                        <div class="p-3 border rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 50px; height: 50px;">
+                            <i class="bi bi-trash fs-3 text-dark"></i>
+                        </div>
+                        <div class="text-start">
+                            <h6 class="fw-semibold mb-1" style="font-size: 1rem;">Tem certeza que deseja deletar Paciente?</h6>
+                            <small class="text-muted" style="font-size: 0.85rem;">Essa ação não pode ser revertida</small>
+                        </div>
+                    </div>
+
+                    <div class="text-center" style="font-size: 0.9rem; line-height: 1.6;">
+                        <div>Nome: <span id="mdlNome"></span></div>
+                        <div>CPF: <span id="mdlCPF"></span></div>
+                        <div>Celular: <span id="mdlCelular"></span></div>
+                        <div>Data Cadastral: <span id="mdlData"></span></div>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-3 mt-4 w-100">
+                        <button type="button" class="btn btn-outline-secondary px-4 text-dark bg-white border-dark" data-bs-dismiss="modal" style="border-radius: 8px;">Cancelar</button>
+                        <button type="button" class="btn btn-danger px-4 d-flex align-items-center gap-2" id="modalBtnConfirmarExclusao" onclick="PacientesPage.efetivarExclusao()" style="border-radius: 8px; background-color: #d9534f; border-color: #d9534f;">
+                            <i class="bi bi-trash"></i> DELETAR
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
