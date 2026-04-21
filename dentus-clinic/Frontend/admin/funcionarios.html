@@ -98,11 +98,13 @@
 
                                 <!-- Foto do funcionário -->
                                 <div class="text-center mb-4">
-                                    <div class="d-inline-flex border rounded-3 justify-content-center align-items-center mb-3" style="width: 150px; height: 150px; background-color: #f8f9fa;">
-                                        <i class="bi bi-person text-secondary" style="font-size: 5rem;"></i>
+                                    <div class="d-inline-flex border rounded-3 justify-content-center align-items-center mb-3 position-relative overflow-hidden" style="width: 150px; height: 150px; background-color: #f8f9fa;">
+                                        <i class="bi bi-person text-secondary" style="font-size: 5rem;" id="iconeFotoPadrao"></i>
+                                        <img src="" alt="Foto do Funcionário" id="previewFoto" class="d-none" style="width: 100%; height: 100%; object-fit: cover;">
                                     </div>
                                     <div>
-                                        <button class="btn btn-sm btn-primary">Subir Foto</button>
+                                        <input type="file" id="inputSubirFoto" accept="image/*" class="d-none" onchange="FuncionariosPage.lidarUploadFoto(event)">
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="FuncionariosPage.acionarInputFoto()">Subir Foto</button>
                                     </div>
                                 </div>
 
