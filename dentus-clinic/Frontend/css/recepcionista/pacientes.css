@@ -235,18 +235,10 @@
 }
 
 /* Efeito zebra */
-.table-pacientes tbody tr:nth-child(even) {
-    background: #faf9f7;
-}
-
-.table-pacientes tbody tr:nth-child(odd) {
-    background: #fff;
-}
-
+.table-pacientes tbody tr:nth-child(even) { background: #faf9f7; }
+.table-pacientes tbody tr:nth-child(odd)  { background: #fff; }
 /* Hover */
-.table-pacientes tbody tr:hover {
-    background: #f0ede8;
-}
+.table-pacientes tbody tr:hover           { background: #f0ede8; }
 
 .table-pacientes td {
     padding: 0.7rem 1rem;
@@ -255,10 +247,7 @@
     vertical-align: middle;
 }
 
-.td-nome {
-    font-weight: 600;
-}
-
+.td-nome { font-weight: 600; }
 .td-cpf {
     font-family: 'Courier New', monospace;
     font-size: 0.8rem;
@@ -266,18 +255,14 @@
     letter-spacing: 0.02em;
 }
 
-.td-celular {
-    color: var(--c2);
-}
+.td-celular { color: var(--c2); }
 
 .td-data {
     color: var(--c2);
     font-size: 0.8rem;
 }
 
-.td-acoes {
-    text-align: center;
-}
+.td-acoes { text-align: center; }
 
 /* Botão de delete */
 .btn-delete {
@@ -302,9 +287,7 @@
     transform: scale(1.08);
 }
 
-.btn-delete:active {
-    transform: scale(0.95);
-}
+.btn-delete:active { transform: scale(0.95); }
 
 /* ── Estado vazio ── */
 .empty-state {
@@ -325,9 +308,7 @@
     margin: 0;
 }
 
-.hidden {
-    display: none !important;
-}
+.hidden { display: none !important; }
 
 /* ── Cards Mobile ── */
 .cards-mobile {
@@ -395,13 +376,8 @@
     gap: 0.2rem;
 }
 
-.card-mobile-detail i {
-    font-size: 0.68rem;
-}
-
-.card-mobile-actions {
-    flex-shrink: 0;
-}
+.card-mobile-detail i { font-size: 0.68rem; }
+.card-mobile-actions { flex-shrink: 0; }
 
 /* ── Modal de Confirmação ── */
 .modal-overlay {
@@ -427,9 +403,7 @@
     animation: modalIn 0.3s ease-out;
 }
 
-.modal-icon {
-    margin-bottom: var(--space-4);
-}
+.modal-icon { margin-bottom: var(--space-4); }
 
 .modal-icon i {
     font-size: 2.8rem;
@@ -525,17 +499,9 @@
         gap: var(--space-3);
     }
 
-    .filter-field {
-        min-width: 150px;
-    }
-
-    .page-title {
-        font-size: 1.4rem;
-    }
-
-    .table-scroll {
-        max-height: 450px;
-    }
+    .filter-field { min-width: 150px; }
+    .page-title { font-size: 1.4rem; }
+    .table-scroll { max-height: 450px; }
 }
 
 /* Mobile */
@@ -547,10 +513,8 @@
         align-items: center;
     }
 
-    .page-header-right {
-        align-self: center;
-    }
-
+    .page-header-right { align-self: center; }
+    
     .page-title {
         font-size: 1.25rem;
         justify-content: center;
@@ -577,9 +541,7 @@
     }
 
     /* Esconde tabela, mostra cards */
-    .table-container {
-        display: none !important;
-    }
+    .table-container { display: none !important; }
 
     .cards-mobile {
         display: flex !important;
