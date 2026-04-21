@@ -264,10 +264,10 @@ const PacientesPage = (() => {
   function init() {
     // 1. Sidebar
     SidebarComponent.render('sidebarContainer', {
-      perfil: 'recepcionista',
+      perfil: 'admin',
       ativo: 'pacientes',
-      nome: 'Ana Paula',
-      cargo: 'Recepcionista'
+      nome: 'Fernanda Lima',
+      cargo: 'TI'
     });
 
     // 2. Hamburger
