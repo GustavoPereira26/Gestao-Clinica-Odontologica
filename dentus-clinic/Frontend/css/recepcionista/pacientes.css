@@ -166,7 +166,7 @@
 
 .table-scroll {
     overflow-x: auto;
-    max-height: 520px;
+    max-height: 480px;
     overflow-y: auto;
 }
 
