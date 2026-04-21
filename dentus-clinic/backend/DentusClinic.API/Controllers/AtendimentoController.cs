@@ -8,7 +8,7 @@ namespace DentusClinic.API.Controllers;
 
 [ApiController]
 [Route("api/atendimentos")]
-[Authorize]
+[Authorize(Roles = "DENTISTA")]
 public class AtendimentoController : ControllerBase
 {
     private readonly IAtendimentoService _atendimentoService;
@@ -54,7 +54,6 @@ public class AtendimentoController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _atendimentoService.RemoverAsync(id);

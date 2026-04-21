@@ -11,6 +11,7 @@ public class PacienteRequest
 
     [Required(ErrorMessage = "CPF é obrigatório.")]
     [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF inválido. Informe exatamente 11 dígitos numéricos.")]
+    [CpfValido]
     public string Cpf { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "Telefone é obrigatório.")]
