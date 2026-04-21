@@ -315,6 +315,14 @@ const PacientesPage = (() => {
             });
         }
 
+        // 6.1 Botão cadastrar paciente
+        const btnCadastrar = document.getElementById('btnCadastrar');
+        if (btnCadastrar) {
+            btnCadastrar.addEventListener('click', () => {
+                alert('Abrir formulário de cadastro');
+            });
+        }
+
         // 7. Ordenação por coluna
         document.querySelectorAll('.th-sort').forEach(btn => {
             btn.addEventListener('click', () => {

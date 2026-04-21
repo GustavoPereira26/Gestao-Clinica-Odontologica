@@ -232,36 +232,6 @@
 .btn-excluir:hover    { border-color: #c0392b; background: #fdf0ee; color: #c0392b; }
 .btn-acao:active      { transform: scale(0.95); }
 
-/* ── Botão Agendar ── */
-.btn-agendar-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-top: var(--space-6);
-  animation: fadeInUp 0.45s ease-out 0.24s both;
-}
-
-.btn-agendar {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  padding: 0.65rem 2rem;
-  background: var(--c1);
-  color: #fff;
-  border: none;
-  border-radius: var(--radius-md);
-  font-size: 0.88rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all var(--transition);
-  box-shadow: var(--shadow-sm);
-}
-.btn-agendar:hover {
-  background: var(--c2);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
-.btn-agendar:active { transform: translateY(0); }
-.btn-agendar i { font-size: 1rem; }
 
 /* ── Estado vazio ── */
 .empty-state {
