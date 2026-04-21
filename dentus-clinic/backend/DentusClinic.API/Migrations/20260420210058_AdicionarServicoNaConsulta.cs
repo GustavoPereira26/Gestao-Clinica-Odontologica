@@ -14,8 +14,7 @@ namespace DentusClinic.API.Migrations
                 name: "IdServico",
                 table: "Consultas",
                 type: "int",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Consultas_IdServico",

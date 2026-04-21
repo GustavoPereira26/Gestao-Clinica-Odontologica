@@ -18,4 +18,6 @@ public class ConsultaUpdateRequest
 
     [Range(1, int.MaxValue, ErrorMessage = "Paciente inválido.")]
     public int? IdPaciente { get; set; }
+
+    public int? IdServico { get; set; }
 }

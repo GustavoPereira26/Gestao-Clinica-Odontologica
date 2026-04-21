@@ -43,8 +43,8 @@ public class FuncionarioController : ControllerBase
             ApiResponse<object>.Ok(funcionario, "Funcionário cadastrado com sucesso."));
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Editar(int id, [FromBody] FuncionarioRequest request)
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> Editar(int id, [FromBody] FuncionarioUpdateRequest request)
     {
         var funcionario = await _funcionarioService.EditarAsync(id, request);
         if (funcionario is null)

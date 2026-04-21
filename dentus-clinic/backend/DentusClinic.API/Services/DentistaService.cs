@@ -64,24 +64,15 @@ public class DentistaService : IDentistaService
         return MapearResponse(dentistaSalvo!);
     }
 
-    public async Task<DentistaResponse?> EditarAsync(int id, DentistaRequest request)
+    public async Task<DentistaResponse?> EditarAsync(int id, DentistaUpdateRequest request)
     {
         var dentista = await _dentistaRepository.BuscarPorIdAsync(id);
         if (dentista is null) return null;
 
-        if (await _dentistaRepository.ExisteCpfAsync(request.Cpf, id))
-            throw new InvalidOperationException("CPF já cadastrado no sistema.");
-
-        if (await _dentistaRepository.ExisteCroAsync(request.Cro, id))
-            throw new InvalidOperationException("CRO já cadastrado no sistema.");
-
-        dentista.Nome = request.Nome;
-        dentista.Cpf = request.Cpf;
-        dentista.Cro = request.Cro;
-        dentista.Telefone = request.Telefone ?? string.Empty;
-        dentista.IdEspecialidade = request.IdEspecialidade;
-        dentista.Login.Email = request.Email;
-
+        if (request.Nome is not null) dentista.Nome = request.Nome;
+        if (request.Telefone is not null) dentista.Telefone = request.Telefone;
+        if (request.IdEspecialidade is not null) dentista.IdEspecialidade = request.IdEspecialidade.Value;
+        if (request.Email is not null) dentista.Login.Email = request.Email;
         if (!string.IsNullOrWhiteSpace(request.Senha))
             dentista.Login.Senha = BCrypt.Net.BCrypt.HashPassword(request.Senha);
 

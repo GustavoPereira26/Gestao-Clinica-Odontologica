@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DentusClinic.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260420201114_AdicionarServicoNaConsulta")]
+    [Migration("20260420210058_AdicionarServicoNaConsulta")]
     partial class AdicionarServicoNaConsulta
     {
         /// <inheritdoc />
@@ -76,7 +76,7 @@ namespace DentusClinic.API.Migrations
                     b.Property<int>("IdPaciente")
                         .HasColumnType("int");
 
-                    b.Property<int>("IdServico")
+                    b.Property<int?>("IdServico")
                         .HasColumnType("int");
 
                     b.Property<bool>("Retorno")
@@ -395,8 +395,7 @@ namespace DentusClinic.API.Migrations
                     b.HasOne("DentusClinic.API.Models.Servico", "Servico")
                         .WithMany()
                         .HasForeignKey("IdServico")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Dentista");
 

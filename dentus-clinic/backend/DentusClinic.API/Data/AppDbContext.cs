@@ -99,6 +99,7 @@ public class AppDbContext : DbContext
             e.HasOne(x => x.Servico)
              .WithMany()
              .HasForeignKey(x => x.IdServico)
+             .IsRequired(false)
              .OnDelete(DeleteBehavior.Restrict);
         });
 

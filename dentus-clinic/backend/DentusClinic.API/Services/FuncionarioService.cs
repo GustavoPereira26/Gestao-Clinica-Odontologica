@@ -64,25 +64,23 @@ public class FuncionarioService : IFuncionarioService
         return MapearResponse(funcionario);
     }
 
-    public async Task<FuncionarioResponse?> EditarAsync(int id, FuncionarioRequest request)
+    public async Task<FuncionarioResponse?> EditarAsync(int id, FuncionarioUpdateRequest request)
     {
         var funcionario = await _funcionarioRepository.BuscarPorIdAsync(id);
         if (funcionario is null) return null;
 
-        if (await _funcionarioRepository.ExisteCpfAsync(request.Cpf, id))
-            throw new InvalidOperationException("CPF já cadastrado no sistema.");
+        if (request.Cargo is not null)
+        {
+            if (!Enum.TryParse<TiposAcessoEnum>(request.Cargo, ignoreCase: true, out var tipoAcesso))
+                throw new InvalidOperationException("Cargo inválido.");
+            funcionario.Cargo = request.Cargo;
+            funcionario.Login.TipoAcesso = tipoAcesso;
+        }
 
-        if (!Enum.TryParse<TiposAcessoEnum>(request.Cargo, ignoreCase: true, out var tipoAcesso))
-            throw new InvalidOperationException("Cargo inválido.");
-
-        funcionario.Nome = request.Nome;
-        funcionario.Cpf = request.Cpf;
-        funcionario.DataNascimento = request.DataNascimento;
-        funcionario.Telefone = request.Telefone ?? string.Empty;
-        funcionario.Cargo = request.Cargo;
-        funcionario.Login.Email = request.Email;
-        funcionario.Login.TipoAcesso = tipoAcesso;
-
+        if (request.Nome is not null) funcionario.Nome = request.Nome;
+        if (request.DataNascimento is not null) funcionario.DataNascimento = request.DataNascimento.Value;
+        if (request.Telefone is not null) funcionario.Telefone = request.Telefone;
+        if (request.Email is not null) funcionario.Login.Email = request.Email;
         if (!string.IsNullOrWhiteSpace(request.Senha))
             funcionario.Login.Senha = BCrypt.Net.BCrypt.HashPassword(request.Senha);
 

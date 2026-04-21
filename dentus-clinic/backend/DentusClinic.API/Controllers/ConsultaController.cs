@@ -46,9 +46,9 @@ public class ConsultaController : ControllerBase
             ApiResponse<object>.Ok(consulta, "Consulta agendada com sucesso."));
     }
 
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     [Authorize(Roles = "SECRETARIA")]
-    public async Task<IActionResult> Editar(int id, [FromBody] ConsultaRequest request)
+    public async Task<IActionResult> Editar(int id, [FromBody] ConsultaUpdateRequest request)
     {
         var consulta = await _consultaService.EditarAsync(id, request);
         if (consulta is null)
@@ -58,6 +58,7 @@ public class ConsultaController : ControllerBase
     }
 
     [HttpPut("{id}/chegada")]
+    [Authorize(Roles = "SECRETARIA")]
     public async Task<IActionResult> RegistrarChegada(int id)
     {
         var sucesso = await _consultaService.RegistrarChegadaAsync(id);

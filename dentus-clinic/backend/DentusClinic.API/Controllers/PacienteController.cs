@@ -19,6 +19,7 @@ public class PacienteController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "SECRETARIA")]
     public async Task<IActionResult> ListarTodos()
     {
         var pacientes = await _pacienteService.ListarTodosAsync();
@@ -26,6 +27,7 @@ public class PacienteController : ControllerBase
     }
 
     [HttpGet("{id}")]
+    [Authorize(Roles = "SECRETARIA")]
     public async Task<IActionResult> BuscarPorId(int id)
     {
         var paciente = await _pacienteService.BuscarPorIdAsync(id);
@@ -36,6 +38,7 @@ public class PacienteController : ControllerBase
     }
 
     [HttpPost("cadastrar")]
+    [Authorize(Roles = "SECRETARIA")]
     public async Task<IActionResult> Cadastrar([FromBody] PacienteRequest request)
     {
         var paciente = await _pacienteService.CadastrarAsync(request);
@@ -43,8 +46,9 @@ public class PacienteController : ControllerBase
             ApiResponse<object>.Ok(paciente, "Paciente cadastrado com sucesso."));
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Editar(int id, [FromBody] PacienteRequest request)
+    [HttpPatch("{id}")]
+    [Authorize(Roles = "SECRETARIA")]
+    public async Task<IActionResult> Editar(int id, [FromBody] PacienteUpdateRequest request)
     {
         var paciente = await _pacienteService.EditarAsync(id, request);
         if (paciente is null)
