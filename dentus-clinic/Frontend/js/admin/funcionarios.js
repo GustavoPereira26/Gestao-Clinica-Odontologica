@@ -37,7 +37,7 @@ const CardFuncionario = {
         
         <!-- Avatar / Placeholder -->
         <div class="card-avatar" id="avatar-${func.id}">
-          <i class="bi bi-person card-avatar-icon"></i>
+          ${func.foto ? `<img src="${func.foto}" alt="${func.nome}" style="width: 100%; height: 100%; object-fit: cover;">` : '<i class="bi bi-person card-avatar-icon"></i>'}
         </div>
 
         <!-- Informações -->
@@ -127,6 +127,16 @@ const FuncionariosPage = (() => {
       document.getElementById('listaFuncionarios').classList.add('d-none');
       document.getElementById('visualizarFuncionario').classList.remove('d-none');
       
+      resetarFotoVisualizar();
+      
+      if (func.foto) {
+          const preview = document.getElementById('previewFoto');
+          const icone = document.getElementById('iconeFotoPadrao');
+          preview.src = func.foto;
+          preview.classList.remove('d-none');
+          icone.classList.add('d-none');
+      }
+      
       // Update form values
       document.getElementById('visCargo').value = func.cargo;
       document.getElementById('visNome').value = func.nome;
@@ -214,6 +224,54 @@ const FuncionariosPage = (() => {
          icon.classList.replace('bi-check2', 'bi-copy');
        }, 2000);
     });
+  }
+
+  /**
+   * Aciona o input de upload de foto escondido
+   */
+  function acionarInputFoto() {
+    document.getElementById('inputSubirFoto').click();
+  }
+
+  /**
+   * Lida com a mudança de arquivo no input de foto e cria o preview
+   */
+  function lidarUploadFoto(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('previewFoto');
+        const icone = document.getElementById('iconeFotoPadrao');
+        if (preview && icone) {
+            preview.src = e.target.result;
+            preview.classList.remove('d-none');
+            icone.classList.add('d-none');
+            
+            if (funcionarioAtualId !== null) {
+                const func = FUNCIONARIOS.find(f => f.id === funcionarioAtualId);
+                if (func) func.foto = e.target.result;
+            }
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  /**
+   * Reseta a foto (chamado ao visualizar outro)
+   */
+  function resetarFotoVisualizar() {
+      const preview = document.getElementById('previewFoto');
+      const icone = document.getElementById('iconeFotoPadrao');
+      const input = document.getElementById('inputSubirFoto');
+
+      if (preview && icone && input) {
+          preview.src = '';
+          preview.classList.add('d-none');
+          icone.classList.remove('d-none');
+          input.value = '';
+      }
   }
 
   /**
@@ -326,6 +384,7 @@ const FuncionariosPage = (() => {
     const btnVoltarVis = document.getElementById('btnVoltarVisualizar');
     if (btnVoltarVis) {
       btnVoltarVis.addEventListener('click', () => {
+        atualizar();
         document.getElementById('listaFuncionarios').classList.remove('d-none');
         document.getElementById('visualizarFuncionario').classList.add('d-none');
         
@@ -335,7 +394,7 @@ const FuncionariosPage = (() => {
     }
   }
 
-  return { init, visualizar, adicionar, confirmarDeletar, confirmarRestaurarSenha, resetarModalRestaurar, copiarNovaSenha, cancelarCadastro, confirmarCadastro };
+  return { init, visualizar, adicionar, confirmarDeletar, confirmarRestaurarSenha, resetarModalRestaurar, copiarNovaSenha, cancelarCadastro, confirmarCadastro, acionarInputFoto, lidarUploadFoto };
 })();
 
 
