@@ -20,8 +20,7 @@ const SidebarComponent = (() => {
     ],
     admin: [
       { id: 'funcionarios', icon: 'bi-person-badge', label: 'Funcionários',  href: '../admin/funcionarios.html' },
-      { id: 'pacientes',    icon: 'bi-people',       label: 'Pacientes',     href: '../admin/pacientes.html' },
-      { id: 'configuracoes',icon: 'bi-gear',         label: 'Configurações', href: '../admin/configuracoes.html' },
+      { id: 'pacientes',    icon: 'bi-people',       label: 'Pacientes',     href: '../admin/pacientes.html' }
     ]
   };
 
@@ -51,7 +50,7 @@ const SidebarComponent = (() => {
 
         <!-- Logo -->
         <div class="sidebar-logo">
-          <i class="bi bi-tooth sidebar-tooth"></i>
+        <img src="../img/dental.svg" alt="Ícone de início" class="dente">
           <span class="sidebar-brand">Dentu's Clinic</span>
         </div>
         <hr class="sidebar-divider" />
