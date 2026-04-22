@@ -3,7 +3,7 @@
 // ── Salva dados da sessão após login ──
 function salvarSessao(data) {
     sessionStorage.setItem('token',      data.token);
-    sessionStorage.setItem('perfil',     data.perfil);
+    sessionStorage.setItem('perfil',     data.tipoAcesso.toLowerCase());
     sessionStorage.setItem('nome',       data.nome);
     sessionStorage.setItem('expiracao',  data.expiracao);
 }
@@ -26,9 +26,9 @@ function tokenValido() {
 // ── Redireciona conforme o perfil recebido da API ──
 function redirecionarPorPerfil(perfil) {
     const rotas = {
-        'secretaria': './secretary/dashboard.html',
-        'dentista':   './dentist/dashboard.html',
-        'admin':      './admin/dashboard.html'
+        'secretaria':    './recepcionista/dashboard.html',
+        'dentista':      './dentista/dashboard.html',
+        'administrador': './admin/funcionarios.html'
     };
 
     const destino = rotas[perfil];
@@ -50,8 +50,8 @@ function verificarAutenticacao() {
 function logout() {
     sessionStorage.clear(); // limpa tudo de uma vez
 
-    const emSubpasta = window.location.pathname.includes('/secretary/') ||
-                       window.location.pathname.includes('/dentist/')   ||
+    const emSubpasta = window.location.pathname.includes('/recepcionista/') ||
+                       window.location.pathname.includes('/dentista/')      ||
                        window.location.pathname.includes('/admin/');
 
     window.location.href = emSubpasta ? '../index.html' : './index.html';

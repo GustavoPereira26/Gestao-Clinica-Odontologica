@@ -1,11 +1,6 @@
-// js/api.js
+const API_BASE = '/api';
 
-const API_BASE = 'https://localhost:7000/api'; // ⚠️ ajuste a porta
-
-// ── Função base reutilizável ──
 async function request(endpoint, method = 'GET', body = null) {
-
-    // 🔴 MUDANÇA: usa getToken() do auth.js em vez de localStorage direto
     const token = getToken();
 
     const options = {
@@ -17,26 +12,36 @@ async function request(endpoint, method = 'GET', body = null) {
         ...(body && { body: JSON.stringify(body) })
     };
 
-    const response = await fetch(`${API_BASE}${endpoint}`, options);
+    let response;
+    try {
+        response = await fetch(`${API_BASE}${endpoint}`, options);
+    } catch {
+        throw new Error('Não foi possível conectar ao servidor. Tente novamente.');
+    }
 
-    // 🔴 NOVO: token expirado — redireciona para login
     if (response.status === 401) {
+        if (endpoint === '/auth/login') {
+            throw new Error('E-mail ou senha inválidos.');
+        }
         logout();
         return;
     }
 
-    // 🔴 NOVO: sem permissão para essa rota
     if (response.status === 403) {
-        alert('Você não tem permissão para acessar este recurso.');
-        return;
+        throw new Error('Você não tem permissão para realizar esta ação.');
     }
+
+    const text = await response.text();
+    const data = text ? JSON.parse(text) : null;
 
     if (!response.ok) {
-        const erro = await response.json();
-        throw new Error(erro.message || 'Erro na requisição');
+        if (Array.isArray(data?.error)) {
+            throw new Error(data.error.join('\n'));
+        }
+        throw new Error(data?.mensagem || data?.message || 'Ocorreu um erro. Tente novamente.');
     }
 
-    return response.json();
+    return data;
 }
 
 // ── Autenticação ──
@@ -70,4 +75,27 @@ async function apiGetPacientes() {
 
 async function apiCadastrarPaciente(dados) {
     return request('/pacientes', 'POST', dados);
+}
+
+// ── Funcionários ──
+async function apiGetFuncionarios() {
+    return request('/funcionarios');
+}
+
+async function apiCadastrarFuncionario(dados) {
+    return request('/funcionarios', 'POST', dados);
+}
+
+// ── Dentistas ──
+async function apiGetDentistas() {
+    return request('/dentistas');
+}
+
+async function apiCadastrarDentista(dados) {
+    return request('/dentistas', 'POST', dados);
+}
+
+// ── Especialidades ──
+async function apiGetEspecialidades() {
+    return request('/especialidades');
 }

@@ -52,13 +52,13 @@ function initFormSubmit() {
             const senha = document.getElementById('senha').value;
 
             // Chama api.js
-            const data = await apiLogin(email, senha);
+            const resposta = await apiLogin(email, senha);
 
             // Salva sessão via auth.js
-            salvarSessao(data);
+            salvarSessao(resposta.dados);
 
             // Redireciona via auth.js
-            redirecionarPorPerfil(data.perfil);
+            redirecionarPorPerfil(resposta.dados.tipoAcesso.toLowerCase());
 
         } catch (erro) {
             mostrarErro(erro.message);

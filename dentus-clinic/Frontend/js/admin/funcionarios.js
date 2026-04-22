@@ -3,16 +3,7 @@
  * Componentes: CardFuncionario, GridFuncionarios, Header, Toolbar
  */
 
-/* ══════════════════════════════════════
-   DADOS MOCK
-══════════════════════════════════════ */
-const FUNCIONARIOS = [
-  { id: 1, nome: 'Ana Paula',        cargo: 'Secretária', tipo: 'secretaria' },
-  { id: 2, nome: 'Ana Costa',         cargo: 'Dentista',   tipo: 'dentista'   },
-  { id: 3, nome: 'Pedro Santos',      cargo: 'Dentista',   tipo: 'dentista'   },
-  { id: 4, nome: 'Yuri Fernandes',    cargo: 'TI/ADM',     tipo: 'ti'         },
-  { id: 5, nome: 'Miranda Cristina',  cargo: 'Secretária', tipo: 'secretaria' },
-];
+let FUNCIONARIOS = [];
 
 
 /* ══════════════════════════════════════
@@ -27,25 +18,23 @@ const CardFuncionario = {
    */
   render(func, index = 0) {
     const delay = index * 0.08;
+    const tipo  = (func.tipo || func.cargo || '').toLowerCase();
 
     return `
-      <article class="card-funcionario" 
-               data-tipo="${func.tipo}" 
+      <article class="card-funcionario"
+               data-tipo="${tipo}"
                data-nome="${func.nome.toLowerCase()}"
                style="animation: cardAppear 0.4s ease-out ${delay}s both;"
                id="card-${func.id}">
-        
-        <!-- Avatar / Placeholder -->
+
         <div class="card-avatar" id="avatar-${func.id}">
           ${func.foto ? `<img src="${func.foto}" alt="${func.nome}" style="width: 100%; height: 100%; object-fit: cover;">` : '<i class="bi bi-person card-avatar-icon"></i>'}
         </div>
 
-        <!-- Informações -->
         <h3 class="card-nome">${func.nome}</h3>
-        <span class="cargo-badge ${func.tipo}">${func.cargo}</span>
+        <span class="cargo-badge ${tipo}">${func.cargo}</span>
 
-        <!-- Ação -->
-        <button class="btn-visualizar" 
+        <button class="btn-visualizar"
                 onclick="FuncionariosPage.visualizar(${func.id})"
                 id="btnVisualizar-${func.id}"
                 title="Visualizar ${func.nome}">
@@ -95,6 +84,59 @@ const FuncionariosPage = (() => {
   let filtroAtivo = 'todos';
   let termoBusca  = '';
   let funcionarioAtualId = null;
+
+  async function carregarFuncionarios() {
+    try {
+      const [resFuncionarios, resDentistas] = await Promise.all([
+        apiGetFuncionarios(),
+        apiGetDentistas()
+      ]);
+
+      const funcionarios = (resFuncionarios.dados || []).map(f => ({
+        id:    f.id,
+        nome:  f.nome,
+        cargo: f.cargo,
+        tipo:  f.cargo.toLowerCase(),
+        email: f.email
+      }));
+
+      const dentistas = (resDentistas.dados || []).map(d => ({
+        id:    d.id,
+        nome:  d.nome,
+        cargo: 'Dentista',
+        tipo:  'dentista',
+        email: d.email,
+        cro:   d.cro,
+        especialidade: d.nomeEspecialidade
+      }));
+
+      FUNCIONARIOS = [...funcionarios, ...dentistas];
+      atualizar();
+    } catch (erro) {
+      console.error('Erro ao carregar funcionários:', erro.message);
+    }
+  }
+
+  async function carregarEspecialidades() {
+    try {
+      const res = await apiGetEspecialidades();
+      const select = document.getElementById('cadEspecialidade');
+      select.innerHTML = (res.dados || [])
+        .map(e => `<option value="${e.id}">${e.nome}</option>`)
+        .join('');
+    } catch {
+      document.getElementById('cadEspecialidade').innerHTML = '<option value="">Erro ao carregar</option>';
+    }
+  }
+
+  function atualizarCamposPorCargo() {
+    const cargo = document.getElementById('cadCargo').value;
+    const isDentista = cargo === 'DENTISTA';
+
+    document.getElementById('campoCRO').classList.toggle('d-none', !isDentista);
+    document.getElementById('campoEspecialidade').classList.toggle('d-none', !isDentista);
+    document.getElementById('campoDtNascimento').classList.toggle('d-none', isDentista);
+  }
 
   /**
    * Retorna a lista filtrada
@@ -299,44 +341,51 @@ const FuncionariosPage = (() => {
     if (form) form.reset();
   }
 
-  /**
-   * Confirma o cadastro do funcionário e atualiza o grid
-   */
-  function confirmarCadastro() {
-    const nome = document.getElementById('cadNome').value.trim();
-    const select = document.getElementById('cadCargo');
-    const cargoLabel = select.options[select.selectedIndex].text;
-    const cargoValor = select.value;
+  async function confirmarCadastro() {
+    const cargo    = document.getElementById('cadCargo').value;
+    const nome     = document.getElementById('cadNome').value.trim();
+    const cpf      = document.getElementById('cadCpf').value.replace(/\D/g, '');
+    const telefone = document.getElementById('cadTelefone').value.trim();
+    const email    = document.getElementById('cadEmail').value.trim();
+    const senha    = document.getElementById('cadSenha').value;
 
-    if (!nome) {
-      alert('Por favor, informe o nome do funcionário.');
-      return;
+    const alerta = document.getElementById('alertaCadastro');
+    const mostrarErro = (msg) => {
+      alerta.innerHTML = msg.split('\n').map(m => `<div>${m}</div>`).join('');
+      alerta.classList.remove('d-none');
+    };
+    alerta.classList.add('d-none');
+
+    try {
+      if (cargo === 'DENTISTA') {
+        const cro            = document.getElementById('cadCRO').value.trim();
+        const idEspecialidade = parseInt(document.getElementById('cadEspecialidade').value);
+
+        await apiCadastrarDentista({ nome, cpf, cro, telefone, idEspecialidade, email, senha });
+      } else {
+        const dataNascimento = document.getElementById('cadDataNascimento').value;
+        await apiCadastrarFuncionario({ nome, cpf, dataNascimento, telefone, cargo, email, senha });
+      }
+
+      await carregarFuncionarios();
+      cancelarCadastro();
+    } catch (erro) {
+      mostrarErro(erro.message);
     }
-
-    // Calcula novo ID baseado nos existentes
-    const novoId = FUNCIONARIOS.length > 0 ? Math.max(...FUNCIONARIOS.map(f => f.id)) + 1 : 1;
-
-    FUNCIONARIOS.push({
-      id: novoId,
-      nome: nome,
-      cargo: cargoLabel,
-      tipo: cargoValor
-    });
-
-    atualizar();
-    cancelarCadastro();
   }
 
   /**
    * Inicializa a página
    */
   function init() {
+    verificarAutenticacao();
+
     // 1. Renderiza a sidebar
     SidebarComponent.render('sidebarContainer', {
       perfil: 'admin',
       ativo: 'funcionarios',
-      nome: 'Fernanda Lima',
-      cargo: 'TI'
+      nome: sessionStorage.getItem('nome') || 'Admin',
+      cargo: 'Administrador'
     });
 
     // 2. Botão hamburger (mobile)
@@ -347,8 +396,28 @@ const FuncionariosPage = (() => {
       });
     }
 
-    // 3. Renderiza o grid
-    atualizar();
+    // 3. Carrega da API
+    carregarFuncionarios();
+    carregarEspecialidades();
+
+    // 4. Atualiza campos ao mudar cargo
+    const cadCargo = document.getElementById('cadCargo');
+    if (cadCargo) {
+      cadCargo.addEventListener('change', atualizarCamposPorCargo);
+      atualizarCamposPorCargo();
+    }
+
+    // 5. Máscara CPF
+    const cadCpf = document.getElementById('cadCpf');
+    if (cadCpf) {
+      cadCpf.addEventListener('input', () => {
+        let v = cadCpf.value.replace(/\D/g, '').slice(0, 11);
+        v = v.replace(/(\d{3})(\d)/, '$1.$2');
+        v = v.replace(/(\d{3})(\d)/, '$1.$2');
+        v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        cadCpf.value = v;
+      });
+    }
 
     // 4. Filtros por cargo
     const filterChips = document.querySelectorAll('.filter-chip');
