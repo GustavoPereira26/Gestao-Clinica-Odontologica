@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Gerenciamento de funcionários da Dentus Clinic — visualize, adicione e gerencie sua equipe." />
-    <title>Funcionários — Dentus Clinic</title>
+    <title>Dentus Clinic  — Funcionários</title>
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
@@ -98,11 +98,13 @@
 
                                 <!-- Foto do funcionário -->
                                 <div class="text-center mb-4">
-                                    <div class="d-inline-flex border rounded-3 justify-content-center align-items-center mb-3" style="width: 150px; height: 150px; background-color: #f8f9fa;">
-                                        <i class="bi bi-person text-secondary" style="font-size: 5rem;"></i>
+                                    <div class="d-inline-flex border rounded-3 justify-content-center align-items-center mb-3 position-relative overflow-hidden" style="width: 150px; height: 150px; background-color: #f8f9fa;">
+                                        <i class="bi bi-person text-secondary" style="font-size: 5rem;" id="iconeFotoPadrao"></i>
+                                        <img src="" alt="Foto do Funcionário" id="previewFoto" class="d-none" style="width: 100%; height: 100%; object-fit: cover;">
                                     </div>
                                     <div>
-                                        <button class="btn btn-sm btn-primary">Subir Foto</button>
+                                        <input type="file" id="inputSubirFoto" accept="image/*" class="d-none" onchange="FuncionariosPage.lidarUploadFoto(event)">
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="FuncionariosPage.acionarInputFoto()">Subir Foto</button>
                                     </div>
                                 </div>
 
@@ -143,11 +145,11 @@
 
                                     <!-- Botões de Ação -->
                                     <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4 pt-3 border-top">
-                                        <button type="button" class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2">
+                                        <button type="button" class="btn btn-outline-secondary d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#modalRestaurarSenha">
                                             <i class="bi bi-arrow-clockwise"></i>
                                             Restaurar Senha
                                         </button>
-                                        <button type="button" class="btn btn-danger d-flex align-items-center justify-content-center gap-2">
+                                        <button type="button" class="btn btn-danger d-flex align-items-center justify-content-center gap-2" data-bs-toggle="modal" data-bs-target="#modalDeletarFuncionario">
                                             <i class="bi bi-trash"></i>
                                             Deletar Conta
                                         </button>
@@ -156,6 +158,146 @@
 
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cadastro de Funcionário -->
+            <div id="cadastrarFuncionario" class="d-none pb-5">
+                <div class="container-fluid px-0">
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                            <div class="card shadow-sm p-4 border-0 rounded-3 text-center" style="background-color: #f8f9fa;">
+                                <h4 class="fw-bold mb-4">Cadastro de Funcionario</h4>
+
+                                <form id="formCadastrar" class="text-start">
+                                    <div class="mb-3">
+                                        <label class="form-label mb-1" style="font-size: 0.9rem;">Cargo</label>
+                                        <select class="form-select" id="cadCargo">
+                                            <option value="dentista">Dentista</option>
+                                            <option value="secretaria">Secretária</option>
+                                            <option value="ti">TI/ADM</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label mb-1" style="font-size: 0.9rem;">Nome</label>
+                                        <input type="text" class="form-control" id="cadNome" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label mb-1" style="font-size: 0.9rem;">Telefone</label>
+                                        <input type="text" class="form-control" id="cadTelefone" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label mb-1" style="font-size: 0.9rem;">CRO</label>
+                                        <input type="text" class="form-control" id="cadCRO" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label mb-1" style="font-size: 0.9rem;">Especialidade</label>
+                                        <input type="text" class="form-control" id="cadEspecialidade" />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label mb-1" style="font-size: 0.9rem;">Email</label>
+                                        <input type="email" class="form-control" id="cadEmail" />
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label mb-1" style="font-size: 0.9rem;">Senha</label>
+                                        <input type="password" class="form-control" id="cadSenha" />
+                                    </div>
+
+                                    <div class="d-flex flex-column gap-2 mt-4">
+                                        <button type="button" class="btn btn-primary fw-semibold py-2" onclick="FuncionariosPage.confirmarCadastro()" style="border-radius: 8px;">
+                                            Cadastrar
+                                        </button>
+                                        <button type="button" class="btn btn-light fw-semibold py-2" onclick="FuncionariosPage.cancelarCadastro()" style="border-radius: 8px; border: 1px solid #ccc; background-color: #ddd;">
+                                            Cancelar
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Deletar Funcionário -->
+            <div class="modal fade" id="modalDeletarFuncionario" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fs-6">Deletar Funcionário</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body d-flex flex-column align-items-center text-center mt-3">
+                            <div class="mb-3 p-3 border rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="bi bi-trash fs-2"></i>
+                            </div>
+                            <h6 class="mb-2 fw-semibold">Tem certeza que deseja deletar Funcionario?</h6>
+                            <small class="text-muted">Essa ação não pode ser revertida</small>
+                            <div class="d-flex justify-content-center gap-3 mt-4 mb-2">
+                                <button type="button" class="btn btn-outline-secondary px-4 text-dark bg-white border-dark" data-bs-dismiss="modal" style="border-radius: 8px;">Cancelar</button>
+                                <button type="button" class="btn btn-danger px-4 d-flex align-items-center gap-2" onclick="FuncionariosPage.confirmarDeletar()" style="border-radius: 8px; background-color: #d9534f; border-color: #d9534f;">
+                                    <i class="bi bi-trash"></i> DELETAR
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Restaurar Senha -->
+            <div class="modal fade" id="modalRestaurarSenha" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <!-- Header -->
+                        <div class="modal-header">
+                            <h5 class="modal-title fs-6">Restaurar Senha</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="FuncionariosPage.resetarModalRestaurar()"></button>
+                        </div>
+                        
+                        <!-- Passo 1: Confirmação -->
+                        <div class="modal-body d-flex flex-column align-items-center text-center mt-3" id="step1Restaurar">
+                            <div class="mb-3 p-3 border rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="bi bi-lock fs-2"></i>
+                            </div>
+                            <h6 class="mb-2 fw-semibold">Tem certeza que deseja Restaurar a Senha?</h6>
+                            <small class="text-muted">Essa ação não pode ser revertida</small>
+                            <div class="d-flex justify-content-center gap-3 mt-4 mb-2">
+                                <button type="button" class="btn btn-outline-secondary px-4 text-dark bg-white border-dark" data-bs-dismiss="modal" style="border-radius: 8px;" onclick="FuncionariosPage.resetarModalRestaurar()">Cancelar</button>
+                                <button type="button" class="btn btn-primary px-4" onclick="FuncionariosPage.confirmarRestaurarSenha()" style="border-radius: 8px;">
+                                    OK
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Passo 2: Sucesso -->
+                        <div class="modal-body d-flex flex-column align-items-center text-center mt-3 d-none" id="step2Restaurar">
+                            <div class="mb-3 p-3 border rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                                <i class="bi bi-lock fs-2"></i>
+                            </div>
+                            <h6 class="mb-3 fw-semibold">A Senha foi restaurada para</h6>
+                            
+                            <!-- Input com a nova senha -->
+                            <div class="input-group mb-2 w-75 mx-auto">
+                                <input type="text" class="form-control text-center fw-bold" id="novaSenhaInput" readonly>
+                                <button class="btn btn-outline-secondary" type="button" onclick="FuncionariosPage.copiarNovaSenha()" title="Copiar Senha">
+                                    <i class="bi bi-copy"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted mb-4">Informe ao usuário a nova senha</small>
+
+                            <div class="d-flex justify-content-center w-100 mb-2">
+                                <button type="button" class="btn btn-primary px-5" data-bs-dismiss="modal" onclick="FuncionariosPage.resetarModalRestaurar()" style="border-radius: 8px;">
+                                    OK
+                                </button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

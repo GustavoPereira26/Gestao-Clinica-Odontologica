@@ -37,7 +37,7 @@ const CardFuncionario = {
         
         <!-- Avatar / Placeholder -->
         <div class="card-avatar" id="avatar-${func.id}">
-          <i class="bi bi-person card-avatar-icon"></i>
+          ${func.foto ? `<img src="${func.foto}" alt="${func.nome}" style="width: 100%; height: 100%; object-fit: cover;">` : '<i class="bi bi-person card-avatar-icon"></i>'}
         </div>
 
         <!-- Informações -->
@@ -94,6 +94,7 @@ const GridFuncionarios = {
 const FuncionariosPage = (() => {
   let filtroAtivo = 'todos';
   let termoBusca  = '';
+  let funcionarioAtualId = null;
 
   /**
    * Retorna a lista filtrada
@@ -121,9 +122,20 @@ const FuncionariosPage = (() => {
   function visualizar(id) {
     const func = FUNCIONARIOS.find(f => f.id === id);
     if (func) {
+      funcionarioAtualId = id;
       // Toggle visibility
       document.getElementById('listaFuncionarios').classList.add('d-none');
       document.getElementById('visualizarFuncionario').classList.remove('d-none');
+      
+      resetarFotoVisualizar();
+      
+      if (func.foto) {
+          const preview = document.getElementById('previewFoto');
+          const icone = document.getElementById('iconeFotoPadrao');
+          preview.src = func.foto;
+          preview.classList.remove('d-none');
+          icone.classList.add('d-none');
+      }
       
       // Update form values
       document.getElementById('visCargo').value = func.cargo;
@@ -136,11 +148,183 @@ const FuncionariosPage = (() => {
   }
 
   /**
-   * Ação mock de adicionar funcionário
+   * Confirma e deleta o funcionário selecionado
+   */
+  function confirmarDeletar() {
+    if (funcionarioAtualId !== null) {
+      const index = FUNCIONARIOS.findIndex(f => f.id === funcionarioAtualId);
+      if (index > -1) {
+        // Encontra o modal e fecha
+        const modalEl = document.getElementById('modalDeletarFuncionario');
+        if (modalEl) {
+          // Utiliza a API do bootstrap para esconder o modal
+          const modalInst = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
+          modalInst.hide();
+          
+          // Remove o backdrop manualmente caso sobre resíduos
+          const backdrops = document.querySelectorAll('.modal-backdrop');
+          backdrops.forEach(b => b.remove());
+          document.body.classList.remove('modal-open');
+          document.body.style.overflow = '';
+          document.body.style.paddingRight = '';
+        }
+
+        // Remove da lista
+        FUNCIONARIOS.splice(index, 1);
+        atualizar();
+
+        // Volta para a lista principal
+        document.getElementById('listaFuncionarios').classList.remove('d-none');
+        document.getElementById('visualizarFuncionario').classList.add('d-none');
+        document.getElementById('pageTitle').textContent = 'Funcionários';
+        document.getElementById('pageSubtitle').textContent = 'Gerencie a equipe da Dentus Clinic';
+        
+        funcionarioAtualId = null;
+      }
+    }
+  }
+
+  /**
+   * Confirma a restauração de senha e mostra o resultado
+   */
+  function confirmarRestaurarSenha() {
+    document.getElementById('step1Restaurar').classList.add('d-none');
+    document.getElementById('step2Restaurar').classList.remove('d-none');
+    
+    // Gera senha aleatória estilo a65sd76a5sd
+    const charset = "abcdefghijklmnopqrstuvwxyz0123456789";
+    let novaSenha = "";
+    for(let i=0; i < 11; i++) novaSenha += charset.charAt(Math.floor(Math.random() * charset.length));
+    
+    document.getElementById('novaSenhaInput').value = novaSenha;
+  }
+
+  /**
+   * Reinicia o estado do modal para futuras aberturas
+   */
+  function resetarModalRestaurar() {
+    setTimeout(() => { // Aguarda fechar caso seja dismiss
+        document.getElementById('step1Restaurar').classList.remove('d-none');
+        document.getElementById('step2Restaurar').classList.add('d-none');
+        document.getElementById('novaSenhaInput').value = '';
+    }, 300);
+  }
+
+  /**
+   * Copia a nova senha para a área de transferência
+   */
+  function copiarNovaSenha() {
+    const input = document.getElementById('novaSenhaInput');
+    navigator.clipboard.writeText(input.value).then(() => {
+       // Opcional: feedback visual de copiado
+       const btn = input.nextElementSibling;
+       const icon = btn.querySelector('i');
+       icon.classList.replace('bi-copy', 'bi-check2');
+       setTimeout(() => {
+         icon.classList.replace('bi-check2', 'bi-copy');
+       }, 2000);
+    });
+  }
+
+  /**
+   * Aciona o input de upload de foto escondido
+   */
+  function acionarInputFoto() {
+    document.getElementById('inputSubirFoto').click();
+  }
+
+  /**
+   * Lida com a mudança de arquivo no input de foto e cria o preview
+   */
+  function lidarUploadFoto(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('previewFoto');
+        const icone = document.getElementById('iconeFotoPadrao');
+        if (preview && icone) {
+            preview.src = e.target.result;
+            preview.classList.remove('d-none');
+            icone.classList.add('d-none');
+            
+            if (funcionarioAtualId !== null) {
+                const func = FUNCIONARIOS.find(f => f.id === funcionarioAtualId);
+                if (func) func.foto = e.target.result;
+            }
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  /**
+   * Reseta a foto (chamado ao visualizar outro)
+   */
+  function resetarFotoVisualizar() {
+      const preview = document.getElementById('previewFoto');
+      const icone = document.getElementById('iconeFotoPadrao');
+      const input = document.getElementById('inputSubirFoto');
+
+      if (preview && icone && input) {
+          preview.src = '';
+          preview.classList.add('d-none');
+          icone.classList.remove('d-none');
+          input.value = '';
+      }
+  }
+
+  /**
+   * Abre a tela de cadastro
    */
   function adicionar() {
-    console.log('[Adicionar] Abrir formulário de novo funcionário');
-    alert('➕ Adicionar Funcionário\n\n(Funcionalidade em desenvolvimento)');
+    document.getElementById('listaFuncionarios').classList.add('d-none');
+    document.getElementById('cadastrarFuncionario').classList.remove('d-none');
+    
+    document.getElementById('pageTitle').textContent = 'Cadastrar Funcionário';
+    document.getElementById('pageSubtitle').textContent = 'Preencha os dados do novo funcionário';
+  }
+
+  /**
+   * Cancela e volta para a lista (também reseta o form)
+   */
+  function cancelarCadastro() {
+    document.getElementById('cadastrarFuncionario').classList.add('d-none');
+    document.getElementById('listaFuncionarios').classList.remove('d-none');
+    
+    document.getElementById('pageTitle').textContent = 'Funcionários';
+    document.getElementById('pageSubtitle').textContent = 'Gerencie a equipe da Dentus Clinic';
+    
+    const form = document.getElementById('formCadastrar');
+    if (form) form.reset();
+  }
+
+  /**
+   * Confirma o cadastro do funcionário e atualiza o grid
+   */
+  function confirmarCadastro() {
+    const nome = document.getElementById('cadNome').value.trim();
+    const select = document.getElementById('cadCargo');
+    const cargoLabel = select.options[select.selectedIndex].text;
+    const cargoValor = select.value;
+
+    if (!nome) {
+      alert('Por favor, informe o nome do funcionário.');
+      return;
+    }
+
+    // Calcula novo ID baseado nos existentes
+    const novoId = FUNCIONARIOS.length > 0 ? Math.max(...FUNCIONARIOS.map(f => f.id)) + 1 : 1;
+
+    FUNCIONARIOS.push({
+      id: novoId,
+      nome: nome,
+      cargo: cargoLabel,
+      tipo: cargoValor
+    });
+
+    atualizar();
+    cancelarCadastro();
   }
 
   /**
@@ -200,6 +384,7 @@ const FuncionariosPage = (() => {
     const btnVoltarVis = document.getElementById('btnVoltarVisualizar');
     if (btnVoltarVis) {
       btnVoltarVis.addEventListener('click', () => {
+        atualizar();
         document.getElementById('listaFuncionarios').classList.remove('d-none');
         document.getElementById('visualizarFuncionario').classList.add('d-none');
         
@@ -209,7 +394,7 @@ const FuncionariosPage = (() => {
     }
   }
 
-  return { init, visualizar, adicionar };
+  return { init, visualizar, adicionar, confirmarDeletar, confirmarRestaurarSenha, resetarModalRestaurar, copiarNovaSenha, cancelarCadastro, confirmarCadastro, acionarInputFoto, lidarUploadFoto };
 })();
 
 

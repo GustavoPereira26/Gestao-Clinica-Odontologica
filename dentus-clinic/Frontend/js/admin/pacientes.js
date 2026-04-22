@@ -155,40 +155,7 @@ const CardMobilePaciente = {
 };
 
 
-/* ══════════════════════════════════════
-   COMPONENTE — Modal de Confirmação
-══════════════════════════════════════ */
-const ModalConfirmacao = {
-  _resolve: null,
-
-  abrir(mensagem) {
-    const overlay = document.getElementById('modalOverlay');
-    const texto   = document.getElementById('modalText');
-    texto.textContent = mensagem;
-    overlay.classList.remove('hidden');
-
-    return new Promise(resolve => {
-      this._resolve = resolve;
-    });
-  },
-
-  fechar(resultado) {
-    const overlay = document.getElementById('modalOverlay');
-    overlay.classList.add('hidden');
-    if (this._resolve) {
-      this._resolve(resultado);
-      this._resolve = null;
-    }
-  },
-
-  init() {
-    document.getElementById('modalBtnCancelar').addEventListener('click', () => this.fechar(false));
-    document.getElementById('modalBtnConfirmar').addEventListener('click', () => this.fechar(true));
-    document.getElementById('modalOverlay').addEventListener('click', (e) => {
-      if (e.target === e.currentTarget) this.fechar(false);
-    });
-  }
-};
+/* ModalConfirmacao foi substituído pelo Bootstrap Modal na tela principal */
 
 
 /* ══════════════════════════════════════
@@ -197,6 +164,7 @@ const ModalConfirmacao = {
 const PacientesPage = (() => {
   let sortCol = null;
   let sortAsc = true;
+  let pacienteParaExcluir = null;
 
   /**
    * Lista filtrada de pacientes
@@ -244,20 +212,49 @@ const PacientesPage = (() => {
   }
 
   /**
-   * Ação mock — confirmar exclusão
+   * Prepara os dados no modal do Bootstrap e o exibe
    */
-  async function confirmarExclusao(id) {
+  function confirmarExclusao(id) {
     const p = PACIENTES.find(pac => pac.id === id);
     if (!p) return;
 
-    const confirmou = await ModalConfirmacao.abrir(
-      `Deseja realmente excluir o paciente "${p.nome}"?`
-    );
+    pacienteParaExcluir = id;
 
-    if (confirmou) {
-      console.log(`[Excluir] Paciente removido: ${p.nome} (ID: ${p.id})`);
-      // Mock: não remove de verdade
-      alert(`🗑️ Paciente "${p.nome}" excluído com sucesso.\n\n(Funcionalidade em desenvolvimento)`);
+    // Popula o modal
+    document.getElementById('mdlNome').textContent = p.nome;
+    document.getElementById('mdlCPF').textContent = mascaraCPF(p.cpf);
+    document.getElementById('mdlCelular').textContent = p.celular;
+    document.getElementById('mdlData').textContent = formatarData(p.dataCadastro);
+
+    // Abre o modal
+    const modalEl = document.getElementById('modalDeletarPaciente');
+    const modalInst = new bootstrap.Modal(modalEl);
+    modalInst.show();
+  }
+
+  /**
+   * Remove o item da lista
+   */
+  function efetivarExclusao() {
+    if (pacienteParaExcluir !== null) {
+      const index = PACIENTES.findIndex(p => p.id === pacienteParaExcluir);
+      if (index > -1) {
+        PACIENTES.splice(index, 1);
+        atualizar();
+        
+        // Esconde modal
+        const modalEl = document.getElementById('modalDeletarPaciente');
+        const modalInst = bootstrap.Modal.getInstance(modalEl);
+        if (modalInst) modalInst.hide();
+        
+        // Remove backdrop em caso de travamento do BS
+        const backdrops = document.querySelectorAll('.modal-backdrop');
+        backdrops.forEach(b => b.remove());
+        document.body.classList.remove('modal-open');
+        document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
+      }
+      pacienteParaExcluir = null;
     }
   }
 
@@ -279,8 +276,8 @@ const PacientesPage = (() => {
       btnHamburger.addEventListener('click', () => SidebarComponent.toggleSidebar());
     }
 
-    // 3. Modal
-    ModalConfirmacao.init();
+    // 3. Modal 
+    // (A inicialização do modal bootstrap é automática sem init customizado agora)
 
     // 4. Máscara CPF
     const filtroCPF = document.getElementById('filtroCPF');
@@ -344,7 +341,7 @@ const PacientesPage = (() => {
     atualizar();
   }
 
-  return { init, confirmarExclusao };
+  return { init, confirmarExclusao, efetivarExclusao };
 })();
 
 
