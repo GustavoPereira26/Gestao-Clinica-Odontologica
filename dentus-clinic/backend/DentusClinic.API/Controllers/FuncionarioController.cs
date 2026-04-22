@@ -8,7 +8,7 @@ namespace DentusClinic.API.Controllers;
 
 [ApiController]
 [Route("api/funcionarios")]
-[Authorize]
+[Authorize(Roles = "ADMINISTRADOR")]
 public class FuncionarioController : ControllerBase
 {
     private readonly IFuncionarioService _funcionarioService;
@@ -36,7 +36,6 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Cadastrar([FromBody] FuncionarioRequest request)
     {
         var funcionario = await _funcionarioService.CadastrarAsync(request);
@@ -44,9 +43,8 @@ public class FuncionarioController : ControllerBase
             ApiResponse<object>.Ok(funcionario, "Funcionário cadastrado com sucesso."));
     }
 
-    [HttpPut("{id}")]
-    [Authorize(Roles = "ADMINISTRADOR")]
-    public async Task<IActionResult> Editar(int id, [FromBody] FuncionarioRequest request)
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> Editar(int id, [FromBody] FuncionarioUpdateRequest request)
     {
         var funcionario = await _funcionarioService.EditarAsync(id, request);
         if (funcionario is null)
@@ -56,7 +54,6 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _funcionarioService.RemoverAsync(id);

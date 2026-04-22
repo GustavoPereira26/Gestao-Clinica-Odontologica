@@ -96,6 +96,11 @@ public class AppDbContext : DbContext
              .WithMany(x => x.Consultas)
              .HasForeignKey(x => x.IdPaciente)
              .OnDelete(DeleteBehavior.Restrict);
+            e.HasOne(x => x.Servico)
+             .WithMany()
+             .HasForeignKey(x => x.IdServico)
+             .IsRequired(false)
+             .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Atendimento

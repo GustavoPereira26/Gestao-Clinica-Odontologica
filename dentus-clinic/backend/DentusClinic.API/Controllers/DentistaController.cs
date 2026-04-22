@@ -44,9 +44,9 @@ public class DentistaController : ControllerBase
             ApiResponse<object>.Ok(dentista, "Dentista cadastrado com sucesso."));
     }
 
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     [Authorize(Roles = "ADMINISTRADOR")]
-    public async Task<IActionResult> Editar(int id, [FromBody] DentistaRequest request)
+    public async Task<IActionResult> Editar(int id, [FromBody] DentistaUpdateRequest request)
     {
         var dentista = await _dentistaService.EditarAsync(id, request);
         if (dentista is null)

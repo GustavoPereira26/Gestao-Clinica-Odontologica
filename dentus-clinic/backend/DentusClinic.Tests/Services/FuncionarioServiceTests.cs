@@ -33,7 +33,7 @@ public class FuncionarioServiceTests
             Cpf = "111.222.333-44",
             Email = "fernanda@dentusclinic.com",
             Senha = "Senha@123",
-            Cargo = "RECEPCIONISTA",
+            Cargo = "SECRETARIA",
             Telefone = "11999999999",
             DataNascimento = new DateOnly(1995, 6, 20)
         };
@@ -49,7 +49,7 @@ public class FuncionarioServiceTests
         // Assert
         resultado.Should().NotBeNull();
         resultado.Nome.Should().Be("Fernanda Lima");
-        resultado.Cargo.Should().Be("RECEPCIONISTA");
+        resultado.Cargo.Should().Be("SECRETARIA");
     }
 
     [Fact]
@@ -176,7 +176,7 @@ public class FuncionarioServiceTests
     public async Task EditarAsync_DeveAtualizar_QuandoDadosValidos()
     {
         // Arrange
-        var login = new Login { Email = "antes@email.com", TipoAcesso = TiposAcessoEnum.RECEPCIONISTA };
+        var login = new Login { Email = "antes@email.com", TipoAcesso = TiposAcessoEnum.SECRETARIA };
         var funcionario = new Funcionario { Id = 1, Nome = "Antes", Cpf = "111.222.333-44", Login = login };
         var request = new FuncionarioRequest
         {

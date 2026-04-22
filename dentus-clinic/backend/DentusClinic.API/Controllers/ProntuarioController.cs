@@ -7,7 +7,7 @@ namespace DentusClinic.API.Controllers;
 
 [ApiController]
 [Route("api/prontuarios")]
-[Authorize]
+[Authorize(Roles = "DENTISTA")]
 public class ProntuarioController : ControllerBase
 {
     private readonly IProntuarioService _prontuarioService;

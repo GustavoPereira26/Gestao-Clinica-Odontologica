@@ -40,7 +40,7 @@ public class AuthService : IAuthService
 
         // Busca o nome do usuário conforme o tipo de acesso
         if (login.TipoAcesso == TiposAcessoEnum.ADMINISTRADOR ||
-            login.TipoAcesso == TiposAcessoEnum.RECEPCIONISTA)
+            login.TipoAcesso == TiposAcessoEnum.SECRETARIA)
         {
             var funcionario = await _funcionarioRepository.BuscarPorLoginIdAsync(login.Id);
             if (funcionario is not null) nome = funcionario.Nome;

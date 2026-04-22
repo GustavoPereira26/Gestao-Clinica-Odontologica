@@ -4,6 +4,7 @@ using DentusClinic.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DentusClinic.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260419203547_AddPacienteAtivo")]
+    partial class AddPacienteAtivo
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -73,9 +76,6 @@ namespace DentusClinic.API.Migrations
                     b.Property<int>("IdPaciente")
                         .HasColumnType("int");
 
-                    b.Property<int?>("IdServico")
-                        .HasColumnType("int");
-
                     b.Property<bool>("Retorno")
                         .HasColumnType("bit");
 
@@ -89,8 +89,6 @@ namespace DentusClinic.API.Migrations
                     b.HasIndex("IdDentista");
 
                     b.HasIndex("IdPaciente");
-
-                    b.HasIndex("IdServico");
 
                     b.ToTable("Consultas");
                 });
@@ -389,16 +387,9 @@ namespace DentusClinic.API.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("DentusClinic.API.Models.Servico", "Servico")
-                        .WithMany()
-                        .HasForeignKey("IdServico")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.Navigation("Dentista");
 
                     b.Navigation("Paciente");
-
-                    b.Navigation("Servico");
                 });
 
             modelBuilder.Entity("DentusClinic.API.Models.Dentista", b =>

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using DentusClinic.API.Attributes;
 
 namespace DentusClinic.API.DTOs.Request;
 
@@ -10,6 +11,7 @@ public class DentistaRequest
 
     [Required(ErrorMessage = "CPF é obrigatório.")]
     [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF inválido. Informe exatamente 11 dígitos numéricos.")]
+    [CpfValido]
     public string Cpf { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "CRO é obrigatório.")]

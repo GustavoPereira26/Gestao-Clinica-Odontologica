@@ -8,9 +8,6 @@ public class FuncionarioUpdateRequest
     [RegularExpression(@"^[\p{L} ]+$", ErrorMessage = "Nome inválido. Não são permitidos números ou caracteres especiais.")]
     public string? Nome { get; set; }
 
-    [RegularExpression(@"^\d{11}$", ErrorMessage = "CPF inválido. Informe exatamente 11 dígitos numéricos.")]
-    public string? Cpf { get; set; }
-
     [DataValida("Data de nascimento inválida.")]
     [DataNaoFutura]
     public DateOnly? DataNascimento { get; set; }

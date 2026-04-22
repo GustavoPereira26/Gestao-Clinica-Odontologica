@@ -60,34 +60,30 @@ public class PacienteService : IPacienteService
         return MapearResponse(paciente);
     }
 
-    public async Task<PacienteResponse?> EditarAsync(int id, PacienteRequest request)
+    public async Task<PacienteResponse?> EditarAsync(int id, PacienteUpdateRequest request)
     {
         var paciente = await _pacienteRepository.BuscarPorIdAsync(id);
         if (paciente is null) return null;
 
-        if (await _pacienteRepository.ExisteCpfAsync(request.Cpf, id))
-            throw new InvalidOperationException("CPF já cadastrado no sistema.");
-
-        if (await _pacienteRepository.ExisteEmailAsync(request.Email, id))
+        if (request.Email is not null && await _pacienteRepository.ExisteEmailAsync(request.Email, id))
             throw new InvalidOperationException("E-mail já cadastrado no sistema.");
 
-        paciente.Nome = request.Nome;
-        paciente.Cpf = request.Cpf;
-        paciente.Telefone = request.Telefone;
-        paciente.Email = request.Email;
-        paciente.DataNascimento = request.DataNascimento;
-        paciente.Endereco = request.Endereco;
+        if (request.Nome is not null) paciente.Nome = request.Nome;
+        if (request.Telefone is not null) paciente.Telefone = request.Telefone;
+        if (request.Email is not null) paciente.Email = request.Email;
+        if (request.DataNascimento is not null) paciente.DataNascimento = request.DataNascimento.Value;
+        if (request.Endereco is not null) paciente.Endereco = request.Endereco;
 
         await _pacienteRepository.AtualizarAsync(paciente);
         return MapearResponse(paciente);
     }
 
-    public async Task<bool> RemoverAsync(int id)
+    public async Task<bool> InativarAsync(int id)
     {
         var paciente = await _pacienteRepository.BuscarPorIdAsync(id);
         if (paciente is null) return false;
 
-        await _pacienteRepository.RemoverAsync(paciente);
+        await _pacienteRepository.InativarAsync(paciente);
         return true;
     }
 
@@ -99,6 +95,7 @@ public class PacienteService : IPacienteService
         Telefone = p.Telefone,
         Email = p.Email,
         DataNascimento = p.DataNascimento,
-        Endereco = p.Endereco
+        Endereco = p.Endereco,
+        Ativo = p.Ativo
     };
 }

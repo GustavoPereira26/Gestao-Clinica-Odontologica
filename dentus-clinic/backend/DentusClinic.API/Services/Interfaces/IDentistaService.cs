@@ -8,6 +8,6 @@ public interface IDentistaService
     Task<IEnumerable<DentistaResponse>> ListarTodosAsync();
     Task<DentistaResponse?> BuscarPorIdAsync(int id);
     Task<DentistaResponse> CadastrarAsync(DentistaRequest request);
-    Task<DentistaResponse?> EditarAsync(int id, DentistaRequest request);
+    Task<DentistaResponse?> EditarAsync(int id, DentistaUpdateRequest request);
     Task<bool> RemoverAsync(int id);
 }

@@ -46,7 +46,8 @@ public class ConsultaService : IConsultaService
             Retorno = request.Retorno,
             Status = "Agendada",
             IdDentista = request.IdDentista,
-            IdPaciente = request.IdPaciente
+            IdPaciente = request.IdPaciente,
+            IdServico = request.IdServico ?? null
         };
 
         await _consultaRepository.AdicionarAsync(consulta);
@@ -55,19 +56,24 @@ public class ConsultaService : IConsultaService
         return MapearResponse(consultaSalva!);
     }
 
-    public async Task<ConsultaResponse?> EditarAsync(int id, ConsultaRequest request)
+    public async Task<ConsultaResponse?> EditarAsync(int id, ConsultaUpdateRequest request)
     {
         var consulta = await _consultaRepository.BuscarPorIdAsync(id);
         if (consulta is null) return null;
 
-        if (await _consultaRepository.ExisteConflitoAsync(request.IdDentista, request.DataConsulta, request.HoraConsulta, id))
+        var idDentista = request.IdDentista ?? consulta.IdDentista;
+        var data = request.DataConsulta ?? consulta.DataConsulta;
+        var hora = request.HoraConsulta ?? consulta.HoraConsulta;
+
+        if (await _consultaRepository.ExisteConflitoAsync(idDentista, data, hora, id))
             throw new InvalidOperationException("Dentista já possui consulta agendada nesse horário.");
 
-        consulta.DataConsulta = request.DataConsulta;
-        consulta.HoraConsulta = request.HoraConsulta;
-        consulta.Retorno = request.Retorno;
-        consulta.IdDentista = request.IdDentista;
-        consulta.IdPaciente = request.IdPaciente;
+        if (request.DataConsulta is not null) consulta.DataConsulta = request.DataConsulta.Value;
+        if (request.HoraConsulta is not null) consulta.HoraConsulta = request.HoraConsulta.Value;
+        if (request.Retorno is not null) consulta.Retorno = request.Retorno.Value;
+        if (request.IdDentista is not null) consulta.IdDentista = request.IdDentista.Value;
+        if (request.IdPaciente is not null) consulta.IdPaciente = request.IdPaciente.Value;
+        if (request.IdServico is not null) consulta.IdServico = request.IdServico.Value;
 
         await _consultaRepository.AtualizarAsync(consulta);
 
@@ -102,9 +108,8 @@ public class ConsultaService : IConsultaService
         HoraConsulta = c.HoraConsulta,
         Retorno = c.Retorno,
         Status = c.Status,
-        IdDentista = c.IdDentista,
         NomeDentista = c.Dentista?.Nome ?? string.Empty,
-        IdPaciente = c.IdPaciente,
-        NomePaciente = c.Paciente?.Nome ?? string.Empty
+        NomePaciente = c.Paciente?.Nome ?? string.Empty,
+        NomeServico = c.Servico?.Nome ?? string.Empty
     };
 }

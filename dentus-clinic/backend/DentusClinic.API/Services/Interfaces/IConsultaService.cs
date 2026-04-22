@@ -8,7 +8,7 @@ public interface IConsultaService
     Task<IEnumerable<ConsultaResponse>> ListarTodosAsync();
     Task<ConsultaResponse?> BuscarPorIdAsync(int id);
     Task<ConsultaResponse> AgendarAsync(ConsultaRequest request);
-    Task<ConsultaResponse?> EditarAsync(int id, ConsultaRequest request);
+    Task<ConsultaResponse?> EditarAsync(int id, ConsultaUpdateRequest request);
     Task<bool> RegistrarChegadaAsync(int id);
     Task<bool> CancelarAsync(int id);
 }
