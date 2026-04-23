@@ -57,11 +57,14 @@ public class AuthService : IAuthService
             login.TipoAcesso.ToString()
         );
 
+        var expiracaoHoras = int.Parse(_configuracao["JwtSettings:ExpiracaoHoras"]!);
+
         return new LoginResponse
         {
             Token = token,
             TipoAcesso = login.TipoAcesso.ToString(),
-            Nome = nome
+            Nome = nome,
+            Expiracao = DateTime.UtcNow.AddHours(expiracaoHoras)
         };
     }
 

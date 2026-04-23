@@ -19,7 +19,7 @@ public class PacienteController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "SECRETARIA")]
+    [Authorize(Roles = "SECRETARIA,ADMINISTRADOR")]
     public async Task<IActionResult> ListarTodos()
     {
         var pacientes = await _pacienteService.ListarTodosAsync();
