@@ -15,7 +15,6 @@ const SidebarComponent = (() => {
       { id: 'dashboard',   icon: 'bi-house',         label: 'Página Inicial', href: '../dentista/dashboard.html' },
       { id: 'tratamentos', icon: 'bi-heart-pulse',   label: 'Tratamentos',    href: '../dentista/tratamentos.html' },
       { id: 'agenda',      icon: 'bi-calendar3',     label: 'Agenda',         href: '../dentista/agenda.html' },
-      { id: 'planejar',    icon: 'bi-clipboard2-pulse', label: 'Planejar Tratamento', href: '../dentista/planejar.html' },
       { id: 'pacientes',   icon: 'bi-people',        label: 'Meus Pacientes', href: '../dentista/pacientes.html' },
     ],
     admin: [
