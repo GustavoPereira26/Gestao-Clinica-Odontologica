@@ -46,39 +46,58 @@
     <div id="sidebarContainer"></div>
 
     <!-- ═══ CONTEÚDO ═══ -->
-    <main class="app-content">
+    <main class="app-content d-flex align-items-center">
 
-      <div class="container-fluid py-4">
+      <div class="container py-4">
 
-        <!-- Notificação -->
-        <div class="row mb-4">
-          <div class="col-12 d-flex justify-content-end">
-            <div class="alert custom-notification alert-dismissible fade show shadow-sm mb-0" role="alert">
-              <div class="d-flex align-items-center">
-                <div class="notification-icon me-3">
-                  <i class="bi bi-bell-fill"></i>
+        <!-- Barra de Filtros -->
+        <section class="filter-bar" id="filterBar">
+            <div class="filter-field">
+                <label class="filter-label" for="filterNome">Paciente</label>
+                <div class="filter-input-wrapper">
+                    <i class="bi bi-search filter-input-icon"></i>
+                    <input type="text" class="filter-input" id="filterNome" placeholder="Buscar por nome..." autocomplete="off" />
                 </div>
-                <div class="notification-content flex-grow-1">
-                  <div class="d-flex justify-content-between align-items-center">
-                    <h6 class="mb-1 fw-bold fs-6">Novo Paciente Aguardando na Fila</h6>
-                    <small class="text-muted ms-3 text-nowrap">12:34 PM</small>
-                  </div>
-                  <div class="mt-1 d-flex gap-2">
-                    <span class="badge rounded-pill bg-light text-dark border">João Silva</span>
-                    <span class="badge rounded-pill bg-light text-dark border">Limpeza</span>
-                  </div>
+            </div>
+
+            <div class="filter-field">
+                <label class="filter-label" for="filterCpf">CPF</label>
+                <div class="filter-input-wrapper">
+                    <i class="bi bi-credit-card filter-input-icon"></i>
+                    <input type="text" class="filter-input" id="filterCpf" placeholder="000.000.000-00" autocomplete="off" />
                 </div>
-              </div>
             </div>
-            <div class="col-lg-1 col-md-12 d-flex justify-content-end">
-              <button
-                class="btn btn-white border w-100 d-flex align-items-center justify-content-center gap-1 text-muted py-2"
-                style="font-size: 0.9rem;" id="btnClearFilters">
-                <i class="bi bi-x"></i> Limpar
-              </button>
+
+            <div class="filter-field">
+                <label class="filter-label" for="filterServico">Serviço</label>
+                <div class="filter-input-wrapper">
+                    <i class="bi bi-clipboard2-pulse filter-input-icon"></i>
+                    <input type="text" class="filter-input" id="filterServico" placeholder="Serviço..." autocomplete="off" />
+                </div>
             </div>
-          </div>
-        </div>
+
+            <div class="filter-field">
+                <label class="filter-label" for="filterConsulta">Data Consulta</label>
+                <div class="filter-input-wrapper">
+                    <input type="date" class="filter-input filter-input-date" id="filterConsulta" />
+                </div>
+            </div>
+
+            <div class="filter-field">
+                <label class="filter-label" for="filterTelefone">Telefone</label>
+                <div class="filter-input-wrapper">
+                    <i class="bi bi-telephone filter-input-icon"></i>
+                    <input type="text" class="filter-input" id="filterTelefone" placeholder="(00) 00000-0000" autocomplete="off" />
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="btn-filter-clear" id="btnClearFilters" title="Limpar filtros">
+                    <i class="bi bi-x-lg"></i>
+                    Limpar
+                </button>
+            </div>
+        </section>
 
         <!-- Table -->
         <div class="table-container" style="max-height: 65vh;">
@@ -90,19 +109,15 @@
                 <th>SERVIÇO</th>
                 <th>TELEFONE</th>
                 <th>DATA CADASTRO <i class="bi bi-chevron-expand ms-1 opacity-75"></i></th>
-                <th class="text-center pe-4">AÇÕES</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="pacientesTableBody">
               <tr>
                 <td class="ps-4 fw-medium">Ricardo Henrique</td>
                 <td>123.456.789-01</td>
                 <td>Limpeza</td>
                 <td>(15) 91234-5678</td>
                 <td>30/03/2026</td>
-                <td class="text-center pe-4">
-                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
-                </td>
               </tr>
               <tr>
                 <td class="ps-4 fw-medium">Lillian Marques</td>
@@ -110,9 +125,6 @@
                 <td>Limpeza</td>
                 <td>(15) 91234-5678</td>
                 <td>30/03/2026</td>
-                <td class="text-center pe-4">
-                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
-                </td>
               </tr>
               <tr>
                 <td class="ps-4 fw-medium">Inês Ribeiro</td>
@@ -120,9 +132,6 @@
                 <td>Extração</td>
                 <td>(15) 91234-5678</td>
                 <td>30/03/2026</td>
-                <td class="text-center pe-4">
-                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
-                </td>
               </tr>
               <tr>
                 <td class="ps-4 fw-medium">Sofia Costa</td>
@@ -130,9 +139,6 @@
                 <td>Clareamento</td>
                 <td>(15) 91234-5678</td>
                 <td>30/03/2026</td>
-                <td class="text-center pe-4">
-                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
-                </td>
               </tr>
               <tr>
                 <td class="ps-4 fw-medium">Catarina Lima</td>
@@ -140,9 +146,6 @@
                 <td>Restauração</td>
                 <td>(15) 91234-5678</td>
                 <td>30/03/2026</td>
-                <td class="text-center pe-4">
-                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
-                </td>
               </tr>
               <tr>
                 <td class="ps-4 fw-medium">João Silva</td>
@@ -150,9 +153,6 @@
                 <td>Check-up</td>
                 <td>(15) 91234-5678</td>
                 <td>30/03/2026</td>
-                <td class="text-center pe-4">
-                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
-                </td>
               </tr>
               <tr>
                 <td class="ps-4 fw-medium">Thiago Carvalho</td>
@@ -160,9 +160,6 @@
                 <td>Periodontia</td>
                 <td>(15) 91234-5678</td>
                 <td>30/03/2026</td>
-                <td class="text-center pe-4">
-                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
-                </td>
               </tr>
               <tr>
                 <td class="ps-4 fw-medium">Ricardo Almeida</td>
@@ -170,9 +167,6 @@
                 <td>Limpeza</td>
                 <td>(15) 91234-5678</td>
                 <td>24/03/2026</td>
-                <td class="text-center pe-4">
-                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
-                </td>
               </tr>
               <tr>
                 <td class="ps-4 fw-medium">Filipe Rocha</td>
@@ -180,9 +174,6 @@
                 <td>Extração</td>
                 <td>(15) 91234-5678</td>
                 <td>24/03/2026</td>
-                <td class="text-center pe-4">
-                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
-                </td>
               </tr>
             </tbody>
           </table>
