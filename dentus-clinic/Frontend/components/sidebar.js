@@ -6,20 +6,20 @@ const SidebarComponent = (() => {
 
   const menusPorPerfil = {
     recepcionista: [
-      { id: 'dashboard',    icon: 'bi-house',       label: 'Página Inicial', href: '../recepcionista/dashboard.html' },
-      { id: 'consultas',    icon: 'bi-calendar2-check', label: 'Consultas',  href: '../recepcionista/consultas.html' },
-      { id: 'pacientes',    icon: 'bi-people',       label: 'Pacientes',     href: '../recepcionista/pacientes.html' },
-      { id: 'funcionarios', icon: 'bi-person-badge', label: 'Funcionários',  href: '../recepcionista/funcionarios.html' },
+      { id: 'dashboard',    icon: 'fa-solid fa-chart-line',       label: 'Página Inicial', href: '../recepcionista/dashboard.html' },
+      { id: 'consultas',    icon: 'fa-solid fa-calendar-days', label: 'Consultas',  href: '../recepcionista/consultas.html' },
+      { id: 'pacientes',    icon: 'fa-solid fa-user-injured',       label: 'Pacientes',     href: '../recepcionista/pacientes.html' },
+      { id: 'funcionarios', icon: 'fa-solid fa-id-card', label: 'Funcionários',  href: '../recepcionista/funcionarios.html' },
     ],
     dentista: [
-      { id: 'dashboard',   icon: 'bi-house',         label: 'Página Inicial', href: '../dentista/dashboard.html' },
-      { id: 'tratamentos', icon: 'bi-heart-pulse',   label: 'Tratamentos',    href: '../dentista/tratamentos.html' },
-      { id: 'agenda',      icon: 'bi-calendar3',     label: 'Agenda',         href: '../dentista/agenda.html' },
-      { id: 'pacientes',   icon: 'bi-people',        label: 'Meus Pacientes', href: '../dentista/pacientes.html' },
+      { id: 'dashboard',   icon: 'fa-solid fa-chart-line',         label: 'Página Inicial', href: '../dentista/dashboard.html' },
+      { id: 'tratamentos', icon: 'fa-solid fa-notes-medical',   label: 'Tratamentos',    href: '../dentista/tratamentos.html' },
+      { id: 'agenda',      icon: 'fa-solid fa-calendar-days',     label: 'Agenda',         href: '../dentista/agenda.html' },
+      { id: 'pacientes',   icon: 'fa-solid fa-user-injured',        label: 'Meus Pacientes', href: '../dentista/pacientes.html' },
     ],
     admin: [
-      { id: 'funcionarios', icon: 'bi-person-badge', label: 'Funcionários',  href: '../admin/funcionarios.html' },
-      { id: 'pacientes',    icon: 'bi-people',       label: 'Pacientes',     href: '../admin/pacientes.html' }
+      { id: 'funcionarios', icon: 'fa-solid fa-id-card', label: 'Funcionários',  href: '../admin/funcionarios.html' },
+      { id: 'pacientes',    icon: 'fa-solid fa-user-injured',       label: 'Pacientes',     href: '../admin/pacientes.html' }
     ]
   };
 
@@ -38,7 +38,7 @@ const SidebarComponent = (() => {
         <a href="${item.href}"
            class="sidebar-nav-link ${item.id === ativo ? 'active' : ''}"
            data-page="${item.id}">
-          <i class="bi ${item.icon} me-2"></i>
+          <i class="${item.icon} me-2"></i>
           <span>${item.label}</span>
         </a>
       </li>
@@ -57,7 +57,7 @@ const SidebarComponent = (() => {
         <!-- Perfil do usuário -->
         <div class="sidebar-profile">
           <div class="sidebar-avatar">
-            <i class="bi bi-person-fill"></i>
+            <i class="fa-solid fa-user"></i>
           </div>
           <div class="sidebar-profile-info">
             <span class="sidebar-role">${cargoLabel}</span>
@@ -76,11 +76,11 @@ const SidebarComponent = (() => {
         <div class="sidebar-footer">
           <hr class="sidebar-divider" />
           <a href="#" class="sidebar-nav-link" id="btnConfiguracoes">
-            <i class="bi bi-gear me-2"></i>
+            <i class="fa-solid fa-gear me-2"></i>
             <span>Configurações</span>
           </a>
           <a href="index.html" class="sidebar-nav-link sidebar-logout" id="btnSair">
-            <i class="bi bi-box-arrow-left me-2"></i>
+            <i class="fa-solid fa-right-from-bracket me-2"></i>
             <span>Sair</span>
           </a>
         </div>

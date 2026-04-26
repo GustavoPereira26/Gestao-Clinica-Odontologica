@@ -14,8 +14,8 @@ function initPasswordToggle() {
     toggleBtn.addEventListener('click', () => {
         const oculto = senhaInput.type === 'password';
         senhaInput.type = oculto ? 'text' : 'password';
-        toggleBtn.classList.toggle('bi-eye-slash', !oculto);
-        toggleBtn.classList.toggle('bi-eye',        oculto);
+        toggleBtn.classList.toggle('fa-eye-slash', !oculto);
+        toggleBtn.classList.toggle('fa-eye',        oculto);
     });
 }
 

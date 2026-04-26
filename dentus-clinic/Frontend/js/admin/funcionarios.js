@@ -37,7 +37,7 @@ const CardFuncionario = {
         
         <!-- Avatar / Placeholder -->
         <div class="card-avatar" id="avatar-${func.id}">
-          ${func.foto ? `<img src="${func.foto}" alt="${func.nome}" style="width: 100%; height: 100%; object-fit: cover;">` : '<i class="bi bi-person card-avatar-icon"></i>'}
+          ${func.foto ? `<img src="${func.foto}" alt="${func.nome}" style="width: 100%; height: 100%; object-fit: cover;">` : '<i class="fa-solid fa-user card-avatar-icon"></i>'}
         </div>
 
         <!-- Informações -->
@@ -49,7 +49,7 @@ const CardFuncionario = {
                 onclick="FuncionariosPage.visualizar(${func.id})"
                 id="btnVisualizar-${func.id}"
                 title="Visualizar ${func.nome}">
-          <i class="bi bi-eye"></i>
+          <i class="fa-solid fa-eye"></i>
           Visualizar
         </button>
       </article>
@@ -74,7 +74,7 @@ const GridFuncionarios = {
     if (lista.length === 0) {
       grid.innerHTML = `
         <div class="empty-state" id="emptyState">
-          <i class="bi bi-person-x"></i>
+          <i class="fa-solid fa-user-xmark"></i>
           <p>Nenhum funcionário encontrado</p>
         </div>
       `;
@@ -219,9 +219,9 @@ const FuncionariosPage = (() => {
        // Opcional: feedback visual de copiado
        const btn = input.nextElementSibling;
        const icon = btn.querySelector('i');
-       icon.classList.replace('bi-copy', 'bi-check2');
+       icon.classList.replace('fa-copy', 'fa-check');
        setTimeout(() => {
-         icon.classList.replace('bi-check2', 'bi-copy');
+         icon.classList.replace('fa-check', 'fa-copy');
        }, 2000);
     });
   }
