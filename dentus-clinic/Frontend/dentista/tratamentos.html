@@ -731,6 +731,233 @@ Obturação temporária aplicada.</textarea>
 
     </div>
 
+    <!-- ══════════════════════════════════════════════════
+         TELA PRONTUÁRIO (oculta por padrão)
+         ══════════════════════════════════════════════════ -->
+    <div class="prontuario-view" id="prontuarioView" style="display:none;">
+
+      <!-- Header do Prontuário -->
+      <div class="prontuario-header">
+        <button class="btn-voltar" id="btnVoltarProntuario">
+          <i class="fa-solid fa-arrow-left"></i> Voltar
+        </button>
+        <div class="prontuario-paciente-header">
+          <div class="prontuario-foto-placeholder">
+            <div class="foto-x"></div>
+          </div>
+          <div class="prontuario-paciente-dados">
+            <span class="prontuario-label">Paciente</span>
+            <span class="prontuario-nome" id="prontuarioNome">maria Souza</span>
+            <span class="prontuario-cpf" id="prontuarioCPF">CPF: 234.567.890-11</span>
+          </div>
+          <div class="prontuario-contatos">
+            <span class="prontuario-contato"><i class="fa-solid fa-phone"></i> <span id="prontuarioTel">(11) 91234-5678</span></span>
+            <span class="prontuario-contato"><i class="fa-solid fa-envelope"></i> <span id="prontuarioEmail">maria.souza@email.com</span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aviso amarelo -->
+      <div class="prontuario-aviso-tip">
+        Selecionar tratamento mais recente quando acessado o prontuário
+      </div>
+
+      <!-- Layout principal -->
+      <div class="prontuario-layout">
+
+        <!-- ═══ COLUNA ESQUERDA ═══ -->
+        <div class="prontuario-main">
+
+          <!-- Plano Selecionado -->
+          <div class="prontuario-plano-section">
+            <div class="prontuario-plano-header">
+              <h3 class="prontuario-plano-titulo">Plano Selecionado</h3>
+              <div class="prontuario-plano-info-right">
+                <span class="prontuario-plano-servico" id="prontuarioPlanoServico">Extração do Siso</span>
+                <span class="prontuario-plano-data" id="prontuarioPlanoData">2023-09-01</span>
+              </div>
+            </div>
+
+            <!-- Odontograma do Prontuário -->
+            <div class="prontuario-odontograma">
+              <h4 class="prontuario-sub-titulo">Odontograma</h4>
+              <div class="odontograma-chart">
+                <!-- Arcada Superior -->
+                <div class="arcada-row">
+                  <div class="arcada-grupo">
+                    <div class="dente-prontuario saudavel" data-num="18">18</div>
+                    <div class="dente-prontuario saudavel" data-num="17">17</div>
+                    <div class="dente-prontuario saudavel" data-num="16">16</div>
+                    <div class="dente-prontuario saudavel" data-num="15">15</div>
+                    <div class="dente-prontuario saudavel" data-num="14">14</div>
+                    <div class="dente-prontuario saudavel" data-num="13">13</div>
+                    <div class="dente-prontuario saudavel" data-num="12">12</div>
+                    <div class="dente-prontuario saudavel" data-num="11">11</div>
+                  </div>
+                  <div class="arcada-gap"></div>
+                  <div class="arcada-grupo">
+                    <div class="dente-prontuario saudavel" data-num="21">21</div>
+                    <div class="dente-prontuario saudavel" data-num="22">22</div>
+                    <div class="dente-prontuario saudavel" data-num="23">23</div>
+                    <div class="dente-prontuario saudavel" data-num="24">24</div>
+                    <div class="dente-prontuario saudavel" data-num="25">25</div>
+                    <div class="dente-prontuario saudavel" data-num="26">26</div>
+                    <div class="dente-prontuario saudavel" data-num="27">27</div>
+                    <div class="dente-prontuario saudavel" data-num="28">28</div>
+                  </div>
+                </div>
+                <!-- Arcada Inferior -->
+                <div class="arcada-row">
+                  <div class="arcada-grupo">
+                    <div class="dente-prontuario tratado-consulta" data-num="48">48</div>
+                    <div class="dente-prontuario saudavel" data-num="47">47</div>
+                    <div class="dente-prontuario saudavel" data-num="46">46</div>
+                    <div class="dente-prontuario saudavel" data-num="45">45</div>
+                    <div class="dente-prontuario saudavel" data-num="44">44</div>
+                    <div class="dente-prontuario saudavel" data-num="43">43</div>
+                    <div class="dente-prontuario saudavel" data-num="42">42</div>
+                    <div class="dente-prontuario saudavel" data-num="41">41</div>
+                  </div>
+                  <div class="arcada-gap"></div>
+                  <div class="arcada-grupo">
+                    <div class="dente-prontuario saudavel" data-num="31">31</div>
+                    <div class="dente-prontuario saudavel" data-num="32">32</div>
+                    <div class="dente-prontuario saudavel" data-num="33">33</div>
+                    <div class="dente-prontuario saudavel" data-num="34">34</div>
+                    <div class="dente-prontuario saudavel" data-num="35">35</div>
+                    <div class="dente-prontuario saudavel" data-num="36">36</div>
+                    <div class="dente-prontuario saudavel" data-num="37">37</div>
+                    <div class="dente-prontuario saudavel" data-num="38">38</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Legenda -->
+              <div class="odontograma-legenda" style="justify-content:flex-start;margin-top:0.5rem;">
+                <span class="legenda-item"><span class="legenda-cor tratado-consulta-bg"></span> Tratado em Consulta</span>
+              </div>
+            </div>
+
+            <!-- Condição + Observações lado a lado -->
+            <div class="prontuario-detalhes-row">
+              <div class="prontuario-detalhes-esq">
+                <div class="prontuario-campo">
+                  <label class="prontuario-campo-label">Condição</label>
+                  <div class="prontuario-campo-valor" id="prontuarioCondicao">Siso em má formação</div>
+                </div>
+                <div class="prontuario-campo">
+                  <label class="prontuario-campo-label">Descrição do Tratamento</label>
+                  <div class="prontuario-campo-textarea" id="prontuarioDescricao">Tratamento de remoção do dente do Siso numero 48</div>
+                </div>
+              </div>
+              <div class="prontuario-detalhes-dir">
+                <div class="prontuario-obs-card">
+                  <h4 class="prontuario-obs-titulo">Observações Clínicas</h4>
+                  <div class="prontuario-obs-texto" id="prontuarioObsTexto">dente do siso 48 removido com sucesso, sem problemas ou sequelas, necessário retorno para acompanhamento da cicatrização.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dentista Responsável -->
+            <div class="prontuario-dentista">
+              <span class="prontuario-dentista-label">Dentista Responsável:</span>
+              <span class="prontuario-dentista-nome" id="prontuarioDentista">Pedro Santos</span>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ═══ COLUNA DIREITA (Consultas + Planos + Info) ═══ -->
+        <div class="prontuario-sidebar">
+
+          <!-- Consultas Agendadas -->
+          <div class="prontuario-card">
+            <h4 class="prontuario-card-titulo">Consultas Agendadas</h4>
+            <div class="prontuario-table-wrapper">
+              <table class="prontuario-table">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Hora</th>
+                    <th>Procedimento</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>2023-10-26</td>
+                    <td>10:00</td>
+                    <td>Limpeza</td>
+                  </tr>
+                  <tr>
+                    <td>2023-11-15</td>
+                    <td>14:30</td>
+                    <td>Restauração</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Planos Realizados -->
+          <div class="prontuario-card">
+            <h4 class="prontuario-card-titulo">Plano Realizados</h4>
+            <div class="prontuario-table-wrapper">
+              <table class="prontuario-table" id="tabelaPlanosRealizados">
+                <thead>
+                  <tr>
+                    <th>Data</th>
+                    <th>Serviço</th>
+                    <th>Dentista</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="plano-row selected" data-plano="0">
+                    <td>2023-09-01</td>
+                    <td>Extração do Siso</td>
+                    <td>Dra. Ana Costa</td>
+                  </tr>
+                  <tr class="plano-row" data-plano="1">
+                    <td>2023-08-10</td>
+                    <td>Tratamento de Canal</td>
+                    <td>Dr. Carlos Mendes</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Informações do Paciente -->
+          <div class="prontuario-card">
+            <div class="prontuario-card-titulo-row">
+              <h4 class="prontuario-card-titulo">Informações do paciente</h4>
+              <button class="prontuario-edit-btn"><i class="fa-solid fa-pen fa-xs"></i></button>
+            </div>
+            <div class="prontuario-info-grid">
+              <div class="prontuario-info-item">
+                <span class="prontuario-info-label">Última Atualização:</span>
+                <span class="prontuario-info-valor" id="prontuarioUltimaAtualizacao">2023-10-20</span>
+              </div>
+              <div class="prontuario-info-item">
+                <span class="prontuario-info-label">Alergias:</span>
+                <span class="prontuario-info-valor" id="prontuarioAlergias">Penicilina</span>
+              </div>
+              <div class="prontuario-info-item">
+                <span class="prontuario-info-label">Condições Médicas:</span>
+                <span class="prontuario-info-valor" id="prontuarioCondicoesMed">Hipertensão</span>
+              </div>
+              <div class="prontuario-info-item">
+                <span class="prontuario-info-label">Observações:</span>
+                <span class="prontuario-info-valor" id="prontuarioObservacoes">Sensibilidade a frio nos dentes anteriores.</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </main>
 
 </div><!-- /app-layout -->

@@ -439,4 +439,129 @@ document.addEventListener("DOMContentLoaded", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
+  // ══════════════════════════════════════════════════════
+  //  PRONTUÁRIO — NAVEGAÇÃO
+  // ══════════════════════════════════════════════════════
+  const prontuarioView = document.getElementById("prontuarioView");
+  let prontuarioOrigin = "lista"; // de onde veio: "lista" ou "consulta"
+
+  // Função auxiliar: esconder todas as views
+  function esconderTudo() {
+    metricasRow.style.display = "none";
+    filterBar.style.display = "none";
+    tratamentosLayout.style.display = "none";
+    editarPlanoView.style.display = "none";
+    consultaView.style.display = "none";
+    prontuarioView.style.display = "none";
+  }
+
+  function mostrarLista() {
+    metricasRow.style.display = "";
+    filterBar.style.display = "";
+    tratamentosLayout.style.display = "";
+  }
+
+  // Abrir Prontuário — preencher dados do paciente selecionado
+  function abrirProntuario(origem) {
+    prontuarioOrigin = origem;
+    esconderTudo();
+
+    const t = currentTratamento;
+    document.getElementById("prontuarioNome").textContent = t.paciente;
+
+    prontuarioView.style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // Botão "olho" na tabela (Prontuário)
+  document.getElementById("tbodyTratamentos").addEventListener("click", (e) => {
+    const btn = e.target.closest(".btn-prontuario");
+    if (!btn) return;
+    e.stopPropagation();
+
+    // Pegar o índice da linha
+    const tr = btn.closest("tr");
+    const rows = Array.from(document.getElementById("tbodyTratamentos").children);
+    const idx = rows.indexOf(tr);
+    if (idx >= 0 && idx < tratamentos.length) {
+      currentTratamento = tratamentos[idx];
+    }
+
+    abrirProntuario("lista");
+  });
+
+  // Botão "Prontuário" no rodapé da consulta
+  document.getElementById("btnProntuarioConsulta").addEventListener("click", () => {
+    abrirProntuario("consulta");
+  });
+
+  // Voltar do Prontuário
+  document.getElementById("btnVoltarProntuario").addEventListener("click", () => {
+    prontuarioView.style.display = "none";
+
+    if (prontuarioOrigin === "consulta") {
+      consultaView.style.display = "block";
+    } else {
+      mostrarLista();
+    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // ══════════════════════════════════════════════════════
+  //  PRONTUÁRIO — SELEÇÃO DE PLANOS REALIZADOS
+  // ══════════════════════════════════════════════════════
+  const planosData = [
+    {
+      data: "2023-09-01",
+      servico: "Extração do Siso",
+      dentista: "Pedro Santos",
+      condicao: "Siso em má formação",
+      descricao: "Tratamento de remoção do dente do Siso numero 48",
+      observacoes: "dente do siso 48 removido com sucesso, sem problemas ou sequelas, necessário retorno para acompanhamento da cicatrização.",
+      dentesTratados: ["48"]
+    },
+    {
+      data: "2023-08-10",
+      servico: "Tratamento de Canal",
+      dentista: "Dr. Carlos Mendes",
+      condicao: "Cárie profunda com comprometimento pulpar",
+      descricao: "Tratamento endodôntico do dente 36 com obturação definitiva",
+      observacoes: "Canal tratado com sucesso, paciente relatou melhora imediata da dor. Retorno em 30 dias para avaliação.",
+      dentesTratados: ["36"]
+    }
+  ];
+
+  document.querySelectorAll(".plano-row").forEach(row => {
+    row.addEventListener("click", () => {
+      // Desselecionar todos
+      document.querySelectorAll(".plano-row").forEach(r => r.classList.remove("selected"));
+      row.classList.add("selected");
+
+      const idx = parseInt(row.dataset.plano);
+      const plano = planosData[idx];
+      if (!plano) return;
+
+      // Atualizar campos do plano selecionado
+      document.getElementById("prontuarioPlanoServico").textContent = plano.servico;
+      document.getElementById("prontuarioPlanoData").textContent = plano.data;
+      document.getElementById("prontuarioCondicao").textContent = plano.condicao;
+      document.getElementById("prontuarioDescricao").textContent = plano.descricao;
+      document.getElementById("prontuarioObsTexto").textContent = plano.observacoes;
+      document.getElementById("prontuarioDentista").textContent = plano.dentista;
+
+      // Atualizar dentes no odontograma
+      document.querySelectorAll(".dente-prontuario").forEach(d => {
+        d.classList.remove("tratado-consulta");
+        d.classList.add("saudavel");
+      });
+      plano.dentesTratados.forEach(num => {
+        const dente = document.querySelector(`.dente-prontuario[data-num="${num}"]`);
+        if (dente) {
+          dente.classList.remove("saudavel");
+          dente.classList.add("tratado-consulta");
+        }
+      });
+    });
+  });
+
 });

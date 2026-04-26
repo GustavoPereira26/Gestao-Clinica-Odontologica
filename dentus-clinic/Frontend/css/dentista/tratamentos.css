@@ -1860,3 +1860,486 @@
     height: 100px;
   }
 }
+
+/* ══════════════════════════════════════════════════
+   TELA PRONTUÁRIO
+   ══════════════════════════════════════════════════ */
+
+/* Header */
+.prontuario-header {
+  margin-bottom: var(--space-4);
+}
+
+.prontuario-paciente-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.prontuario-foto-placeholder {
+  width: 80px;
+  height: 80px;
+  border: 2px solid rgba(110,84,48,.2);
+  border-radius: var(--radius-sm);
+  background: #f7f4f0;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.prontuario-foto-placeholder .foto-x::before,
+.prontuario-foto-placeholder .foto-x::after {
+  content: '';
+  position: absolute;
+  width: 140%;
+  height: 2px;
+  background: rgba(110,84,48,.25);
+  top: 50%;
+  left: -20%;
+}
+
+.prontuario-foto-placeholder .foto-x::before { transform: rotate(40deg); }
+.prontuario-foto-placeholder .foto-x::after { transform: rotate(-40deg); }
+
+.prontuario-paciente-dados {
+  display: flex;
+  flex-direction: column;
+}
+
+.prontuario-label {
+  font-size: 0.7rem;
+  color: var(--c3);
+  text-transform: capitalize;
+}
+
+.prontuario-nome {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--c1);
+  line-height: 1.2;
+}
+
+.prontuario-cpf {
+  font-size: 0.78rem;
+  color: var(--c3);
+}
+
+.prontuario-contatos {
+  display: flex;
+  gap: 1.5rem;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+
+.prontuario-contato {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--c1);
+  font-weight: 500;
+}
+
+.prontuario-contato i {
+  color: var(--c3);
+}
+
+/* Aviso amarelo */
+.prontuario-aviso-tip {
+  background: #e74c3c;
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: var(--space-4);
+  display: inline-block;
+}
+
+/* Layout */
+.prontuario-layout {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+.prontuario-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.prontuario-sidebar {
+  width: 340px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Plano Selecionado */
+.prontuario-plano-section {
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.prontuario-plano-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.prontuario-plano-titulo {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c1);
+}
+
+.prontuario-plano-info-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.prontuario-plano-servico {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c1);
+}
+
+.prontuario-plano-data {
+  font-size: 0.78rem;
+  color: var(--c3);
+}
+
+/* Odontograma */
+.prontuario-odontograma {
+  margin-bottom: 1.25rem;
+}
+
+.prontuario-sub-titulo {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--c1);
+  margin-bottom: 0.75rem;
+}
+
+/* Dente do prontuário (somente leitura) */
+.dente-prontuario {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 4px;
+  user-select: none;
+  border: 1px solid transparent;
+}
+
+.dente-prontuario.saudavel {
+  background: #fff;
+  color: var(--c1);
+  border-color: #ccc;
+}
+
+.dente-prontuario.tratado-consulta {
+  background: #3498db;
+  color: #fff;
+  border-color: #2980b9;
+  box-shadow: 0 0 0 2px rgba(52,152,219,.3);
+}
+
+.tratado-consulta-bg {
+  background: #3498db;
+}
+
+/* Detalhes (Condição + Observações) */
+.prontuario-detalhes-row {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: 1.25rem;
+}
+
+.prontuario-detalhes-esq {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.prontuario-detalhes-dir {
+  flex: 1;
+}
+
+.prontuario-campo {
+  display: flex;
+  flex-direction: column;
+}
+
+.prontuario-campo-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--c2);
+  margin-bottom: 0.3rem;
+}
+
+.prontuario-campo-valor {
+  padding: 0.55rem 0.75rem;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-sm);
+  background: var(--c5);
+  color: var(--c1);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.prontuario-campo-textarea {
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-sm);
+  background: var(--c5);
+  color: var(--c1);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  min-height: 100px;
+}
+
+/* Observações Clínicas do Prontuário */
+.prontuario-obs-card {
+  background: #fffbea;
+  border: 1.5px solid #f0d060;
+  border-radius: var(--radius-md);
+  padding: 1rem 1.15rem;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.prontuario-obs-titulo {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--c1);
+  margin-bottom: 0.65rem;
+}
+
+.prontuario-obs-texto {
+  font-size: 0.82rem;
+  color: var(--c1);
+  line-height: 1.55;
+  flex: 1;
+}
+
+/* Dentista Responsável */
+.prontuario-dentista {
+  padding-top: 1rem;
+  border-top: 1px solid var(--c4);
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+
+.prontuario-dentista-label {
+  font-size: 0.85rem;
+  color: #b8860b;
+  font-weight: 600;
+}
+
+.prontuario-dentista-nome {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c1);
+}
+
+/* ── Sidebar Cards ── */
+.prontuario-card {
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.15rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.prontuario-card-titulo {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--c1);
+  margin-bottom: 0.75rem;
+}
+
+.prontuario-card-titulo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.prontuario-card-titulo-row .prontuario-card-titulo {
+  margin-bottom: 0;
+}
+
+.prontuario-edit-btn {
+  background: none;
+  border: 1px solid var(--c4);
+  color: var(--c2);
+  cursor: pointer;
+  padding: 0.25rem 0.45rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition);
+}
+
+.prontuario-edit-btn:hover {
+  background: var(--c4);
+  color: var(--c1);
+}
+
+/* Tabelas do Prontuário */
+.prontuario-table-wrapper {
+  overflow-x: auto;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.prontuario-table-wrapper::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.prontuario-table-wrapper::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 2px;
+}
+
+.prontuario-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.prontuario-table thead th {
+  font-weight: 600;
+  color: var(--c2);
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1.5px solid var(--c4);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.prontuario-table tbody td {
+  padding: 0.45rem 0.6rem;
+  color: var(--c1);
+  border-bottom: 1px solid #f0ece5;
+}
+
+.prontuario-table tbody tr:hover {
+  background: #faf8f4;
+}
+
+/* Planos Realizados — selecionável */
+.plano-row {
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.plano-row.selected {
+  background: #d6eaf8;
+}
+
+.plano-row.selected td {
+  color: #2471a3;
+  font-weight: 600;
+}
+
+/* Informações do Paciente */
+.prontuario-info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.prontuario-info-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.prontuario-info-label {
+  font-weight: 600;
+  color: var(--c1);
+  white-space: nowrap;
+}
+
+.prontuario-info-valor {
+  color: var(--c2);
+  text-align: right;
+}
+
+/* ══════════════════════════════════
+   RESPONSIVIDADE — PRONTUÁRIO
+   ══════════════════════════════════ */
+@media (max-width: 1100px) {
+  .prontuario-sidebar {
+    width: 300px;
+  }
+}
+
+@media (max-width: 992px) {
+  .prontuario-layout {
+    flex-direction: column;
+  }
+
+  .prontuario-sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .prontuario-card {
+    flex: 1;
+    min-width: 260px;
+  }
+}
+
+@media (max-width: 768px) {
+  .prontuario-detalhes-row {
+    flex-direction: column;
+  }
+
+  .prontuario-paciente-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .prontuario-contatos {
+    margin-left: 0;
+  }
+
+  .prontuario-plano-header {
+    flex-direction: column;
+  }
+
+  .prontuario-plano-info-right {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 576px) {
+  .prontuario-sidebar {
+    flex-direction: column;
+  }
+}
+
