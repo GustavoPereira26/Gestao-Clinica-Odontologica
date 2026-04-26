@@ -1,0 +1,47 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+*.swp
+*.sln.docstates
+
+# NuGet
+*.nupkg
+**/packages/
+!**/packages/build/
+*.nuspec
+
+# Logs
+*.log
+logs/
+
+# Configurações locais sensíveis
+appsettings.Local.json
+appsettings.*.local.json
+
+# Build
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Migrations (opcional — mantenha se quiser versionar)
+# **/Migrations/
+
+# IDE
+.idea/
+.vscode/
+*.DS_Store
+Thumbs.db
+node_modules/
+Frontend/node_modules/
