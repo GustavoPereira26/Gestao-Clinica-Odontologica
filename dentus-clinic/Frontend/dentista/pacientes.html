@@ -1,225 +1,211 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dentu's Clinic — Meus Pacientes</title>
 
   <!-- Bootstrap 5 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
-  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
   <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
-  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
   <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
 
   <!-- Tokens globais -->
-  <link rel="stylesheet" href="../root.css"/>
-  
+  <link rel="stylesheet" href="../root.css" />
+
   <!-- Base layout -->
-  <link rel="stylesheet" href="../css/base.css"/>
-  
+  <link rel="stylesheet" href="../css/base.css" />
+
   <!-- Sidebar / Layout -->
-  <link rel="stylesheet" href="../css/layout.css"/>
+  <link rel="stylesheet" href="../css/layout.css" />
 
   <!-- Estilos da página -->
-  <link rel="stylesheet" href="../css/dentista/pacientes.css"/>
+  <link rel="stylesheet" href="../css/dentista/pacientes.css" />
 </head>
 
 <body>
 
-<!-- Botão hamburguer (mobile) -->
-<button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
-  <i class="fa-solid fa-bars"></i>
-</button>
+  <!-- Botão hamburguer (mobile) -->
+  <button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
+    <i class="fa-solid fa-bars"></i>
+  </button>
 
-<!-- Layout principal -->
-<div class="app-layout">
+  <!-- Layout principal -->
+  <div class="app-layout">
 
-  <!-- ═══ SIDEBAR (renderizada pelo componente) ═══ -->
-  <div id="sidebarContainer"></div>
+    <!-- ═══ SIDEBAR (renderizada pelo componente) ═══ -->
+    <div id="sidebarContainer"></div>
 
-  <!-- ═══ CONTEÚDO ═══ -->
-  <main class="app-content">
+    <!-- ═══ CONTEÚDO ═══ -->
+    <main class="app-content">
 
-    <div class="container-fluid py-4">
+      <div class="container-fluid py-4">
 
-      <!-- Notificação -->
-      <div class="row mb-4">
-        <div class="col-12 d-flex justify-content-end">
-          <div class="alert custom-notification alert-dismissible fade show shadow-sm mb-0" role="alert">
-            <div class="d-flex align-items-center">
-              <div class="notification-icon me-3">
-                <i class="fa-solid fa-bell"></i>
-              </div>
-              <div class="notification-content flex-grow-1">
-                <div class="d-flex justify-content-between align-items-center">
-                  <h6 class="mb-1 fw-bold fs-6">Novo Paciente Aguardando na Fila</h6>
-                  <small class="text-muted ms-3 text-nowrap">12:34 PM</small>
+        <!-- Notificação -->
+        <div class="row mb-4">
+          <div class="col-12 d-flex justify-content-end">
+            <div class="alert custom-notification alert-dismissible fade show shadow-sm mb-0" role="alert">
+              <div class="d-flex align-items-center">
+                <div class="notification-icon me-3">
+                  <i class="bi bi-bell-fill"></i>
                 </div>
-                <div class="mt-1 d-flex gap-2">
-                  <span class="badge rounded-pill bg-light text-dark border">João Silva</span>
-                  <span class="badge rounded-pill bg-light text-dark border">Limpeza</span>
+                <div class="notification-content flex-grow-1">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-1 fw-bold fs-6">Novo Paciente Aguardando na Fila</h6>
+                    <small class="text-muted ms-3 text-nowrap">12:34 PM</small>
+                  </div>
+                  <div class="mt-1 d-flex gap-2">
+                    <span class="badge rounded-pill bg-light text-dark border">João Silva</span>
+                    <span class="badge rounded-pill bg-light text-dark border">Limpeza</span>
+                  </div>
                 </div>
               </div>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <div class="col-lg-1 col-md-12 d-flex justify-content-end">
+              <button
+                class="btn btn-white border w-100 d-flex align-items-center justify-content-center gap-1 text-muted py-2"
+                style="font-size: 0.9rem;" id="btnClearFilters">
+                <i class="bi bi-x"></i> Limpar
+              </button>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Texto de Instrução -->
-      <div class="row mb-3">
-        <div class="col-12">
-          <p class="text-muted mb-0">Clique em uma linha para visualizar o prontuário</p>
+        <!-- Table -->
+        <div class="table-container" style="max-height: 65vh;">
+          <table class="table table-custom mb-0 w-100">
+            <thead>
+              <tr>
+                <th class="ps-4">NOME DO PACIENTE <i class="bi bi-chevron-expand ms-1 opacity-75"></i></th>
+                <th>CPF</th>
+                <th>SERVIÇO</th>
+                <th>TELEFONE</th>
+                <th>DATA CADASTRO <i class="bi bi-chevron-expand ms-1 opacity-75"></i></th>
+                <th class="text-center pe-4">AÇÕES</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="ps-4 fw-medium">Ricardo Henrique</td>
+                <td>123.456.789-01</td>
+                <td>Limpeza</td>
+                <td>(15) 91234-5678</td>
+                <td>30/03/2026</td>
+                <td class="text-center pe-4">
+                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td class="ps-4 fw-medium">Lillian Marques</td>
+                <td>234.567.890-12</td>
+                <td>Limpeza</td>
+                <td>(15) 91234-5678</td>
+                <td>30/03/2026</td>
+                <td class="text-center pe-4">
+                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td class="ps-4 fw-medium">Inês Ribeiro</td>
+                <td>345.678.901-23</td>
+                <td>Extração</td>
+                <td>(15) 91234-5678</td>
+                <td>30/03/2026</td>
+                <td class="text-center pe-4">
+                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td class="ps-4 fw-medium">Sofia Costa</td>
+                <td>456.789.012-34</td>
+                <td>Clareamento</td>
+                <td>(15) 91234-5678</td>
+                <td>30/03/2026</td>
+                <td class="text-center pe-4">
+                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td class="ps-4 fw-medium">Catarina Lima</td>
+                <td>567.890.123-45</td>
+                <td>Restauração</td>
+                <td>(15) 91234-5678</td>
+                <td>30/03/2026</td>
+                <td class="text-center pe-4">
+                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td class="ps-4 fw-medium">João Silva</td>
+                <td>678.901.234-56</td>
+                <td>Check-up</td>
+                <td>(15) 91234-5678</td>
+                <td>30/03/2026</td>
+                <td class="text-center pe-4">
+                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td class="ps-4 fw-medium">Thiago Carvalho</td>
+                <td>789.012.345-67</td>
+                <td>Periodontia</td>
+                <td>(15) 91234-5678</td>
+                <td>30/03/2026</td>
+                <td class="text-center pe-4">
+                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td class="ps-4 fw-medium">Ricardo Almeida</td>
+                <td>890.123.456-78</td>
+                <td>Limpeza</td>
+                <td>(15) 91234-5678</td>
+                <td>24/03/2026</td>
+                <td class="text-center pe-4">
+                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
+                </td>
+              </tr>
+              <tr>
+                <td class="ps-4 fw-medium">Filipe Rocha</td>
+                <td>901.234.567-89</td>
+                <td>Extração</td>
+                <td>(15) 91234-5678</td>
+                <td>24/03/2026</td>
+                <td class="text-center pe-4">
+                  <button class="btn-action"><i class="bi bi-trash3"></i></button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
+
       </div>
-
-      <!-- Tabela de Pacientes -->
-      <div class="row">
-        <div class="col-12">
-          <div class="table-responsive shadow-sm rounded bg-white">
-            <table class="table table-bordered table-striped table-hover table-custom mb-0">
-              <thead>
-                <!-- Linha de Filtros -->
-                <tr class="table-filter-row align-middle">
-                  <th>
-                    <div class="d-flex align-items-center gap-2">
-                      <label for="filterCpf" class="mb-0 text-muted small">CPF</label>
-                      <input type="text" class="form-control form-control-sm" id="filterCpf" placeholder="___.___.___-__">
-                    </div>
-                  </th>
-                  <th>
-                    <div class="d-flex align-items-center gap-2">
-                      <label for="filterNome" class="mb-0 text-muted small">Nome</label>
-                      <input type="text" class="form-control form-control-sm" id="filterNome">
-                    </div>
-                  </th>
-                  <th>
-                    <div class="d-flex align-items-center gap-2">
-                      <label for="filterServico" class="mb-0 text-muted small">Serviço</label>
-                      <input type="text" class="form-control form-control-sm" id="filterServico">
-                    </div>
-                  </th>
-                  <th>
-                    <div class="d-flex align-items-center gap-2">
-                      <label for="filterConsulta" class="mb-0 text-muted small">consulta</label>
-                      <input type="text" class="form-control form-control-sm" id="filterConsulta" placeholder="DD/MM/AAAA">
-                    </div>
-                  </th>
-                  <th>
-                    <div class="d-flex align-items-center gap-2">
-                      <label for="filterTelefone" class="mb-0 text-muted small">Telefone</label>
-                      <input type="text" class="form-control form-control-sm" id="filterTelefone" placeholder="(__) _____-____">
-                    </div>
-                  </th>
-                </tr>
-                <!-- Cabeçalhos das Colunas -->
-                <tr>
-                  <th>CPF</th>
-                  <th>Nome</th>
-                  <th>Ultimo Serviço</th>
-                  <th>Ultima consulta</th>
-                  <th>Telefone</th>
-                </tr>
-              </thead>
-              <tbody id="pacientesTableBody">
-                <tr>
-                  <td>123.456.789-00</td>
-                  <td><a href="#" class="text-decoration-none">Maria Souza</a></td>
-                  <td>Limpeza</td>
-                  <td>10/10/2023</td>
-                  <td>(11) 98765-4321</td>
-                </tr>
-                <tr>
-                  <td>234.567.890-11</td>
-                  <td>João Silva</td>
-                  <td>Restauração</td>
-                  <td>05/09/2023</td>
-                  <td>(11) 91234-5678</td>
-                </tr>
-                <tr>
-                  <td>345.678.901-22</td>
-                  <td>Carlos Oliveira</td>
-                  <td>Extração</td>
-                  <td>20/11/2023</td>
-                  <td>(11) 99887-6655</td>
-                </tr>
-                <tr>
-                  <td>456.789.012-33</td>
-                  <td>Ana Costa</td>
-                  <td>Clareamento</td>
-                  <td>15/10/2023</td>
-                  <td>(11) 97654-3210</td>
-                </tr>
-                <tr>
-                  <td>567.890.123-44</td>
-                  <td>Pedro Santos</td>
-                  <td>Implante</td>
-                  <td>01/11/2023</td>
-                  <td>(11) 96543-2109</td>
-                </tr>
-                <tr>
-                  <td>678.901.234-55</td>
-                  <td>Sofia Lima</td>
-                  <td>Ortodontia</td>
-                  <td>25/09/2023</td>
-                  <td>(11) 95432-1098</td>
-                </tr>
-                <tr>
-                  <td>789.012.345-66</td>
-                  <td>Lucas Pereira</td>
-                  <td>Check-up</td>
-                  <td>08/12/2023</td>
-                  <td>(11) 94321-0987</td>
-                </tr>
-                <tr>
-                  <td>890.123.456-77</td>
-                  <td>Isabela Fernandes</td>
-                  <td>Periodontia</td>
-                  <td>03/10/2023</td>
-                  <td>(11) 93210-9876</td>
-                </tr>
-                <tr>
-                  <td>901.234.567-88</td>
-                  <td>Mateus Rocha</td>
-                  <td>Restauração</td>
-                  <td>18/11/2023</td>
-                  <td>(11) 92109-8765</td>
-                </tr>
-                <tr>
-                  <td>012.345.678-99</td>
-                  <td>Laura Almeida</td>
-                  <td>Limpeza</td>
-                  <td>12/12/2023</td>
-                  <td>(11) 91098-7654</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </main>
-</div>
+    </main>
+  </div>
 
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- Componente Sidebar -->
-<script src="../components/sidebar.js"></script>
+  <!-- Componente Sidebar -->
+  <script src="../components/sidebar.js"></script>
 
-<!-- API e Auth -->
-<script src="../js/api.js"></script>
-<script src="../js/auth.js"></script>
+  <!-- API e Auth -->
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
 
-<!-- Lógica da página -->
-<script src="../js/dentista/pacientes.js"></script>
+  <!-- Lógica da página -->
+  <script src="../js/dentista/pacientes.js?v=2"></script>
 
 </body>
+
 </html>

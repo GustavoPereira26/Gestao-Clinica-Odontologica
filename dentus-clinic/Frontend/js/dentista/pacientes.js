@@ -88,38 +88,66 @@ document.addEventListener("DOMContentLoaded", () => {
   const tableRows = tableBody ? tableBody.querySelectorAll('tr') : [];
 
   function filterTable() {
-    const filters = {
-      cpf: filterInputs.cpf ? filterInputs.cpf.value.toLowerCase() : '',
-      nome: filterInputs.nome ? filterInputs.nome.value.toLowerCase() : '',
-      servico: filterInputs.servico ? filterInputs.servico.value.toLowerCase() : '',
-      consulta: filterInputs.consulta ? filterInputs.consulta.value.toLowerCase() : '',
-      telefone: filterInputs.telefone ? filterInputs.telefone.value.toLowerCase() : ''
-    };
+    try {
+      const filters = {
+        cpf: filterInputs.cpf ? filterInputs.cpf.value.toLowerCase().trim() : '',
+        nome: filterInputs.nome ? filterInputs.nome.value.toLowerCase().trim() : '',
+        servico: filterInputs.servico ? filterInputs.servico.value.toLowerCase().trim() : '',
+        consulta: filterInputs.consulta ? filterInputs.consulta.value.toLowerCase().trim() : '',
+        telefone: filterInputs.telefone ? filterInputs.telefone.value.toLowerCase().trim() : ''
+      };
 
-    tableRows.forEach(row => {
-      const cells = row.querySelectorAll('td');
-      if (cells.length === 5) {
-        // cells[1] contains the name inside an <a> tag, textContent gets it properly
-        const matchCpf = cells[0].textContent.toLowerCase().includes(filters.cpf);
-        const matchNome = cells[1].textContent.toLowerCase().includes(filters.nome);
-        const matchServico = cells[2].textContent.toLowerCase().includes(filters.servico);
-        const matchConsulta = cells[3].textContent.toLowerCase().includes(filters.consulta);
-        const matchTelefone = cells[4].textContent.toLowerCase().includes(filters.telefone);
+      const tbody = document.getElementById('pacientesTableBody');
+      if (!tbody) return;
+      
+      const rows = tbody.querySelectorAll('tr');
 
-        if (matchCpf && matchNome && matchServico && matchConsulta && matchTelefone) {
-          row.style.display = '';
-        } else {
-          row.style.display = 'none';
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        if (cells.length >= 5) {
+          // cells map: 0:Nome, 1:CPF, 2:Serviço, 3:Telefone, 4:Consulta, 5:Ações
+          const textNome = cells[0].textContent || '';
+          const textCpf = cells[1].textContent || '';
+          const textServico = cells[2].textContent || '';
+          const textTelefone = cells[3].textContent || '';
+          const textConsulta = cells[4].textContent || '';
+
+          const matchNome = textNome.toLowerCase().includes(filters.nome);
+          const matchCpf = textCpf.toLowerCase().includes(filters.cpf);
+          const matchServico = textServico.toLowerCase().includes(filters.servico);
+          const matchTelefone = textTelefone.toLowerCase().includes(filters.telefone);
+          const matchConsulta = textConsulta.toLowerCase().includes(filters.consulta);
+
+          if (matchCpf && matchNome && matchServico && matchConsulta && matchTelefone) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
         }
-      }
-    });
+      });
+    } catch (err) {
+      console.error('Filter Error:', err);
+    }
   }
 
-  // Adicionar o evento 'input' em todos os campos de filtro para atualizar em tempo real
+  // Adicionar eventos 'input', 'keyup' e 'change' em todos os campos de filtro para atualizar em tempo real
   Object.values(filterInputs).forEach(input => {
     if (input) {
       input.addEventListener('input', filterTable);
+      input.addEventListener('keyup', filterTable);
+      input.addEventListener('change', filterTable);
     }
   });
+
+  // Botão de limpar filtros
+  const btnClearFilters = document.getElementById('btnClearFilters');
+  if (btnClearFilters) {
+    btnClearFilters.addEventListener('click', () => {
+      Object.values(filterInputs).forEach(input => {
+        if (input) input.value = '';
+      });
+      filterTable(); // Re-render the table with empty filters
+    });
+  }
 
 });
