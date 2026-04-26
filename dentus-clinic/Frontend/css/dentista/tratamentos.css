@@ -1,0 +1,1862 @@
+/* ═══════════════════════════════════════════════
+   tratamentos.css — Dentus Clinic
+   ═══════════════════════════════════════════════ */
+
+.app-content {
+  background-color: var(--c4, #e7e7db) !important;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+/* ══════════════════════════════════
+   CARDS DE MÉTRICAS
+   ══════════════════════════════════ */
+.metricas-row {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.metrica-card {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: 1.1rem 1.4rem;
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition), transform var(--transition);
+}
+
+.metrica-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.metrica-icon {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--c4);
+  border-radius: var(--radius-sm);
+  color: var(--c1);
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.metrica-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.metrica-label {
+  font-size: 0.78rem;
+  color: var(--c2);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.metrica-valor {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--c1);
+  line-height: 1.2;
+}
+
+/* ══════════════════════════════════
+   BARRA DE FILTROS
+   ══════════════════════════════════ */
+.filter-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-6);
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.filter-field {
+  flex: 1;
+  min-width: 160px;
+}
+
+.filter-label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--c2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.3rem;
+}
+
+.filter-input-wrapper {
+  position: relative;
+}
+
+.filter-input-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--c3);
+  font-size: 0.88rem;
+  pointer-events: none;
+  transition: color var(--transition);
+}
+
+.filter-input {
+  width: 100%;
+  padding: 0.55rem 0.85rem 0.55rem 2.3rem;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-md);
+  background: var(--c5);
+  color: var(--c1);
+  font-size: 0.82rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.filter-input-date {
+  padding-left: 0.85rem;
+}
+
+.filter-input:focus {
+  outline: none;
+  border-color: var(--c2);
+  box-shadow: 0 0 0 3px rgba(110, 84, 48, 0.08);
+}
+
+.filter-input:focus ~ .filter-input-icon {
+  color: var(--c1);
+}
+
+.filter-input::placeholder {
+  color: var(--c3);
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+  padding-bottom: 1px;
+}
+
+.btn-filter-clear {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 0.5rem 1rem;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-md);
+  background: #fff;
+  color: var(--c2);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.btn-filter-clear:hover {
+  border-color: #c0392b;
+  color: #c0392b;
+  background: #fdf0ee;
+}
+
+/* ══════════════════════════════════
+   LAYOUT TABELA + RESUMO
+   ══════════════════════════════════ */
+.tratamentos-layout {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+.tratamentos-tabela-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.tratamentos-resumo-col {
+  width: 300px;
+  flex-shrink: 0;
+}
+
+/* ══════════════════════════════════
+   ABAS
+   ══════════════════════════════════ */
+.tratamentos-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--c4);
+  margin-bottom: 0;
+  background: #fff;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  overflow: hidden;
+}
+
+.tab-btn {
+  flex: 0 0 auto;
+  padding: 0.7rem 1.2rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--c2);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  margin-bottom: -2px;
+}
+
+.tab-btn:hover {
+  color: var(--c1);
+  background: rgba(110,84,48,.04);
+}
+
+.tab-btn.active {
+  color: var(--c1);
+  border-bottom-color: var(--c1);
+  background: rgba(110,84,48,.06);
+}
+
+/* ══════════════════════════════════
+   TABELA
+   ══════════════════════════════════ */
+.table-container {
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  overflow-y: auto;
+  max-height: 480px;
+  box-shadow: var(--shadow-sm);
+  background-color: #fff;
+}
+
+.table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.table-custom {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0;
+}
+
+.table-custom thead th {
+  background-color: var(--c1) !important;
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  border: none;
+  padding: 0.85rem 0.6rem;
+  text-transform: lowercase;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.table-custom thead th i {
+  margin-left: 0.3rem;
+  font-size: 0.7rem;
+  opacity: 0.7;
+}
+
+.table-custom tbody tr {
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.table-custom tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.table-custom tbody tr:nth-child(even) {
+  background-color: #f6f5ef;
+}
+
+.table-custom tbody tr:hover {
+  background-color: #edecd6 !important;
+}
+
+.table-custom tbody tr.selected {
+  background-color: #d9d7c4 !important;
+}
+
+.table-custom tbody td {
+  padding: 0.75rem 0.6rem;
+  font-size: 0.82rem;
+  color: #555;
+  vertical-align: middle;
+  border: none;
+  white-space: nowrap;
+}
+
+/* Barra de progresso na tabela */
+.progress-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progress-bar-wrapper {
+  width: 80px;
+  height: 10px;
+  background: #e9e9e0;
+  border-radius: 5px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #5b8db8;
+  border-radius: 5px;
+  transition: width 0.4s ease;
+}
+
+.progress-percent {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--c1);
+  min-width: 32px;
+}
+
+/* Botão prontuário */
+.btn-prontuario {
+  background: transparent;
+  border: 1px solid var(--c4);
+  color: var(--c2);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.5rem;
+  cursor: pointer;
+  transition: all var(--transition);
+  font-size: 0.85rem;
+}
+
+.btn-prontuario:hover {
+  background: var(--c1);
+  color: #fff;
+  border-color: var(--c1);
+}
+
+/* ══════════════════════════════════
+   PAINEL RESUMO DO TRATAMENTO
+   ══════════════════════════════════ */
+.resumo-card {
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-md);
+  padding: 1.5rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.resumo-titulo {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c1);
+  text-align: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--c4);
+}
+
+/* Foto placeholder */
+.resumo-foto {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.foto-placeholder {
+  width: 100px;
+  height: 100px;
+  border: 1.5px solid rgba(110,84,48,.2);
+  border-radius: var(--radius-sm);
+  background: #f7f4f0;
+  position: relative;
+  overflow: hidden;
+}
+
+.foto-placeholder .foto-x::before,
+.foto-placeholder .foto-x::after {
+  content: '';
+  position: absolute;
+  width: 140%;
+  height: 1.5px;
+  background: rgba(110,84,48,.25);
+  top: 50%;
+  left: -20%;
+}
+
+.foto-placeholder .foto-x::before {
+  transform: rotate(40deg);
+}
+
+.foto-placeholder .foto-x::after {
+  transform: rotate(-40deg);
+}
+
+/* Info do paciente */
+.resumo-paciente-info {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-bottom: 1.25rem;
+}
+
+.resumo-label-small {
+  font-size: 0.68rem;
+  color: var(--c3);
+  text-transform: lowercase;
+  letter-spacing: 0.04em;
+}
+
+.resumo-nome {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--c1);
+  line-height: 1.3;
+}
+
+.resumo-servico {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--c2);
+}
+
+/* Barra de progresso */
+.resumo-progresso-wrapper {
+  margin-bottom: 1.25rem;
+}
+
+.resumo-progresso-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.resumo-etapas {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--c2);
+}
+
+.resumo-progresso-bar {
+  width: 100%;
+  height: 12px;
+  background: #e9e9e0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.resumo-progresso-fill {
+  height: 100%;
+  background: #5b8db8;
+  border-radius: 6px;
+  transition: width 0.5s ease;
+}
+
+/* Etapas */
+.resumo-etapas-info {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.resumo-etapa-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.resumo-etapa-item.text-end {
+  text-align: right;
+}
+
+.resumo-etapa-nome {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--c1);
+}
+
+/* Botões do resumo */
+.resumo-acoes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.btn-resumo-editar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--c1);
+  background: #fff;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-resumo-editar:hover {
+  border-color: var(--c1);
+  background: var(--c4);
+}
+
+.btn-resumo-iniciar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.65rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  background: #27ae60;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-resumo-iniciar:hover {
+  background: #219a52;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(39,174,96,.25);
+}
+
+/* ══════════════════════════════════
+   RESPONSIVIDADE
+   ══════════════════════════════════ */
+@media (max-width: 1200px) {
+  .tratamentos-resumo-col {
+    width: 270px;
+  }
+}
+
+@media (max-width: 992px) {
+  .tratamentos-layout {
+    flex-direction: column;
+  }
+
+  .tratamentos-resumo-col {
+    width: 100%;
+    order: -1;
+  }
+
+  .metricas-row {
+    gap: var(--space-3);
+  }
+
+  .metrica-card {
+    min-width: 150px;
+  }
+
+  .filter-bar {
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .filter-field {
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .metricas-row {
+    flex-direction: column;
+  }
+
+  .metrica-card {
+    min-width: 0;
+  }
+
+  .tratamentos-tabs {
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    font-size: 0.75rem;
+    padding: 0.6rem 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .filter-bar {
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .filter-field {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .filter-actions {
+    justify-content: stretch;
+  }
+
+  .btn-filter-clear {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   TELA EDITAR PLANO
+   ══════════════════════════════════════════════════ */
+
+/* Conteúdo principal da lista (escondido quando editar plano aparece) */
+.view-lista {
+  display: block;
+}
+
+.view-lista.hidden {
+  display: none;
+}
+
+/* ── Botão Voltar ── */
+.btn-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--c1);
+  background: #fff;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+  margin-bottom: var(--space-6);
+}
+
+.btn-voltar:hover {
+  background: var(--c4);
+  border-color: var(--c1);
+}
+
+/* ── Layout do editor ── */
+.editar-plano-layout {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+}
+
+.editar-plano-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.editar-plano-sidebar {
+  width: 310px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ══════════════════════════════════
+   ODONTOGRAMA
+   ══════════════════════════════════ */
+.odontograma-section {
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.odontograma-titulo {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--c1);
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.odontograma-chart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.arcada-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+}
+
+.arcada-grupo {
+  display: flex;
+  gap: 2px;
+}
+
+.arcada-gap {
+  width: 18px;
+}
+
+/* Dente individual */
+.dente {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--transition);
+  user-select: none;
+  border: 1px solid transparent;
+}
+
+.dente:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  z-index: 2;
+  position: relative;
+}
+
+.dente.saudavel {
+  background: #fff;
+  color: var(--c1);
+  border-color: #ccc;
+}
+
+.dente.selecao {
+  background: #e74c3c;
+  color: #fff;
+  border-color: #c0392b;
+}
+
+.dente.tratado {
+  background: #3498db;
+  color: #fff;
+  border-color: #2980b9;
+}
+
+.dente.ausente {
+  background: #bdc3c7;
+  color: #fff;
+  border-color: #95a5a6;
+}
+
+/* Legenda */
+.odontograma-legenda {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.legenda-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: var(--c2);
+  font-weight: 500;
+}
+
+.legenda-cor {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid rgba(0,0,0,.1);
+}
+
+.saudavel-bg { background: #fff; border-color: #ccc !important; }
+.selecao-bg  { background: #e74c3c; }
+.tratado-bg  { background: #3498db; }
+.ausente-bg  { background: #bdc3c7; }
+
+/* ══════════════════════════════════
+   ETAPAS DO PLANEJAMENTO
+   ══════════════════════════════════ */
+.etapas-section {
+  margin-bottom: var(--space-6);
+}
+
+.etapas-titulo {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--c1);
+  margin-bottom: 1rem;
+}
+
+.etapas-scroll {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  padding-bottom: var(--space-3);
+  scroll-snap-type: x mandatory;
+}
+
+.etapas-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.etapas-scroll::-webkit-scrollbar-track {
+  background: #eee;
+  border-radius: 3px;
+}
+
+.etapas-scroll::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+/* Card de Etapa */
+.etapa-card {
+  min-width: 260px;
+  max-width: 280px;
+  flex-shrink: 0;
+  background: #fff;
+  border: 2px solid var(--c4);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  scroll-snap-align: start;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  cursor: pointer;
+}
+
+.etapa-card:hover {
+  border-color: var(--c3);
+}
+
+.etapa-card.active {
+  border-color: #d4a017;
+  box-shadow: 0 0 0 2px rgba(212,160,23,.2), var(--shadow-md);
+}
+
+/* Header da Etapa */
+.etapa-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  background: var(--c4);
+  border-bottom: 1px solid rgba(110,84,48,.1);
+}
+
+.etapa-card.active .etapa-header {
+  background: #f5e6b8;
+}
+
+.etapa-numero {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--c1);
+}
+
+.etapa-header-titulo {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--c1);
+  flex: 1;
+}
+
+.etapa-menu-btn {
+  background: none;
+  border: none;
+  color: var(--c2);
+  cursor: pointer;
+  padding: 0.15rem 0.3rem;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition);
+}
+
+.etapa-menu-btn:hover {
+  background: rgba(110,84,48,.1);
+}
+
+/* Body da Etapa */
+.etapa-body {
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.etapa-campo label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--c2);
+  margin-bottom: 0.25rem;
+}
+
+.etapa-edit-btn {
+  background: none;
+  border: none;
+  color: var(--c3);
+  cursor: pointer;
+  padding: 0.1rem 0.25rem;
+  border-radius: 3px;
+  transition: color var(--transition);
+  line-height: 1;
+}
+
+.etapa-edit-btn:hover {
+  color: var(--c1);
+}
+
+.etapa-input {
+  width: 100%;
+  padding: 0.45rem 0.65rem;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-sm);
+  background: var(--c5);
+  color: var(--c1);
+  font-size: 0.8rem;
+}
+
+.etapa-input:focus {
+  outline: none;
+  border-color: var(--c2);
+}
+
+.etapa-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 0.45rem 0.65rem;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-sm);
+  background: var(--c5);
+  color: var(--c1);
+  font-size: 0.78rem;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.etapa-textarea:focus {
+  outline: none;
+  border-color: var(--c2);
+}
+
+/* ══════════════════════════════════
+   ALERTA CLÍNICO
+   ══════════════════════════════════ */
+.alerta-clinico {
+  background: #fffbea;
+  border: 1.5px solid #f0d060;
+  border-radius: var(--radius-md);
+  padding: 1rem 1.15rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.alerta-titulo {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #b8860b;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.alerta-titulo i {
+  font-size: 0.9rem;
+  color: #d4a017;
+}
+
+.alerta-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.alerta-item {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.alerta-label {
+  font-weight: 600;
+  color: #6e5430;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.alerta-valor {
+  color: #555;
+}
+
+/* ══════════════════════════════════
+   SIDEBAR DO EDITAR — RESUMO CARD
+   ══════════════════════════════════ */
+.editar-resumo-card {
+  padding: 1.25rem 1rem;
+}
+
+/* ── Datas Consultas ── */
+.datas-consultas {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--c4);
+}
+
+.datas-titulo {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--c1);
+  margin-bottom: 0.75rem;
+}
+
+.datas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.data-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--c2);
+  padding: 0.35rem 0.6rem;
+  border-radius: var(--radius-sm);
+  background: var(--c5);
+  border: 1px solid var(--c4);
+}
+
+.data-item i {
+  font-size: 0.78rem;
+  color: var(--c3);
+}
+
+.data-item.destaque {
+  background: #e8f4fd;
+  border-color: #a8d4f0;
+  color: #2980b9;
+  font-weight: 600;
+}
+
+.data-item.destaque i {
+  color: #3498db;
+}
+
+/* ── Calendário ── */
+.calendario-wrapper {
+  margin-top: 0.5rem;
+}
+
+.calendario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+}
+
+.calendario-mes {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--c1);
+  letter-spacing: 0.03em;
+}
+
+.calendario-nav {
+  background: none;
+  border: 1px solid var(--c4);
+  color: var(--c2);
+  cursor: pointer;
+  padding: 0.2rem 0.45rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.7rem;
+  transition: all var(--transition);
+}
+
+.calendario-nav:hover {
+  background: var(--c4);
+  color: var(--c1);
+}
+
+.calendario-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.calendario-table thead th {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--c3);
+  padding: 0.3rem 0;
+  text-transform: uppercase;
+}
+
+.calendario-table tbody td {
+  font-size: 0.75rem;
+  padding: 0.3rem 0;
+  color: var(--c1);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background var(--transition);
+}
+
+.calendario-table tbody td:hover {
+  background: var(--c4);
+}
+
+.calendario-table tbody td.empty {
+  cursor: default;
+}
+
+.calendario-table tbody td.empty:hover {
+  background: transparent;
+}
+
+.calendario-table tbody td.today {
+  background: var(--c1);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 50%;
+}
+
+.calendario-table tbody td.consulta {
+  background: #e74c3c;
+  color: #fff;
+  font-weight: 600;
+  border-radius: 50%;
+}
+
+.calendario-table tbody td.consulta:hover {
+  background: #c0392b;
+}
+
+/* ══════════════════════════════════
+   RESPONSIVIDADE — EDITAR PLANO
+   ══════════════════════════════════ */
+@media (max-width: 1100px) {
+  .editar-plano-sidebar {
+    width: 280px;
+  }
+}
+
+@media (max-width: 992px) {
+  .editar-plano-layout {
+    flex-direction: column;
+  }
+
+  .editar-plano-sidebar {
+    width: 100%;
+    order: -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .alerta-clinico {
+    flex: 1;
+    min-width: 280px;
+  }
+
+  .editar-resumo-card {
+    flex: 1;
+    min-width: 280px;
+  }
+}
+
+@media (max-width: 768px) {
+  .etapa-card {
+    min-width: 230px;
+  }
+
+  .arcada-grupo {
+    gap: 1px;
+  }
+
+  .dente {
+    width: 28px;
+    height: 28px;
+    font-size: 0.6rem;
+  }
+
+  .arcada-gap {
+    width: 10px;
+  }
+}
+
+@media (max-width: 576px) {
+  .editar-plano-sidebar {
+    flex-direction: column;
+  }
+
+  .etapa-card {
+    min-width: 200px;
+    max-width: none;
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   MODAL CONFIRMAR INICIAR CONSULTA
+   ══════════════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-confirmar {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 3rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+  max-width: 600px;
+  width: 90%;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-confirmar-titulo {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--c1);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.modal-confirmar-body {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.modal-foto-placeholder {
+  width: 130px;
+  height: 130px;
+  border: 2px solid rgba(110,84,48,.2);
+  border-radius: var(--radius-sm);
+  background: #f7f4f0;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.modal-foto-placeholder .foto-x::before,
+.modal-foto-placeholder .foto-x::after {
+  content: '';
+  position: absolute;
+  width: 140%;
+  height: 2px;
+  background: rgba(110,84,48,.25);
+  top: 50%;
+  left: -20%;
+}
+
+.modal-foto-placeholder .foto-x::before { transform: rotate(40deg); }
+.modal-foto-placeholder .foto-x::after { transform: rotate(-40deg); }
+
+.modal-confirmar-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.modal-info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-info-label {
+  font-size: 0.72rem;
+  color: var(--c3);
+  text-transform: capitalize;
+}
+
+.modal-info-valor {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--c1);
+}
+
+.modal-info-destaque {
+  font-size: 1.5rem;
+  color: var(--c1);
+}
+
+.modal-confirmar-acoes {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.btn-modal-iniciar {
+  padding: 0.65rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2980b9;
+  background: #fff;
+  border: 2.5px solid #2980b9;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.btn-modal-iniciar:hover {
+  background: #2980b9;
+  color: #fff;
+  text-decoration: none;
+}
+
+.btn-modal-cancelar {
+  padding: 0.65rem 2.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c1);
+  background: #fff;
+  border: 2.5px solid var(--c1);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-modal-cancelar:hover {
+  background: var(--c1);
+  color: #fff;
+}
+
+/* ══════════════════════════════════════════════════
+   TELA CONSULTA EM ANDAMENTO
+   ══════════════════════════════════════════════════ */
+
+/* Header */
+.consulta-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.consulta-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.consulta-header-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.consulta-header-label {
+  font-size: 0.72rem;
+  color: var(--c3);
+  text-transform: capitalize;
+}
+
+.consulta-header-nome {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--c1);
+  line-height: 1.2;
+}
+
+.consulta-header-servico {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--c1);
+}
+
+.consulta-header-divider {
+  width: 2px;
+  height: 40px;
+  background: var(--c4);
+  flex-shrink: 0;
+}
+
+.consulta-badge-atendimento {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+  background: #27ae60;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+.consulta-badge-atendimento i {
+  font-size: 0.45rem;
+}
+
+.alerta-clinico-compact {
+  max-width: 320px;
+  flex-shrink: 0;
+}
+
+/* Layout */
+.consulta-layout {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.consulta-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.consulta-sidebar {
+  width: 310px;
+  flex-shrink: 0;
+}
+
+/* Odontograma da consulta */
+.consulta-odontograma-section {
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.consulta-odontograma-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.consulta-odontograma-sub {
+  font-size: 0.78rem;
+  color: var(--c3);
+  margin: 0;
+}
+
+.consulta-selecionar-todos {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--c1);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.consulta-selecionar-todos input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--c1);
+  cursor: pointer;
+}
+
+/* Dente na consulta */
+.dente-consulta {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all var(--transition);
+  user-select: none;
+  border: 1px solid transparent;
+}
+
+.dente-consulta:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0,0,0,.15);
+  z-index: 2;
+  position: relative;
+}
+
+.dente-consulta.saudavel {
+  background: #fff;
+  color: var(--c1);
+  border-color: #ccc;
+}
+
+.dente-consulta.tratamento {
+  background: #3498db;
+  color: #fff;
+  border-color: #2980b9;
+  box-shadow: 0 0 0 2px rgba(52,152,219,.3);
+}
+
+.tratamento-bg {
+  background: #3498db;
+}
+
+/* ── Checklist + Campos ── */
+.consulta-campos-row {
+  display: flex;
+  gap: var(--space-4);
+  align-items: flex-start;
+}
+
+/* Checklist Card */
+.checklist-card {
+  min-width: 260px;
+  max-width: 300px;
+  background: #fffbea;
+  border: 1.5px solid #f0d060;
+  border-radius: var(--radius-md);
+  padding: 1.15rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.checklist-titulo {
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--c1);
+  margin-bottom: 0.85rem;
+}
+
+.checklist-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+.checklist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--c1);
+  cursor: pointer;
+  padding: 0.2rem 0;
+}
+
+.checklist-item input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--c1);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.checklist-item input[type="checkbox"]:checked + span,
+.checklist-item:has(input:checked) {
+  color: var(--c2);
+}
+
+.btn-adicionar-etapa {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  color: var(--c2);
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.3rem 0;
+  transition: color var(--transition);
+  margin-bottom: 0.5rem;
+}
+
+.btn-adicionar-etapa:hover {
+  color: var(--c1);
+}
+
+.checklist-aviso {
+  font-size: 0.7rem;
+  color: #b8860b;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin: 0;
+}
+
+/* Condição e Descrição */
+.consulta-condicao-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.consulta-campo {
+  display: flex;
+  flex-direction: column;
+}
+
+.consulta-campo-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--c2);
+  margin-bottom: 0.3rem;
+}
+
+.consulta-campo-input {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--c1);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.consulta-campo-input:focus {
+  outline: none;
+  border-color: var(--c2);
+  box-shadow: 0 0 0 3px rgba(110,84,48,.08);
+}
+
+.consulta-campo-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 0.6rem 0.75rem;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--c1);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.consulta-campo-textarea:focus {
+  outline: none;
+  border-color: var(--c2);
+  box-shadow: 0 0 0 3px rgba(110,84,48,.08);
+}
+
+/* Observações Clínicas */
+.observacoes-card {
+  background: #fffbea;
+  border: 1.5px solid #f0d060;
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.observacoes-titulo {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--c1);
+  margin-bottom: 0.85rem;
+}
+
+.observacoes-textarea {
+  flex: 1;
+  width: 100%;
+  min-height: 180px;
+  padding: 0.75rem;
+  border: 1.5px solid #e8d89c;
+  border-radius: var(--radius-sm);
+  background: rgba(255,255,255,.6);
+  color: var(--c1);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.observacoes-textarea:focus {
+  outline: none;
+  border-color: #d4a017;
+  background: #fff;
+}
+
+.observacoes-aviso {
+  font-size: 0.72rem;
+  color: #999;
+  text-align: center;
+  margin: 0.75rem 0 0;
+  font-style: italic;
+}
+
+/* Footer da Consulta */
+.consulta-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--c4);
+  flex-wrap: wrap;
+}
+
+.btn-prontuario-footer {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--c1);
+  background: #fff;
+  border: 2px solid var(--c1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-prontuario-footer:hover {
+  background: var(--c1);
+  color: #fff;
+}
+
+.consulta-aviso-info {
+  background: #f5e6b8;
+  border: 1.5px solid #d4a017;
+  border-radius: var(--radius-md);
+  padding: 0.65rem 1.15rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #8B6914;
+  text-align: center;
+  max-width: 260px;
+  line-height: 1.35;
+}
+
+.btn-finalizar-consulta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.8rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--c1);
+  background: #fff;
+  border: 2px solid var(--c1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-finalizar-consulta:hover {
+  background: var(--c1);
+  color: #fff;
+  box-shadow: var(--shadow-md);
+}
+
+/* ══════════════════════════════════
+   RESPONSIVIDADE — CONSULTA
+   ══════════════════════════════════ */
+@media (max-width: 992px) {
+  .consulta-layout {
+    flex-direction: column;
+  }
+
+  .consulta-sidebar {
+    width: 100%;
+  }
+
+  .consulta-header-row {
+    flex-direction: column;
+  }
+
+  .alerta-clinico-compact {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .consulta-campos-row {
+    flex-direction: column;
+  }
+
+  .checklist-card {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .consulta-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .consulta-aviso-info {
+    max-width: 100%;
+  }
+
+  .modal-confirmar {
+    padding: 1.5rem;
+  }
+
+  .modal-confirmar-body {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .modal-foto-placeholder {
+    width: 100px;
+    height: 100px;
+  }
+}
