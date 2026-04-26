@@ -34,7 +34,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const baseDate = new Date(2026, 2, 16); 
     baseDate.setDate(baseDate.getDate() + (weekOffset * 7));
     
-    const currentWeekNum = 12 + weekOffset;
+    let currentWeekNum = ((11 + weekOffset) % 52) + 1;
+    if (currentWeekNum <= 0) currentWeekNum += 52;
     if (weekLabel) weekLabel.textContent = `Semana ${currentWeekNum}`;
     
     if (monthYearLabel) {
