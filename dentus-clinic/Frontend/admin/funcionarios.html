@@ -62,7 +62,7 @@
                     <button class="filter-chip active" data-filter="todos" id="filterTodos">Todos</button>
                     <button class="filter-chip" data-filter="secretaria" id="filterSecretaria">Secretária</button>
                     <button class="filter-chip" data-filter="dentista" id="filterDentista">Dentista</button>
-                    <button class="filter-chip" data-filter="ti" id="filterTI">TI/ADM</button>
+                    <button class="filter-chip" data-filter="administrador" id="filterTI">ADM</button>
                 </div>
             </div>
 
@@ -112,35 +112,42 @@
                                 <form id="formVisualizar">
                                     <div class="mb-3">
                                         <label class="form-label fw-semibold">Cargo</label>
-                                        <input type="text" class="form-control" id="visCargo" value="Dentista" readonly />
+                                        <input type="text" class="form-control" id="visCargo" readonly />
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label fw-semibold">Nome</label>
-                                        <input type="text" class="form-control" id="visNome" value="Ana Costa" />
+                                        <input type="text" class="form-control" id="visNome" readonly />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">CPF</label>
+                                        <input type="text" class="form-control" id="visCpf" readonly />
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">E-mail</label>
+                                        <input type="text" class="form-control" id="visEmail" readonly />
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="form-label fw-semibold">Telefone</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" value="(11) 98765-4321" />
-                                            <span class="input-group-text"><i class="bi bi-pencil"></i></span>
-                                            <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                        </div>
+                                        <input type="text" class="form-control" id="visTelefone" readonly />
                                     </div>
 
-                                    <div class="mb-3">
+                                    <div class="mb-3" id="visDataNascimentoContainer">
+                                        <label class="form-label fw-semibold">Data de Nascimento</label>
+                                        <input type="text" class="form-control" id="visDataNascimento" readonly />
+                                    </div>
+
+                                    <div class="mb-3" id="visCROContainer">
                                         <label class="form-label fw-semibold">CRO</label>
-                                        <input type="text" class="form-control" value="123456" />
+                                        <input type="text" class="form-control" id="visCRO" readonly />
                                     </div>
 
-                                    <div class="mb-4">
+                                    <div class="mb-4" id="visEspecialidadeContainer">
                                         <label class="form-label fw-semibold">Especialidade</label>
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" value="Aparelhos odontológicos" />
-                                            <span class="input-group-text"><i class="bi bi-pencil"></i></span>
-                                            <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
-                                        </div>
+                                        <input type="text" class="form-control" id="visEspecialidade" readonly />
                                     </div>
 
                                     <!-- Botões de Ação -->
@@ -274,41 +281,22 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="FuncionariosPage.resetarModalRestaurar()"></button>
                         </div>
                         
-                        <!-- Passo 1: Confirmação -->
-                        <div class="modal-body d-flex flex-column align-items-center text-center mt-3" id="step1Restaurar">
-                            <div class="mb-3 p-3 border rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                <i class="bi bi-lock fs-2"></i>
-                            </div>
-                            <h6 class="mb-2 fw-semibold">Tem certeza que deseja Restaurar a Senha?</h6>
-                            <small class="text-muted">Essa ação não pode ser revertida</small>
-                            <div class="d-flex justify-content-center gap-3 mt-4 mb-2">
-                                <button type="button" class="btn btn-outline-secondary px-4 text-dark bg-white border-dark" data-bs-dismiss="modal" style="border-radius: 8px;" onclick="FuncionariosPage.resetarModalRestaurar()">Cancelar</button>
-                                <button type="button" class="btn btn-primary px-4" onclick="FuncionariosPage.confirmarRestaurarSenha()" style="border-radius: 8px;">
-                                    OK
-                                </button>
-                            </div>
-                        </div>
+                        <div class="modal-body px-4 pb-4">
+                            <div id="alertaRestaurar" class="alert alert-danger d-none mb-3"></div>
 
-                        <!-- Passo 2: Sucesso -->
-                        <div class="modal-body d-flex flex-column align-items-center text-center mt-3 d-none" id="step2Restaurar">
-                            <div class="mb-3 p-3 border rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
-                                <i class="bi bi-lock fs-2"></i>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Nova Senha</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="novaSenhaInput" placeholder="Digite a nova senha" />
+                                    <button class="btn btn-outline-secondary" type="button" id="toggleNovaSenha">
+                                        <i class="bi bi-eye-slash"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <h6 class="mb-3 fw-semibold">A Senha foi restaurada para</h6>
-                            
-                            <!-- Input com a nova senha -->
-                            <div class="input-group mb-2 w-75 mx-auto">
-                                <input type="text" class="form-control text-center fw-bold" id="novaSenhaInput" readonly>
-                                <button class="btn btn-outline-secondary" type="button" onclick="FuncionariosPage.copiarNovaSenha()" title="Copiar Senha">
-                                    <i class="bi bi-copy"></i>
-                                </button>
-                            </div>
-                            <small class="text-muted mb-4">Informe ao usuário a nova senha</small>
 
-                            <div class="d-flex justify-content-center w-100 mb-2">
-                                <button type="button" class="btn btn-primary px-5" data-bs-dismiss="modal" onclick="FuncionariosPage.resetarModalRestaurar()" style="border-radius: 8px;">
-                                    OK
-                                </button>
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal" onclick="FuncionariosPage.resetarModalRestaurar()">Cancelar</button>
+                                <button type="button" class="btn btn-primary px-4" onclick="FuncionariosPage.confirmarRestaurarSenha()">Salvar</button>
                             </div>
                         </div>
 

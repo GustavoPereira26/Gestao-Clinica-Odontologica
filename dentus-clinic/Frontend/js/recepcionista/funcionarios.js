@@ -135,8 +135,8 @@ const FuncionariosPage = (() => {
         SidebarComponent.render('sidebarContainer', {
             perfil: 'recepcionista',
             ativo: 'funcionarios',
-            nome: 'Ana Paula',
-            cargo: 'Secretaria'
+            nome: sessionStorage.getItem('nome') || 'Secretária',
+            cargo: 'Secretária'
         });
 
         // 2. Botão hamburger (mobile)

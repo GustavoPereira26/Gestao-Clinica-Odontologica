@@ -77,6 +77,10 @@ async function apiCadastrarPaciente(dados) {
     return request('/pacientes', 'POST', dados);
 }
 
+async function apiInativarPaciente(id) {
+    return request(`/pacientes/${id}/inativar`, 'PATCH');
+}
+
 // ── Funcionários ──
 async function apiGetFuncionarios() {
     return request('/funcionarios');
@@ -86,6 +90,10 @@ async function apiCadastrarFuncionario(dados) {
     return request('/funcionarios', 'POST', dados);
 }
 
+async function apiAtualizarFuncionario(id, dados) {
+    return request(`/funcionarios/${id}`, 'PATCH', dados);
+}
+
 // ── Dentistas ──
 async function apiGetDentistas() {
     return request('/dentistas');
@@ -93,6 +101,10 @@ async function apiGetDentistas() {
 
 async function apiCadastrarDentista(dados) {
     return request('/dentistas', 'POST', dados);
+}
+
+async function apiAtualizarDentista(id, dados) {
+    return request(`/dentistas/${id}`, 'PATCH', dados);
 }
 
 // ── Especialidades ──

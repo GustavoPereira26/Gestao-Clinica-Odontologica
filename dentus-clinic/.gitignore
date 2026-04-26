@@ -43,4 +43,5 @@ bld/
 .vscode/
 *.DS_Store
 Thumbs.db
-/Frontend
+node_modules/
+Frontend/node_modules/

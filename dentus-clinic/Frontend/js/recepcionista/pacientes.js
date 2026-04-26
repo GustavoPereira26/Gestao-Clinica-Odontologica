@@ -266,8 +266,8 @@ const PacientesPage = (() => {
         SidebarComponent.render('sidebarContainer', {
             perfil: 'recepcionista',
             ativo: 'pacientes',
-            nome: 'Ana Paula',
-            cargo: 'secretaria',
+            nome: sessionStorage.getItem('nome') || 'Secretária',
+            cargo: 'Secretária',
         });
 
         // 2. Hamburger

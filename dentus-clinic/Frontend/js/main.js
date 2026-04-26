@@ -42,7 +42,17 @@ function initFormSubmit() {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
         form.classList.add('was-validated');
-        if (!form.checkValidity()) return;
+        if (!form.checkValidity()) {
+            const emailInput = document.getElementById('email');
+            const senhaInput = document.getElementById('senha');
+            if (!emailInput.checkValidity()) {
+                mostrarErro('Por favor, insira um e-mail válido.');
+            } else if (!senhaInput.checkValidity()) {
+                mostrarErro('A senha deve ter no mínimo 6 caracteres.');
+            }
+            return;
+        }
+        document.getElementById('alertaErro').classList.add('d-none');
 
         // Loading
         setLoadingState(true, btnText, btnSpinner, btnLogin);

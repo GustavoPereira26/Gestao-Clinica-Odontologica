@@ -35,7 +35,7 @@ const CardFuncionario = {
         <span class="cargo-badge ${tipo}">${func.cargo}</span>
 
         <button class="btn-visualizar"
-                onclick="FuncionariosPage.visualizar(${func.id})"
+                onclick="FuncionariosPage.visualizar(${func.id}, '${tipo}')"
                 id="btnVisualizar-${func.id}"
                 title="Visualizar ${func.nome}">
           <i class="bi bi-eye"></i>
@@ -83,7 +83,8 @@ const GridFuncionarios = {
 const FuncionariosPage = (() => {
   let filtroAtivo = 'todos';
   let termoBusca  = '';
-  let funcionarioAtualId = null;
+  let funcionarioAtualId   = null;
+  let funcionarioAtualTipo = null;
 
   async function carregarFuncionarios() {
     try {
@@ -93,20 +94,25 @@ const FuncionariosPage = (() => {
       ]);
 
       const funcionarios = (resFuncionarios.dados || []).map(f => ({
-        id:    f.id,
-        nome:  f.nome,
-        cargo: f.cargo,
-        tipo:  f.cargo.toLowerCase(),
-        email: f.email
+        id:             f.id,
+        nome:           f.nome,
+        cargo:          f.cargo,
+        tipo:           f.cargo.toLowerCase(),
+        cpf:            f.cpf,
+        dataNascimento: f.dataNascimento,
+        telefone:       f.telefone,
+        email:          f.email
       }));
 
       const dentistas = (resDentistas.dados || []).map(d => ({
-        id:    d.id,
-        nome:  d.nome,
-        cargo: 'Dentista',
-        tipo:  'dentista',
-        email: d.email,
-        cro:   d.cro,
+        id:            d.id,
+        nome:          d.nome,
+        cargo:         'Dentista',
+        tipo:          'dentista',
+        cpf:           d.cpf,
+        telefone:      d.telefone,
+        email:         d.email,
+        cro:           d.cro,
         especialidade: d.nomeEspecialidade
       }));
 
@@ -161,10 +167,11 @@ const FuncionariosPage = (() => {
   /**
    * Ação mock de visualizar funcionário
    */
-  function visualizar(id) {
-    const func = FUNCIONARIOS.find(f => f.id === id);
+  function visualizar(id, tipo) {
+    const func = FUNCIONARIOS.find(f => f.id === id && f.tipo === tipo);
     if (func) {
-      funcionarioAtualId = id;
+      funcionarioAtualId   = id;
+      funcionarioAtualTipo = tipo;
       // Toggle visibility
       document.getElementById('listaFuncionarios').classList.add('d-none');
       document.getElementById('visualizarFuncionario').classList.remove('d-none');
@@ -179,12 +186,30 @@ const FuncionariosPage = (() => {
           icone.classList.add('d-none');
       }
       
-      // Update form values
-      document.getElementById('visCargo').value = func.cargo;
-      document.getElementById('visNome').value = func.nome;
-      
-      // Update headers
-      document.getElementById('pageTitle').textContent = `Visualizar: ${func.nome}`;
+      const isDentista = func.tipo === 'dentista';
+      const cpfFormatado = (func.cpf || '').replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+
+      document.getElementById('visCargo').value    = func.cargo;
+      document.getElementById('visNome').value     = func.nome;
+      document.getElementById('visCpf').value      = cpfFormatado;
+      document.getElementById('visEmail').value    = func.email || '';
+      document.getElementById('visTelefone').value = func.telefone || '';
+
+      document.getElementById('visDataNascimentoContainer').classList.toggle('d-none', isDentista);
+      document.getElementById('visCROContainer').classList.toggle('d-none', !isDentista);
+      document.getElementById('visEspecialidadeContainer').classList.toggle('d-none', !isDentista);
+
+      if (isDentista) {
+        document.getElementById('visCRO').value           = func.cro || '';
+        document.getElementById('visEspecialidade').value = func.especialidade || '';
+      } else {
+        const dt = func.dataNascimento;
+        document.getElementById('visDataNascimento').value = dt
+          ? new Date(dt + 'T00:00:00').toLocaleDateString('pt-BR')
+          : '';
+      }
+
+      document.getElementById('pageTitle').textContent    = `Visualizar: ${func.nome}`;
       document.getElementById('pageSubtitle').textContent = func.cargo;
     }
   }
@@ -194,7 +219,7 @@ const FuncionariosPage = (() => {
    */
   function confirmarDeletar() {
     if (funcionarioAtualId !== null) {
-      const index = FUNCIONARIOS.findIndex(f => f.id === funcionarioAtualId);
+      const index = FUNCIONARIOS.findIndex(f => f.id === funcionarioAtualId && f.tipo === funcionarioAtualTipo);
       if (index > -1) {
         // Encontra o modal e fecha
         const modalEl = document.getElementById('modalDeletarFuncionario');
@@ -221,51 +246,44 @@ const FuncionariosPage = (() => {
         document.getElementById('pageTitle').textContent = 'Funcionários';
         document.getElementById('pageSubtitle').textContent = 'Gerencie a equipe da Dentus Clinic';
         
-        funcionarioAtualId = null;
+        funcionarioAtualId   = null;
+        funcionarioAtualTipo = null;
       }
     }
   }
 
-  /**
-   * Confirma a restauração de senha e mostra o resultado
-   */
-  function confirmarRestaurarSenha() {
-    document.getElementById('step1Restaurar').classList.add('d-none');
-    document.getElementById('step2Restaurar').classList.remove('d-none');
-    
-    // Gera senha aleatória estilo a65sd76a5sd
-    const charset = "abcdefghijklmnopqrstuvwxyz0123456789";
-    let novaSenha = "";
-    for(let i=0; i < 11; i++) novaSenha += charset.charAt(Math.floor(Math.random() * charset.length));
-    
-    document.getElementById('novaSenhaInput').value = novaSenha;
+  async function confirmarRestaurarSenha() {
+    const senha = document.getElementById('novaSenhaInput').value.trim();
+    const alerta = document.getElementById('alertaRestaurar');
+    alerta.classList.add('d-none');
+
+    if (!senha || senha.length < 6) {
+      alerta.textContent = 'A senha deve ter no mínimo 6 caracteres.';
+      alerta.classList.remove('d-none');
+      return;
+    }
+
+    try {
+      if (funcionarioAtualTipo === 'dentista') {
+        await apiAtualizarDentista(funcionarioAtualId, { senha });
+      } else {
+        await apiAtualizarFuncionario(funcionarioAtualId, { senha });
+      }
+
+      const modalEl = document.getElementById('modalRestaurarSenha');
+      bootstrap.Modal.getInstance(modalEl)?.hide();
+      resetarModalRestaurar();
+    } catch (erro) {
+      alerta.textContent = erro.message;
+      alerta.classList.remove('d-none');
+    }
   }
 
-  /**
-   * Reinicia o estado do modal para futuras aberturas
-   */
   function resetarModalRestaurar() {
-    setTimeout(() => { // Aguarda fechar caso seja dismiss
-        document.getElementById('step1Restaurar').classList.remove('d-none');
-        document.getElementById('step2Restaurar').classList.add('d-none');
-        document.getElementById('novaSenhaInput').value = '';
+    setTimeout(() => {
+      document.getElementById('novaSenhaInput').value = '';
+      document.getElementById('alertaRestaurar').classList.add('d-none');
     }, 300);
-  }
-
-  /**
-   * Copia a nova senha para a área de transferência
-   */
-  function copiarNovaSenha() {
-    const input = document.getElementById('novaSenhaInput');
-    navigator.clipboard.writeText(input.value).then(() => {
-       // Opcional: feedback visual de copiado
-       const btn = input.nextElementSibling;
-       const icon = btn.querySelector('i');
-       icon.classList.replace('bi-copy', 'bi-check2');
-       setTimeout(() => {
-         icon.classList.replace('bi-check2', 'bi-copy');
-       }, 2000);
-    });
   }
 
   /**
@@ -291,7 +309,7 @@ const FuncionariosPage = (() => {
             icone.classList.add('d-none');
             
             if (funcionarioAtualId !== null) {
-                const func = FUNCIONARIOS.find(f => f.id === funcionarioAtualId);
+                const func = FUNCIONARIOS.find(f => f.id === funcionarioAtualId && f.tipo === funcionarioAtualTipo);
                 if (func) func.foto = e.target.result;
             }
         }
@@ -396,7 +414,20 @@ const FuncionariosPage = (() => {
       });
     }
 
-    // 3. Carrega da API
+    // 3. Toggle mostrar/ocultar nova senha no modal
+    const toggleNovaSenha = document.getElementById('toggleNovaSenha');
+    if (toggleNovaSenha) {
+      toggleNovaSenha.addEventListener('click', () => {
+        const input = document.getElementById('novaSenhaInput');
+        const icon  = toggleNovaSenha.querySelector('i');
+        const oculto = input.type === 'password';
+        input.type = oculto ? 'text' : 'password';
+        icon.classList.toggle('bi-eye-slash', !oculto);
+        icon.classList.toggle('bi-eye', oculto);
+      });
+    }
+
+    // 4. Carrega da API
     carregarFuncionarios();
     carregarEspecialidades();
 
@@ -463,7 +494,7 @@ const FuncionariosPage = (() => {
     }
   }
 
-  return { init, visualizar, adicionar, confirmarDeletar, confirmarRestaurarSenha, resetarModalRestaurar, copiarNovaSenha, cancelarCadastro, confirmarCadastro, acionarInputFoto, lidarUploadFoto };
+  return { init, visualizar, adicionar, confirmarDeletar, confirmarRestaurarSenha, resetarModalRestaurar, cancelarCadastro, confirmarCadastro, acionarInputFoto, lidarUploadFoto };
 })();
 
 

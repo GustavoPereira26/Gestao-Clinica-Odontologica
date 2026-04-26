@@ -3,33 +3,7 @@
  * Componentes: TabelaPacientes, CardMobilePaciente, ModalConfirmacao
  */
 
-/* ══════════════════════════════════════
-   DADOS MOCK — 20 pacientes
-══════════════════════════════════════ */
-const PACIENTES = [
-  { id: 1,  nome: 'Ricardo Henrique',    cpf: '123.456.789-01', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-  { id: 2,  nome: 'Lillian Marques',     cpf: '234.567.890-12', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-  { id: 3,  nome: 'Inês Ribeiro',        cpf: '345.678.901-23', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-  { id: 4,  nome: 'Sofia Costa',         cpf: '456.789.012-34', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-  { id: 5,  nome: 'Catarina Lima',       cpf: '567.890.123-45', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-  { id: 6,  nome: 'João Silva',          cpf: '678.901.234-56', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-  { id: 7,  nome: 'Thiago Carvalho',     cpf: '789.012.345-67', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-  { id: 8,  nome: 'Ricardo Almeida',     cpf: '890.123.456-78', celular: '(15) 91234-5678', dataCadastro: '2026-03-24' },
-  { id: 9,  nome: 'Filipe Rocha',        cpf: '901.234.567-89', celular: '(15) 91234-5678', dataCadastro: '2026-03-24' },
-  { id: 10, nome: 'Maria Souza',         cpf: '012.345.678-90', celular: '(15) 91234-5678', dataCadastro: '2026-03-24' },
-  { id: 11, nome: 'Beatriz Mendes',      cpf: '111.222.333-44', celular: '(15) 91234-5678', dataCadastro: '2026-03-24' },
-  { id: 12, nome: 'Mariana Fernandes',   cpf: '222.333.444-55', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-  { id: 13, nome: 'Vitor Santos',        cpf: '333.444.555-66', celular: '(15) 91234-5678', dataCadastro: '2026-03-24' },
-  { id: 14, nome: 'Pedro Santos',        cpf: '444.555.666-77', celular: '(15) 91234-5678', dataCadastro: '2026-03-24' },
-  { id: 15, nome: 'André Nunes',         cpf: '555.666.777-88', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-  { id: 16, nome: 'Luís Rodrigues',      cpf: '666.777.888-99', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-  { id: 17, nome: 'Ana Oliveira',        cpf: '777.888.999-00', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-  { id: 18, nome: 'Laura Pires',         cpf: '888.999.000-11', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-  { id: 19, nome: 'Patrícia Gomes',      cpf: '999.000.111-22', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-  { id: 20, nome: 'Carlos Pereira',      cpf: '100.200.300-40', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-  { id: 21, nome: 'Miguel Santos',       cpf: '200.300.400-50', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-  { id: 22, nome: 'Daniel Martins',      cpf: '300.400.500-60', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-];
+let PACIENTES = [];
 
 
 /* ══════════════════════════════════════
@@ -38,8 +12,9 @@ const PACIENTES = [
 
 /** Mascara CPF: ex: ***.***.**9-01 */
 function mascaraCPF(cpf) {
-  const partes = cpf.split(/[.\-]/);
-  return `***.***.*${partes[2].charAt(1)}${partes[2].charAt(2)}-${partes[3]}`;
+  const d = cpf.replace(/\D/g, '');
+  if (d.length !== 11) return cpf;
+  return `***.***.*${d[7]}${d[8]}-${d[9]}${d[10]}`;
 }
 
 /** Formata data ISO para DD/MM/YYYY */
@@ -93,8 +68,8 @@ const TabelaPacientes = {
       <tr style="animation: rowAppear 0.3s ease-out ${i * 0.03}s both;">
         <td class="td-nome">${p.nome}</td>
         <td class="td-cpf">${mascaraCPF(p.cpf)}</td>
-        <td class="td-celular">${p.celular}</td>
-        <td class="td-data">${formatarData(p.dataCadastro)}</td>
+        <td class="td-celular">${p.celular || '—'}</td>
+        <td class="td-data">${p.dataNascimento ? formatarData(p.dataNascimento) : '—'}</td>
         <td class="td-acoes">
           <button class="btn-delete"
                   onclick="PacientesPage.confirmarExclusao(${p.id})"
@@ -138,7 +113,7 @@ const CardMobilePaciente = {
           <div class="card-mobile-nome">${p.nome}</div>
           <div class="card-mobile-detail">
             <span><i class="bi bi-credit-card"></i> ${mascaraCPF(p.cpf)}</span>
-            <span><i class="bi bi-calendar3"></i> ${formatarData(p.dataCadastro)}</span>
+            <span><i class="bi bi-calendar3"></i> ${p.dataNascimento ? formatarData(p.dataNascimento) : '—'}</span>
           </div>
         </div>
         <div class="card-mobile-actions">
@@ -166,6 +141,22 @@ const PacientesPage = (() => {
   let sortAsc = true;
   let pacienteParaExcluir = null;
 
+  async function carregarPacientes() {
+    try {
+      const res = await apiGetPacientes();
+      PACIENTES = (res.dados || []).map(p => ({
+        id:             p.id,
+        nome:           p.nome,
+        cpf:            p.cpf,
+        celular:        p.telefone || '',
+        dataNascimento: p.dataNascimento || ''
+      }));
+      atualizar();
+    } catch (erro) {
+      console.error('Erro ao carregar pacientes:', erro.message);
+    }
+  }
+
   /**
    * Lista filtrada de pacientes
    */
@@ -177,7 +168,7 @@ const PacientesPage = (() => {
     let lista = PACIENTES.filter(p => {
       const matchNome = !nome || p.nome.toLowerCase().includes(nome);
       const matchCPF  = !cpf  || p.cpf.replace(/\D/g, '').includes(cpf);
-      const matchData = !data || p.dataCadastro === data;
+      const matchData = !data || p.dataNascimento === data;
       return matchNome && matchCPF && matchData;
     });
 
@@ -186,7 +177,7 @@ const PacientesPage = (() => {
       lista.sort((a, b) => {
         let va, vb;
         if (sortCol === 'nome') { va = a.nome.toLowerCase(); vb = b.nome.toLowerCase(); }
-        if (sortCol === 'data') { va = a.dataCadastro; vb = b.dataCadastro; }
+        if (sortCol === 'data') { va = a.dataNascimento; vb = b.dataNascimento; }
         if (va < vb) return sortAsc ? -1 : 1;
         if (va > vb) return sortAsc ?  1 : -1;
         return 0;
@@ -221,10 +212,10 @@ const PacientesPage = (() => {
     pacienteParaExcluir = id;
 
     // Popula o modal
-    document.getElementById('mdlNome').textContent = p.nome;
-    document.getElementById('mdlCPF').textContent = mascaraCPF(p.cpf);
-    document.getElementById('mdlCelular').textContent = p.celular;
-    document.getElementById('mdlData').textContent = formatarData(p.dataCadastro);
+    document.getElementById('mdlNome').textContent    = p.nome;
+    document.getElementById('mdlCPF').textContent     = mascaraCPF(p.cpf);
+    document.getElementById('mdlCelular').textContent = p.celular || '—';
+    document.getElementById('mdlData').textContent    = p.dataNascimento ? formatarData(p.dataNascimento) : '—';
 
     // Abre o modal
     const modalEl = document.getElementById('modalDeletarPaciente');
@@ -235,27 +226,29 @@ const PacientesPage = (() => {
   /**
    * Remove o item da lista
    */
-  function efetivarExclusao() {
-    if (pacienteParaExcluir !== null) {
-      const index = PACIENTES.findIndex(p => p.id === pacienteParaExcluir);
-      if (index > -1) {
-        PACIENTES.splice(index, 1);
-        atualizar();
-        
-        // Esconde modal
-        const modalEl = document.getElementById('modalDeletarPaciente');
-        const modalInst = bootstrap.Modal.getInstance(modalEl);
-        if (modalInst) modalInst.hide();
-        
-        // Remove backdrop em caso de travamento do BS
-        const backdrops = document.querySelectorAll('.modal-backdrop');
-        backdrops.forEach(b => b.remove());
-        document.body.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
-      }
-      pacienteParaExcluir = null;
+  async function efetivarExclusao() {
+    if (pacienteParaExcluir === null) return;
+
+    try {
+      await apiInativarPaciente(pacienteParaExcluir);
+
+      PACIENTES = PACIENTES.filter(p => p.id !== pacienteParaExcluir);
+      atualizar();
+
+      const modalEl = document.getElementById('modalDeletarPaciente');
+      const modalInst = bootstrap.Modal.getInstance(modalEl);
+      if (modalInst) modalInst.hide();
+
+      const backdrops = document.querySelectorAll('.modal-backdrop');
+      backdrops.forEach(b => b.remove());
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    } catch (erro) {
+      console.error('Erro ao inativar paciente:', erro.message);
     }
+
+    pacienteParaExcluir = null;
   }
 
   /**
@@ -266,8 +259,8 @@ const PacientesPage = (() => {
     SidebarComponent.render('sidebarContainer', {
       perfil: 'admin',
       ativo: 'pacientes',
-      nome: 'Fernanda Lima',
-      cargo: 'TI'
+      nome: sessionStorage.getItem('nome') || 'Admin',
+      cargo: 'Administrador'
     });
 
     // 2. Hamburger
@@ -337,8 +330,8 @@ const PacientesPage = (() => {
       });
     });
 
-    // 8. Render inicial
-    atualizar();
+    // 8. Carrega pacientes da API
+    carregarPacientes();
   }
 
   return { init, confirmarExclusao, efetivarExclusao };
