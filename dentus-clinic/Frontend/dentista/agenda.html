@@ -45,13 +45,220 @@
   <!-- ═══ CONTEÚDO ═══ -->
   <main class="app-content">
 
-    <div class="container-fluid">
+    <div class="container-fluid py-4">
 
-      <div class="row g-4"></div>
+      <!-- Notificação -->
+      <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-end">
+          <div class="alert custom-notification alert-dismissible fade show shadow-sm mb-0" role="alert">
+            <div class="d-flex align-items-center">
+              <div class="notification-icon me-3">
+                <i class="bi bi-bell-fill"></i>
+              </div>
+              <div class="notification-content flex-grow-1">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h6 class="mb-1 fw-bold fs-6">Novo Paciente Aguardando na Fila</h6>
+                  <small class="text-muted ms-3 text-nowrap">12:34 PM</small>
+                </div>
+                <div class="mt-1 d-flex gap-2">
+                  <span class="badge rounded-pill bg-light text-dark border">João Silva</span>
+                  <span class="badge rounded-pill bg-light text-dark border">Limpeza</span>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navegação do Calendário -->
+      <div class="row mb-4">
+        <div class="col-12 text-center calendar-nav">
+          <div class="d-inline-flex align-items-center gap-4">
+            <button id="btnPrevWeek" class="btn btn-outline-secondary btn-sm px-3 py-1"><i class="bi bi-chevron-left"></i></button>
+            <div class="text-center">
+              <h5 id="weekLabel" class="mb-0 fw-bold fs-5">Semana 12</h5>
+              <small id="monthYearLabel" class="text-muted">03/2026</small>
+            </div>
+            <button id="btnNextWeek" class="btn btn-outline-secondary btn-sm px-3 py-1"><i class="bi bi-chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade do Calendário -->
+      <div class="row">
+        <div class="col-12">
+          <div class="table-responsive shadow-sm rounded bg-white p-3">
+            <table class="table table-bordered calendar-table align-middle mb-0">
+              <thead>
+                <tr class="text-center">
+                  <th class="time-col border-0"></th>
+                  <th id="day-0">Seg 20</th>
+                  <th id="day-1">Ter 21</th>
+                  <th id="day-2">Qua 22</th>
+                  <th id="day-3">Qui 23</th>
+                  <th id="day-4">Sex 24</th>
+                  <th id="day-5">Sab 25</th>
+                  <th id="day-6">Dom 26</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- 8 AM -->
+                <tr>
+                  <td class="time-col">8 AM</td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                </tr>
+                <!-- 9 AM -->
+                <tr>
+                  <td class="time-col">9 AM</td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                </tr>
+                <!-- 10 AM -->
+                <tr>
+                  <td class="time-col">10 AM</td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                </tr>
+                <!-- 11 AM -->
+                <tr>
+                  <td class="time-col">11 AM</td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                </tr>
+                <!-- 12 PM -->
+                <tr>
+                  <td class="time-col">12 PM</td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                </tr>
+                <!-- 1 PM -->
+                <tr>
+                  <td class="time-col">1 PM</td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                </tr>
+                <!-- 2 PM -->
+                <tr>
+                  <td class="time-col">2 PM</td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                </tr>
+                <!-- 3 PM -->
+                <tr>
+                  <td class="time-col">3 PM</td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                </tr>
+                <!-- 4 PM -->
+                <tr>
+                  <td class="time-col">4 PM</td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                </tr>
+                <!-- 5 PM -->
+                <tr>
+                  <td class="time-col">5 PM</td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-unavailable"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                  <td><div class="slot-available"></div></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
+  </main>
 </div>
 
-
+<!-- Modal Detalhes do Agendamento -->
+<div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow">
+      <div class="modal-header border-0 pb-0">
+        <p class="modal-title text-muted mb-0" id="appointmentModalLabel">Quinta - Feira &nbsp;|&nbsp; 11 AM</p>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pt-3 px-5 pb-4">
+        <div class="row mb-4">
+          <div class="col-md-6">
+            <small class="text-muted d-block mb-1">paciente</small>
+            <span class="fs-4 fw-medium text-dark">Jonatan</span>
+          </div>
+          <div class="col-md-6">
+            <small class="text-muted d-block mb-1">Serviço</small>
+            <span class="fs-4 fw-medium text-dark">Clareamento</span>
+          </div>
+        </div>
+        
+        <div class="mb-5">
+          <h6 class="fw-medium text-dark mb-3">Observação do paciente</h6>
+          <p class="text-muted small lh-lg text-justify mb-0">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc scelerisque suscipit rhoncus. In lectus nisl, ultricies efficitur nibh quis, lobortis porttitor tortor. Fusce imperdiet turpis vitae lorem consectetur auctor. Donec efficitur mauris non leo placerat tincidunt. Suspendisse sodales vel ante non molestie. Donec massa quam, ultrices in egestas a, viverra a orci. Praesent vitae libero sapien. Etiam lobortis, ex ac vulputate maximus, lacus metus cursus augue, in commodo tortor erat at nibh. Donec congue scelerisque mauris sed rhoncus. Fusce eros risus, finibus non neque at, aliquet pellentesque nisl. Phasellus justo diam, bibendum quis turpis vel, vehicula posuere erat. Integer fringilla elementum nisl, ac ullamcorper sem pulvinar tempus. Sed ultricies nisl nec erat fringilla sollicitudin quis id lacus.
+          </p>
+        </div>
+        
+        <div class="text-center mt-4">
+          <button type="button" class="btn btn-primary px-4 py-2 rounded-3 fw-medium shadow-sm" data-bs-dismiss="modal">
+            <i class="bi bi-arrow-left me-2"></i> Voltar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
