@@ -6,20 +6,20 @@ const SidebarComponent = (() => {
 
   const menusPorPerfil = {
     recepcionista: [
-      { id: 'dashboard',    icon: 'fa-solid fa-chart-line',       label: 'Página Inicial', href: '../recepcionista/dashboard.html' },
-      { id: 'consultas',    icon: 'fa-solid fa-calendar-days', label: 'Consultas',  href: '../recepcionista/consultas.html' },
-      { id: 'pacientes',    icon: 'fa-solid fa-user-injured',       label: 'Pacientes',     href: '../recepcionista/pacientes.html' },
-      { id: 'funcionarios', icon: 'fa-solid fa-id-card', label: 'Funcionários',  href: '../recepcionista/funcionarios.html' },
+      { id: 'dashboard',    icon: 'fa-solid fa-chart-line',     label: 'Página Inicial', href: '../recepcionista/dashboard.html' },
+      { id: 'consultas',    icon: 'fa-solid fa-calendar-days',  label: 'Consultas',      href: '../recepcionista/consultas.html' },
+      { id: 'pacientes',    icon: 'fa-solid fa-user-injured',   label: 'Pacientes',      href: '../recepcionista/pacientes.html' },
+      { id: 'funcionarios', icon: 'fa-solid fa-id-card',        label: 'Funcionários',   href: '../recepcionista/funcionarios.html' },
     ],
     dentista: [
-      { id: 'dashboard',   icon: 'fa-solid fa-chart-line',         label: 'Página Inicial', href: '../dentista/dashboard.html' },
-      { id: 'tratamentos', icon: 'fa-solid fa-notes-medical',   label: 'Tratamentos',    href: '../dentista/tratamentos.html' },
-      { id: 'agenda',      icon: 'fa-solid fa-calendar-days',     label: 'Agenda',         href: '../dentista/agenda.html' },
-      { id: 'pacientes',   icon: 'fa-solid fa-user-injured',        label: 'Meus Pacientes', href: '../dentista/pacientes.html' },
+      { id: 'dashboard',   icon: 'fa-solid fa-tooth',         label: 'Página Inicial', href: '../dentista/dashboard.html' },
+      { id: 'tratamentos', icon: 'fa-solid fa-file',         label: 'Tratamentos',    href: '../dentista/tratamentos.html' },
+      { id: 'agenda',      icon: 'fa-solid fa-calendar-days', label: 'Agenda',         href: '../dentista/agenda.html' },
+      { id: 'pacientes',   icon: 'fa-solid fa-user-injured',  label: 'Meus Pacientes', href: '../dentista/pacientes.html' },
     ],
     admin: [
-      { id: 'funcionarios', icon: 'fa-solid fa-id-card', label: 'Funcionários',  href: '../admin/funcionarios.html' },
-      { id: 'pacientes',    icon: 'fa-solid fa-user-injured',       label: 'Pacientes',     href: '../admin/pacientes.html' }
+      { id: 'funcionarios', icon: 'fa-solid fa-id-card',      label: 'Funcionários',  href: '../admin/funcionarios.html' },
+      { id: 'pacientes',    icon: 'fa-solid fa-user-injured', label: 'Pacientes',     href: '../admin/pacientes.html' }
     ]
   };
 
@@ -49,7 +49,7 @@ const SidebarComponent = (() => {
 
         <!-- Logo -->
         <div class="sidebar-logo">
-        <img src="../img/dental.svg" alt="Ícone de início" class="dente">
+        <img src="../img/dental.svg" alt="Ícone de início" class="sidebar-logo-img">
           <span class="sidebar-brand">Dentu's Clinic</span>
         </div>
         <hr class="sidebar-divider" />
