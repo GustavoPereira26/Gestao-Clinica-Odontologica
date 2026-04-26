@@ -45,10 +45,166 @@
   <!-- ═══ CONTEÚDO ═══ -->
   <main class="app-content">
 
-    <div class="container-fluid">
+    <div class="container-fluid py-4">
 
-      <div class="row g-4"></div>
+      <!-- Notificação -->
+      <div class="row mb-4">
+        <div class="col-12 d-flex justify-content-end">
+          <div class="alert custom-notification alert-dismissible fade show shadow-sm mb-0" role="alert">
+            <div class="d-flex align-items-center">
+              <div class="notification-icon me-3">
+                <i class="bi bi-bell-fill"></i>
+              </div>
+              <div class="notification-content flex-grow-1">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h6 class="mb-1 fw-bold fs-6">Novo Paciente Aguardando na Fila</h6>
+                  <small class="text-muted ms-3 text-nowrap">12:34 PM</small>
+                </div>
+                <div class="mt-1 d-flex gap-2">
+                  <span class="badge rounded-pill bg-light text-dark border">João Silva</span>
+                  <span class="badge rounded-pill bg-light text-dark border">Limpeza</span>
+                </div>
+              </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Texto de Instrução -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <p class="text-muted mb-0">Clique em uma linha para visualizar o prontuário</p>
+        </div>
+      </div>
+
+      <!-- Tabela de Pacientes -->
+      <div class="row">
+        <div class="col-12">
+          <div class="table-responsive shadow-sm rounded bg-white">
+            <table class="table table-bordered table-striped table-hover table-custom mb-0">
+              <thead>
+                <!-- Linha de Filtros -->
+                <tr class="table-filter-row align-middle">
+                  <th>
+                    <div class="d-flex align-items-center gap-2">
+                      <label for="filterCpf" class="mb-0 text-muted small">CPF</label>
+                      <input type="text" class="form-control form-control-sm" id="filterCpf" placeholder="___.___.___-__">
+                    </div>
+                  </th>
+                  <th>
+                    <div class="d-flex align-items-center gap-2">
+                      <label for="filterNome" class="mb-0 text-muted small">Nome</label>
+                      <input type="text" class="form-control form-control-sm" id="filterNome">
+                    </div>
+                  </th>
+                  <th>
+                    <div class="d-flex align-items-center gap-2">
+                      <label for="filterServico" class="mb-0 text-muted small">Serviço</label>
+                      <input type="text" class="form-control form-control-sm" id="filterServico">
+                    </div>
+                  </th>
+                  <th>
+                    <div class="d-flex align-items-center gap-2">
+                      <label for="filterConsulta" class="mb-0 text-muted small">consulta</label>
+                      <input type="text" class="form-control form-control-sm" id="filterConsulta" placeholder="DD/MM/AAAA">
+                    </div>
+                  </th>
+                  <th>
+                    <div class="d-flex align-items-center gap-2">
+                      <label for="filterTelefone" class="mb-0 text-muted small">Telefone</label>
+                      <input type="text" class="form-control form-control-sm" id="filterTelefone" placeholder="(__) _____-____">
+                    </div>
+                  </th>
+                </tr>
+                <!-- Cabeçalhos das Colunas -->
+                <tr>
+                  <th>CPF</th>
+                  <th>Nome</th>
+                  <th>Ultimo Serviço</th>
+                  <th>Ultima consulta</th>
+                  <th>Telefone</th>
+                </tr>
+              </thead>
+              <tbody id="pacientesTableBody">
+                <tr>
+                  <td>123.456.789-00</td>
+                  <td><a href="#" class="text-decoration-none">Maria Souza</a></td>
+                  <td>Limpeza</td>
+                  <td>10/10/2023</td>
+                  <td>(11) 98765-4321</td>
+                </tr>
+                <tr>
+                  <td>234.567.890-11</td>
+                  <td>João Silva</td>
+                  <td>Restauração</td>
+                  <td>05/09/2023</td>
+                  <td>(11) 91234-5678</td>
+                </tr>
+                <tr>
+                  <td>345.678.901-22</td>
+                  <td>Carlos Oliveira</td>
+                  <td>Extração</td>
+                  <td>20/11/2023</td>
+                  <td>(11) 99887-6655</td>
+                </tr>
+                <tr>
+                  <td>456.789.012-33</td>
+                  <td>Ana Costa</td>
+                  <td>Clareamento</td>
+                  <td>15/10/2023</td>
+                  <td>(11) 97654-3210</td>
+                </tr>
+                <tr>
+                  <td>567.890.123-44</td>
+                  <td>Pedro Santos</td>
+                  <td>Implante</td>
+                  <td>01/11/2023</td>
+                  <td>(11) 96543-2109</td>
+                </tr>
+                <tr>
+                  <td>678.901.234-55</td>
+                  <td>Sofia Lima</td>
+                  <td>Ortodontia</td>
+                  <td>25/09/2023</td>
+                  <td>(11) 95432-1098</td>
+                </tr>
+                <tr>
+                  <td>789.012.345-66</td>
+                  <td>Lucas Pereira</td>
+                  <td>Check-up</td>
+                  <td>08/12/2023</td>
+                  <td>(11) 94321-0987</td>
+                </tr>
+                <tr>
+                  <td>890.123.456-77</td>
+                  <td>Isabela Fernandes</td>
+                  <td>Periodontia</td>
+                  <td>03/10/2023</td>
+                  <td>(11) 93210-9876</td>
+                </tr>
+                <tr>
+                  <td>901.234.567-88</td>
+                  <td>Mateus Rocha</td>
+                  <td>Restauração</td>
+                  <td>18/11/2023</td>
+                  <td>(11) 92109-8765</td>
+                </tr>
+                <tr>
+                  <td>012.345.678-99</td>
+                  <td>Laura Almeida</td>
+                  <td>Limpeza</td>
+                  <td>12/12/2023</td>
+                  <td>(11) 91098-7654</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
+  </main>
 </div>
 
 
