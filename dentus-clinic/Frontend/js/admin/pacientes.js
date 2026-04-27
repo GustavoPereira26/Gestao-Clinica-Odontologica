@@ -75,7 +75,7 @@ const TabelaPacientes = {
                   onclick="PacientesPage.confirmarExclusao(${p.id})"
                   title="Excluir ${p.nome}"
                   id="btnDelete-${p.id}">
-            <i class="bi bi-trash3"></i>
+            <i class="fa-solid fa-trash"></i>
           </button>
         </td>
       </tr>
@@ -99,7 +99,7 @@ const CardMobilePaciente = {
     if (lista.length === 0) {
       container.innerHTML = `
         <div class="empty-state" id="emptyStateMobile">
-          <i class="bi bi-person-x"></i>
+          <i class="fa-solid fa-user-xmark"></i>
           <p>Nenhum paciente encontrado</p>
         </div>
       `;
@@ -121,7 +121,7 @@ const CardMobilePaciente = {
                   onclick="PacientesPage.confirmarExclusao(${p.id})"
                   title="Excluir ${p.nome}"
                   id="btnDeleteMobile-${p.id}">
-            <i class="bi bi-trash3"></i>
+            <i class="fa-solid fa-trash"></i>
           </button>
         </div>
       </div>
@@ -321,10 +321,10 @@ const PacientesPage = (() => {
 
         // Atualiza ícones
         document.querySelectorAll('.th-sort i').forEach(icon => {
-          icon.className = 'bi bi-chevron-expand';
+          icon.className = 'fa-solid fa-sort';
         });
         const icon = btn.querySelector('i');
-        icon.className = sortAsc ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
+        icon.className = sortAsc ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down';
 
         atualizar();
       });

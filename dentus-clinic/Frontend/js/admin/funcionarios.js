@@ -28,7 +28,7 @@ const CardFuncionario = {
                id="card-${func.id}">
 
         <div class="card-avatar" id="avatar-${func.id}">
-          ${func.foto ? `<img src="${func.foto}" alt="${func.nome}" style="width: 100%; height: 100%; object-fit: cover;">` : '<i class="bi bi-person card-avatar-icon"></i>'}
+          ${func.foto ? `<img src="${func.foto}" alt="${func.nome}" style="width: 100%; height: 100%; object-fit: cover;">` : '<i class="fa-solid fa-user card-avatar-icon"></i>'}
         </div>
 
         <h3 class="card-nome">${func.nome}</h3>
@@ -38,7 +38,7 @@ const CardFuncionario = {
                 onclick="FuncionariosPage.visualizar(${func.id}, '${tipo}')"
                 id="btnVisualizar-${func.id}"
                 title="Visualizar ${func.nome}">
-          <i class="bi bi-eye"></i>
+          <i class="fa-solid fa-eye"></i>
           Visualizar
         </button>
       </article>
@@ -63,7 +63,7 @@ const GridFuncionarios = {
     if (lista.length === 0) {
       grid.innerHTML = `
         <div class="empty-state" id="emptyState">
-          <i class="bi bi-person-x"></i>
+          <i class="fa-solid fa-user-xmark"></i>
           <p>Nenhum funcionário encontrado</p>
         </div>
       `;

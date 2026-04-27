@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   SidebarComponent.render("sidebarContainer", {
     perfil: "dentista",
-    ativo: "dashboard"
+    ativo: "tratamentos"
   });
 
 });

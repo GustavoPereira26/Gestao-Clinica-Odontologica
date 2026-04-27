@@ -37,7 +37,7 @@ const CardFuncionario = {
         
         <!-- Avatar / Placeholder -->
         <div class="card-avatar" id="avatar-${func.id}">
-          <i class="bi bi-person card-avatar-icon"></i>
+          <i class="fa-solid fa-user card-avatar-icon"></i>
         </div>
 
         <!-- Informações -->
@@ -66,7 +66,7 @@ const GridFuncionarios = {
         if (lista.length === 0) {
             grid.innerHTML = `
         <div class="empty-state" id="emptyState">
-          <i class="bi bi-person-x"></i>
+          <i class="fa-solid fa-user-xmark"></i>
           <p>Nenhum funcionário encontrado</p>
         </div>
       `;

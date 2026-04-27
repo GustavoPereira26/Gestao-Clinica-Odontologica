@@ -71,13 +71,13 @@ const TabelaConsultas = {
         <td class="td-acoes">
           <div class="acoes-wrapper">
             <button class="btn-acao btn-visualizar" data-id="${c.id}" title="Visualizar">
-              <i class="bi bi-eye"></i>
+              <i class="fa-solid fa-eye"></i>
             </button>
             <button class="btn-acao btn-editar" data-id="${c.id}" title="Editar">
-              <i class="bi bi-pencil"></i>
+              <i class="fa-solid fa-pen"></i>
             </button>
             <button class="btn-acao btn-excluir" data-id="${c.id}" title="Excluir">
-              <i class="bi bi-trash"></i>
+              <i class="fa-solid fa-trash"></i>
             </button>
           </div>
         </td>
@@ -104,15 +104,15 @@ const CardsMobileConsultas = {
         <div class="card-mobile-info">
           <div class="card-mobile-nome">${c.paciente}</div>
           <div class="card-mobile-detail">
-            <span><i class="bi bi-calendar3"></i> ${formatarData(c.data)}</span>
-            <span><i class="bi bi-clock"></i> ${c.hora}</span>
-            <span><i class="bi bi-person-badge"></i> ${c.doutor}</span>
-            <span><i class="bi bi-heart-pulse"></i> ${c.servico}</span>
+            <span><i class="fa-solid fa-calendar-days"></i> ${formatarData(c.data)}</span>
+            <span><i class="fa-solid fa-clock"></i> ${c.hora}</span>
+            <span><i class="fa-solid fa-id-card"></i> ${c.doutor}</span>
+            <span><i class="fa-solid fa-notes-medical"></i> ${c.servico}</span>
           </div>
         </div>
         <div class="card-mobile-actions">
           <button class="btn-acao btn-excluir" data-id="${c.id}" title="Excluir">
-            <i class="bi bi-trash"></i>
+            <i class="fa-solid fa-trash"></i>
           </button>
         </div>
       </div>
