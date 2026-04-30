@@ -9,5 +9,8 @@ public class Servico
     [Required]
     public string Nome { get; set; } = string.Empty;
 
+    public int? IdEspecialidade { get; set; }
+    public Especialidade? Especialidade { get; set; }
+
     public ICollection<Planos> Planos { get; set; } = new List<Planos>();
 }

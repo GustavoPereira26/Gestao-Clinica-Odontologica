@@ -6,6 +6,7 @@ namespace DentusClinic.API.Services.Interfaces;
 public interface IServicoService
 {
     Task<IEnumerable<ServicoResponse>> ListarTodosAsync();
+    Task<IEnumerable<ServicoResponse>> ListarPorEspecialidadeAsync(int idEspecialidade);
     Task<ServicoResponse?> BuscarPorIdAsync(int id);
     Task<ServicoResponse> CadastrarAsync(ServicoRequest request);
     Task<ServicoResponse?> EditarAsync(int id, ServicoRequest request);

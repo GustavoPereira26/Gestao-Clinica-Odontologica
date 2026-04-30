@@ -46,8 +46,9 @@ public class ErrorHandlingMiddleware
             mensagemInterna.Contains("duplicate") || mensagemInterna.Contains("IX_"))
             return "Já existe um registro com esses dados. Verifique os campos únicos (CPF, CRO, e-mail).";
 
-        if (mensagemInterna.Contains("FOREIGN KEY") || mensagemInterna.Contains("foreign key"))
-            return "Referência inválida. Verifique se os dados relacionados existem.";
+        if (mensagemInterna.Contains("FOREIGN KEY") || mensagemInterna.Contains("foreign key") ||
+            mensagemInterna.Contains("REFERENCE constraint") || mensagemInterna.Contains("conflicted with the"))
+            return "Este registro não pode ser removido pois está vinculado a outros cadastros (consultas ou planos de tratamento).";
 
         if (mensagemInterna.Contains("NOT NULL") || mensagemInterna.Contains("not null") ||
             mensagemInterna.Contains("cannot be null"))

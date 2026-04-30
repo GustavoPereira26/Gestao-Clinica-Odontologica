@@ -100,7 +100,7 @@ public class AppDbContext : DbContext
              .WithMany()
              .HasForeignKey(x => x.IdServico)
              .IsRequired(false)
-             .OnDelete(DeleteBehavior.Restrict);
+             .OnDelete(DeleteBehavior.SetNull);
         });
 
         // Atendimento
@@ -128,6 +128,11 @@ public class AppDbContext : DbContext
         {
             e.HasKey(x => x.Id);
             e.Property(x => x.Nome).IsRequired().HasMaxLength(100);
+            e.HasOne(x => x.Especialidade)
+             .WithMany()
+             .HasForeignKey(x => x.IdEspecialidade)
+             .IsRequired(false)
+             .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Planos

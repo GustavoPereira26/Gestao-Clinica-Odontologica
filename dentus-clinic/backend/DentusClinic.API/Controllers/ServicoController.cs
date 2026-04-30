@@ -25,6 +25,13 @@ public class ServicoController : ControllerBase
         return Ok(ApiResponse<object>.Ok(servicos));
     }
 
+    [HttpGet("especialidade/{idEspecialidade}")]
+    public async Task<IActionResult> ListarPorEspecialidade(int idEspecialidade)
+    {
+        var servicos = await _servicoService.ListarPorEspecialidadeAsync(idEspecialidade);
+        return Ok(ApiResponse<object>.Ok(servicos));
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> BuscarPorId(int id)
     {

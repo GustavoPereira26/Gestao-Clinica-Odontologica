@@ -1,6 +1,6 @@
 using DentusClinic.API.DTOs.Request;
-using DentusClinic.API.Services.Interfaces;
 using DentusClinic.API.Models;
+using DentusClinic.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,6 +24,24 @@ public class ConsultaController : ControllerBase
     {
         var consultas = await _consultaService.ListarTodosAsync();
         return Ok(ApiResponse<object>.Ok(consultas));
+    }
+
+    [HttpGet("hoje")]
+    [Authorize(Roles = "DENTISTA, SECRETARIA")]
+    public async Task<IActionResult> ListarHoje()
+    {
+        var consultas = await _consultaService.ListarHojeAsync();
+        return Ok(ApiResponse<object>.Ok(consultas));
+    }
+
+    [HttpPut("{id}/status")]
+    [Authorize(Roles = "SECRETARIA")]
+    public async Task<IActionResult> AtualizarStatus(int id, [FromBody] AtualizarStatusRequest request)
+    {
+        var sucesso = await _consultaService.AtualizarStatusAsync(id, request.Status);
+        if (!sucesso)
+            return BadRequest(ApiResponse<object>.Erro("Status inválido ou consulta não pode ser alterada."));
+        return Ok(ApiResponse<object>.Ok("Status atualizado com sucesso."));
     }
 
     [HttpGet("{id}")]
@@ -77,5 +95,16 @@ public class ConsultaController : ControllerBase
             return NotFound(ApiResponse<object>.Erro("Consulta não encontrada."));
 
         return Ok(ApiResponse<object>.Ok("Consulta cancelada com sucesso."));
+    }
+
+    [HttpPut("{id}/inativar")]
+    [Authorize(Roles = "SECRETARIA")]
+    public async Task<IActionResult> Inativar(int id)
+    {
+        var sucesso = await _consultaService.InativarAsync(id);
+        if (!sucesso)
+            return NotFound(ApiResponse<object>.Erro("Consulta não encontrada."));
+
+        return Ok(ApiResponse<object>.Ok("Consulta inativada com sucesso."));
     }
 }

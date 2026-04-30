@@ -15,23 +15,32 @@ public class ServicoService : IServicoService
         _servicoRepository = servicoRepository;
     }
 
+    private static ServicoResponse ToResponse(Servico s) =>
+        new() { Id = s.Id, Nome = s.Nome, IdEspecialidade = s.IdEspecialidade };
+
     public async Task<IEnumerable<ServicoResponse>> ListarTodosAsync()
     {
         var lista = await _servicoRepository.ListarTodosAsync();
-        return lista.Select(s => new ServicoResponse { Id = s.Id, Nome = s.Nome });
+        return lista.Select(ToResponse);
+    }
+
+    public async Task<IEnumerable<ServicoResponse>> ListarPorEspecialidadeAsync(int idEspecialidade)
+    {
+        var lista = await _servicoRepository.ListarPorEspecialidadeAsync(idEspecialidade);
+        return lista.Select(ToResponse);
     }
 
     public async Task<ServicoResponse?> BuscarPorIdAsync(int id)
     {
         var servico = await _servicoRepository.BuscarPorIdAsync(id);
-        return servico is null ? null : new ServicoResponse { Id = servico.Id, Nome = servico.Nome };
+        return servico is null ? null : ToResponse(servico);
     }
 
     public async Task<ServicoResponse> CadastrarAsync(ServicoRequest request)
     {
-        var servico = new Servico { Nome = request.Nome };
+        var servico = new Servico { Nome = request.Nome, IdEspecialidade = request.IdEspecialidade };
         await _servicoRepository.AdicionarAsync(servico);
-        return new ServicoResponse { Id = servico.Id, Nome = servico.Nome };
+        return ToResponse(servico);
     }
 
     public async Task<ServicoResponse?> EditarAsync(int id, ServicoRequest request)
@@ -40,8 +49,9 @@ public class ServicoService : IServicoService
         if (servico is null) return null;
 
         servico.Nome = request.Nome;
+        servico.IdEspecialidade = request.IdEspecialidade;
         await _servicoRepository.AtualizarAsync(servico);
-        return new ServicoResponse { Id = servico.Id, Nome = servico.Nome };
+        return ToResponse(servico);
     }
 
     public async Task<bool> RemoverAsync(int id)

@@ -17,6 +17,9 @@ public class ServicoRepository : IServicoRepository
     public async Task<IEnumerable<Servico>> ListarTodosAsync()
         => await _contexto.Servicos.ToListAsync();
 
+    public async Task<IEnumerable<Servico>> ListarPorEspecialidadeAsync(int idEspecialidade)
+        => await _contexto.Servicos.Where(s => s.IdEspecialidade == idEspecialidade).ToListAsync();
+
     public async Task<Servico?> BuscarPorIdAsync(int id)
         => await _contexto.Servicos.FindAsync(id);
 

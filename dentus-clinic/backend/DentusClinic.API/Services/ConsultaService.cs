@@ -23,6 +23,12 @@ public class ConsultaService : IConsultaService
         return lista.Select(MapearResponse);
     }
 
+    public async Task<IEnumerable<ConsultaResponse>> ListarHojeAsync()
+    {
+        var lista = await _consultaRepository.ListarHojeAsync();
+        return lista.Select(MapearResponse);
+    }
+
     public async Task<ConsultaResponse?> BuscarPorIdAsync(int id)
     {
         var consulta = await _consultaRepository.BuscarPorIdAsync(id);
@@ -31,11 +37,18 @@ public class ConsultaService : IConsultaService
 
     public async Task<ConsultaResponse> AgendarAsync(ConsultaRequest request)
     {
-        // Regra: paciente deve estar cadastrado
+        var hoje = DateOnly.FromDateTime(DateTime.Today);
+        var horaAgora = TimeOnly.FromDateTime(DateTime.Now);
+
+        if (request.DataConsulta < hoje)
+            throw new InvalidOperationException("Não é possível agendar uma consulta em uma data passada.");
+
+        if (request.DataConsulta == hoje && request.HoraConsulta < horaAgora)
+            throw new InvalidOperationException("Não é possível agendar uma consulta em um horário que já passou.");
+
         var paciente = await _pacienteRepository.BuscarPorIdAsync(request.IdPaciente)
             ?? throw new InvalidOperationException("Paciente não encontrado.");
 
-        // Regra: dentista não pode ter duas consultas no mesmo horário na mesma data
         if (await _consultaRepository.ExisteConflitoAsync(request.IdDentista, request.DataConsulta, request.HoraConsulta))
             throw new InvalidOperationException("Dentista já possui consulta agendada nesse horário.");
 
@@ -65,6 +78,15 @@ public class ConsultaService : IConsultaService
         var data = request.DataConsulta ?? consulta.DataConsulta;
         var hora = request.HoraConsulta ?? consulta.HoraConsulta;
 
+        var hoje = DateOnly.FromDateTime(DateTime.Today);
+        var horaAgora = TimeOnly.FromDateTime(DateTime.Now);
+
+        if (request.DataConsulta is not null && request.DataConsulta.Value < hoje)
+            throw new InvalidOperationException("Não é possível alterar uma consulta para uma data passada.");
+
+        if (request.DataConsulta is not null && request.DataConsulta.Value == hoje && request.HoraConsulta is not null && request.HoraConsulta.Value < horaAgora)
+            throw new InvalidOperationException("Não é possível alterar uma consulta para um horário que já passou.");
+
         if (await _consultaRepository.ExisteConflitoAsync(idDentista, data, hora, id))
             throw new InvalidOperationException("Dentista já possui consulta agendada nesse horário.");
 
@@ -91,12 +113,35 @@ public class ConsultaService : IConsultaService
         return true;
     }
 
+    public async Task<bool> AtualizarStatusAsync(int id, string novoStatus)
+    {
+        string[] validos = ["Agendada", "Aguardando", "Em Consulta", "Encerrada"];
+        if (!validos.Contains(novoStatus)) return false;
+
+        var consulta = await _consultaRepository.BuscarPorIdAsync(id);
+        if (consulta is null || consulta.Status == "Cancelada" || consulta.Status == "Inativa") return false;
+
+        consulta.Status = novoStatus;
+        await _consultaRepository.AtualizarAsync(consulta);
+        return true;
+    }
+
     public async Task<bool> CancelarAsync(int id)
     {
         var consulta = await _consultaRepository.BuscarPorIdAsync(id);
         if (consulta is null) return false;
 
         consulta.Status = "Cancelada";
+        await _consultaRepository.AtualizarAsync(consulta);
+        return true;
+    }
+
+    public async Task<bool> InativarAsync(int id)
+    {
+        var consulta = await _consultaRepository.BuscarPorIdAsync(id);
+        if (consulta is null) return false;
+
+        consulta.Status = "Inativa";
         await _consultaRepository.AtualizarAsync(consulta);
         return true;
     }
@@ -108,6 +153,9 @@ public class ConsultaService : IConsultaService
         HoraConsulta = c.HoraConsulta,
         Retorno = c.Retorno,
         Status = c.Status,
+        IdDentista = c.IdDentista,
+        IdPaciente = c.IdPaciente,
+        IdServico = c.IdServico,
         NomeDentista = c.Dentista?.Nome ?? string.Empty,
         NomePaciente = c.Paciente?.Nome ?? string.Empty,
         NomeServico = c.Servico?.Nome ?? string.Empty

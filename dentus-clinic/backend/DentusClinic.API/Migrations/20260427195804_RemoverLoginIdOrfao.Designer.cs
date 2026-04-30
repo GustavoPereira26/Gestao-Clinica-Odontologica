@@ -4,6 +4,7 @@ using DentusClinic.API.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DentusClinic.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260427195804_RemoverLoginIdOrfao")]
+    partial class RemoverLoginIdOrfao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -354,17 +357,12 @@ namespace DentusClinic.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("IdEspecialidade")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("IdEspecialidade");
 
                     b.ToTable("Servicos");
                 });
@@ -397,7 +395,7 @@ namespace DentusClinic.API.Migrations
                     b.HasOne("DentusClinic.API.Models.Servico", "Servico")
                         .WithMany()
                         .HasForeignKey("IdServico")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Dentista");
 
@@ -464,16 +462,6 @@ namespace DentusClinic.API.Migrations
                         .IsRequired();
 
                     b.Navigation("Paciente");
-                });
-
-            modelBuilder.Entity("DentusClinic.API.Models.Servico", b =>
-                {
-                    b.HasOne("DentusClinic.API.Models.Especialidade", "Especialidade")
-                        .WithMany()
-                        .HasForeignKey("IdEspecialidade")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Especialidade");
                 });
 
             modelBuilder.Entity("DentusClinic.API.Models.Consulta", b =>
