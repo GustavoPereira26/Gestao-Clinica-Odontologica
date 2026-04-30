@@ -150,7 +150,7 @@
             <div class="modal-content">
                 <!-- Como no wireframe, o título ali em cima tá escrito "Restaurar Senha", vou colocar "Deletar Paciente" mas com o botão fechar -->
                 <div class="modal-header border-0 pb-0 pt-3 pe-3 justify-content-between align-items-center">
-                    <h5 class="modal-title fs-6 ms-2">Deletar Paciente</h5>
+                    <h5 class="modal-title fs-6 ms-2">Inativar Paciente</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex flex-column align-items-center text-center mt-2 px-4 pb-4">
@@ -159,8 +159,8 @@
                             <i class="bi bi-trash fs-3 text-dark"></i>
                         </div>
                         <div class="text-start">
-                            <h6 class="fw-semibold mb-1" style="font-size: 1rem;">Tem certeza que deseja deletar Paciente?</h6>
-                            <small class="text-muted" style="font-size: 0.85rem;">Essa ação não pode ser revertida</small>
+                            <h6 class="fw-semibold mb-1" style="font-size: 1rem;">Tem certeza que deseja inativar este paciente?</h6>
+                            <small class="text-muted" style="font-size: 0.85rem;">O paciente não aparecerá mais nas listagens</small>
                         </div>
                     </div>
 
@@ -174,7 +174,7 @@
                     <div class="d-flex justify-content-center gap-3 mt-4 w-100">
                         <button type="button" class="btn btn-outline-secondary px-4 text-dark bg-white border-dark" data-bs-dismiss="modal" style="border-radius: 8px;">Cancelar</button>
                         <button type="button" class="btn btn-danger px-4 d-flex align-items-center gap-2" id="modalBtnConfirmarExclusao" onclick="PacientesPage.efetivarExclusao()" style="border-radius: 8px; background-color: #d9534f; border-color: #d9534f;">
-                            <i class="bi bi-trash"></i> DELETAR
+                            <i class="bi bi-person-slash"></i> INATIVAR
                         </button>
                     </div>
                 </div>
@@ -184,6 +184,9 @@
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Auth e API (ordem obrigatória) -->
+    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
     <!-- Componentes -->
     <script src="../components/sidebar.js"></script>
     <!-- JS da página -->

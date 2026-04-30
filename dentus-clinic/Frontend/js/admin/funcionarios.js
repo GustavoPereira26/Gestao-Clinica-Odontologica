@@ -85,6 +85,8 @@ const FuncionariosPage = (() => {
   let termoBusca  = '';
   let funcionarioAtualId   = null;
   let funcionarioAtualTipo = null;
+  let campoEmEdicao  = null;
+  let valorEmEdicao  = null;
 
   async function carregarFuncionarios() {
     try {
@@ -214,41 +216,36 @@ const FuncionariosPage = (() => {
     }
   }
 
-  /**
-   * Confirma e deleta o funcionário selecionado
-   */
-  function confirmarDeletar() {
-    if (funcionarioAtualId !== null) {
-      const index = FUNCIONARIOS.findIndex(f => f.id === funcionarioAtualId && f.tipo === funcionarioAtualTipo);
-      if (index > -1) {
-        // Encontra o modal e fecha
-        const modalEl = document.getElementById('modalDeletarFuncionario');
-        if (modalEl) {
-          // Utiliza a API do bootstrap para esconder o modal
-          const modalInst = bootstrap.Modal.getInstance(modalEl) || new bootstrap.Modal(modalEl);
-          modalInst.hide();
-          
-          // Remove o backdrop manualmente caso sobre resíduos
-          const backdrops = document.querySelectorAll('.modal-backdrop');
-          backdrops.forEach(b => b.remove());
-          document.body.classList.remove('modal-open');
-          document.body.style.overflow = '';
-          document.body.style.paddingRight = '';
-        }
+  async function confirmarDeletar() {
+    if (funcionarioAtualId === null) return;
 
-        // Remove da lista
-        FUNCIONARIOS.splice(index, 1);
-        atualizar();
+    const btn    = document.getElementById('btnConfirmarInativar');
+    const alerta = document.getElementById('alertaInativarFuncionario');
+    btn.disabled = true;
+    alerta.classList.add('d-none');
 
-        // Volta para a lista principal
-        document.getElementById('listaFuncionarios').classList.remove('d-none');
-        document.getElementById('visualizarFuncionario').classList.add('d-none');
-        document.getElementById('pageTitle').textContent = 'Funcionários';
-        document.getElementById('pageSubtitle').textContent = 'Gerencie a equipe da Dentus Clinic';
-        
-        funcionarioAtualId   = null;
-        funcionarioAtualTipo = null;
-      }
+    try {
+      await apiRemoverFuncionario(funcionarioAtualId);
+
+      const modalEl   = document.getElementById('modalDeletarFuncionario');
+      const modalInst = bootstrap.Modal.getInstance(modalEl);
+      if (modalInst) modalInst.hide();
+
+      FUNCIONARIOS = FUNCIONARIOS.filter(f => !(f.id === funcionarioAtualId && f.tipo === funcionarioAtualTipo));
+      atualizar();
+
+      document.getElementById('listaFuncionarios').classList.remove('d-none');
+      document.getElementById('visualizarFuncionario').classList.add('d-none');
+      document.getElementById('pageTitle').textContent    = 'Funcionários';
+      document.getElementById('pageSubtitle').textContent = 'Gerencie a equipe da Dentus Clinic';
+
+      funcionarioAtualId   = null;
+      funcionarioAtualTipo = null;
+    } catch (erro) {
+      alerta.textContent = erro.message || 'Erro ao inativar funcionário. Tente novamente.';
+      alerta.classList.remove('d-none');
+    } finally {
+      btn.disabled = false;
     }
   }
 
@@ -284,6 +281,86 @@ const FuncionariosPage = (() => {
       document.getElementById('novaSenhaInput').value = '';
       document.getElementById('alertaRestaurar').classList.add('d-none');
     }, 300);
+  }
+
+  function abrirModalEdicao(campo) {
+    campoEmEdicao = campo;
+    const isEmail = campo === 'email';
+
+    document.getElementById('modalEditarCampoTitulo').textContent = isEmail ? 'Editar E-mail' : 'Editar Telefone';
+    document.getElementById('modalEditarCampoLabel').textContent  = isEmail ? 'Novo e-mail'   : 'Novo telefone';
+
+    const input = document.getElementById('inputEditarCampo');
+    input.type        = isEmail ? 'email' : 'tel';
+    input.placeholder = isEmail ? 'ex: nome@email.com' : 'ex: (11) 99999-9999';
+    input.value       = '';
+
+    document.getElementById('alertaEdicaoCampo').classList.add('d-none');
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditarCampo')).show();
+  }
+
+  function confirmarEdicao() {
+    const input  = document.getElementById('inputEditarCampo');
+    const alerta = document.getElementById('alertaEdicaoCampo');
+    const valor  = input.value.trim();
+    alerta.classList.add('d-none');
+
+    if (campoEmEdicao === 'email') {
+      if (!valor || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valor)) {
+        alerta.textContent = 'Informe um e-mail válido.';
+        alerta.classList.remove('d-none');
+        return;
+      }
+    } else {
+      const digits = valor.replace(/\D/g, '');
+      if (digits.length < 10 || digits.length > 11) {
+        alerta.textContent = 'Informe um telefone válido (10 ou 11 dígitos).';
+        alerta.classList.remove('d-none');
+        return;
+      }
+    }
+
+    valorEmEdicao = valor;
+    document.getElementById('confirmarEdicaoCampoLabel').textContent = campoEmEdicao === 'email' ? 'e-mail' : 'telefone';
+    document.getElementById('confirmarEdicaoValor').textContent       = valor;
+
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditarCampo')).hide();
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarEdicao')).show();
+  }
+
+  async function salvarEdicao() {
+    if (!campoEmEdicao || valorEmEdicao === null) return;
+
+    try {
+      const valorParaApi = campoEmEdicao === 'telefone'
+        ? valorEmEdicao.replace(/\D/g, '')
+        : valorEmEdicao;
+      const dados = { [campoEmEdicao]: valorParaApi };
+      if (funcionarioAtualTipo === 'dentista') {
+        await apiAtualizarDentista(funcionarioAtualId, dados);
+      } else {
+        await apiAtualizarFuncionario(funcionarioAtualId, dados);
+      }
+
+      const func = FUNCIONARIOS.find(f => f.id === funcionarioAtualId && f.tipo === funcionarioAtualTipo);
+      if (func) func[campoEmEdicao] = valorEmEdicao;
+
+      const elId = campoEmEdicao === 'email' ? 'visEmail' : 'visTelefone';
+      document.getElementById(elId).value = valorEmEdicao;
+
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarEdicao')).hide();
+      resetarModalEdicao();
+    } catch (erro) {
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarEdicao')).hide();
+      document.getElementById('alertaEdicaoCampo').textContent = erro.message;
+      document.getElementById('alertaEdicaoCampo').classList.remove('d-none');
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditarCampo')).show();
+    }
+  }
+
+  function resetarModalEdicao() {
+    campoEmEdicao = null;
+    valorEmEdicao = null;
   }
 
   /**
@@ -363,7 +440,7 @@ const FuncionariosPage = (() => {
     const cargo    = document.getElementById('cadCargo').value;
     const nome     = document.getElementById('cadNome').value.trim();
     const cpf      = document.getElementById('cadCpf').value.replace(/\D/g, '');
-    const telefone = document.getElementById('cadTelefone').value.trim();
+    const telefone = document.getElementById('cadTelefone').value.replace(/\D/g, '');
     const email    = document.getElementById('cadEmail').value.trim();
     const senha    = document.getElementById('cadSenha').value;
 
@@ -373,6 +450,12 @@ const FuncionariosPage = (() => {
       alerta.classList.remove('d-none');
     };
     alerta.classList.add('d-none');
+
+    if (!nome)              { mostrarErro('Nome é obrigatório.'); return; }
+    if (cpf.length !== 11)  { mostrarErro('CPF inválido. Informe exatamente 11 dígitos.'); return; }
+    if (!email)             { mostrarErro('E-mail é obrigatório.'); return; }
+    if (!senha)             { mostrarErro('Senha é obrigatória.'); return; }
+    if (senha.length < 6)   { mostrarErro('A senha deve ter no mínimo 6 caracteres.'); return; }
 
     try {
       if (cargo === 'DENTISTA') {
@@ -414,7 +497,21 @@ const FuncionariosPage = (() => {
       });
     }
 
-    // 3. Toggle mostrar/ocultar nova senha no modal
+    // 3. Máscara progressiva do telefone no modal de edição
+    const inputEditar = document.getElementById('inputEditarCampo');
+    if (inputEditar) {
+      inputEditar.addEventListener('input', () => {
+        if (campoEmEdicao !== 'telefone') return;
+        let v = inputEditar.value.replace(/\D/g, '').slice(0, 11);
+        if (v.length > 10)     v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+        else if (v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+        else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+        else if (v.length > 0) v = `(${v}`;
+        inputEditar.value = v;
+      });
+    }
+
+    // 3b. Toggle mostrar/ocultar nova senha no modal
     const toggleNovaSenha = document.getElementById('toggleNovaSenha');
     if (toggleNovaSenha) {
       toggleNovaSenha.addEventListener('click', () => {
@@ -438,7 +535,20 @@ const FuncionariosPage = (() => {
       atualizarCamposPorCargo();
     }
 
-    // 5. Máscara CPF
+    // 5. Máscara telefone do cadastro
+    const cadTelefone = document.getElementById('cadTelefone');
+    if (cadTelefone) {
+      cadTelefone.addEventListener('input', () => {
+        let v = cadTelefone.value.replace(/\D/g, '').slice(0, 11);
+        if (v.length > 10)     v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+        else if (v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+        else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+        else if (v.length > 0) v = `(${v}`;
+        cadTelefone.value = v;
+      });
+    }
+
+    // 5b. Máscara CPF
     const cadCpf = document.getElementById('cadCpf');
     if (cadCpf) {
       cadCpf.addEventListener('input', () => {
@@ -494,7 +604,7 @@ const FuncionariosPage = (() => {
     }
   }
 
-  return { init, visualizar, adicionar, confirmarDeletar, confirmarRestaurarSenha, resetarModalRestaurar, cancelarCadastro, confirmarCadastro, acionarInputFoto, lidarUploadFoto };
+  return { init, visualizar, adicionar, confirmarDeletar, confirmarRestaurarSenha, resetarModalRestaurar, cancelarCadastro, confirmarCadastro, acionarInputFoto, lidarUploadFoto, abrirModalEdicao, confirmarEdicao, salvarEdicao, resetarModalEdicao };
 })();
 
 

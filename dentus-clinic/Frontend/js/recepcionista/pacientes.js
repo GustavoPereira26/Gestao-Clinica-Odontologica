@@ -3,33 +3,7 @@
  * Componentes: TabelaPacientes, CardMobilePaciente, ModalConfirmacao
  */
 
-/* ══════════════════════════════════════
-   DADOS MOCK — 20 pacientes
-══════════════════════════════════════ */
-const PACIENTES = [
-    { id: 1,  nome: 'Ricardo Henrique',    cpf: '123.456.789-01', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-    { id: 2,  nome: 'Lillian Marques',     cpf: '234.567.890-12', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-    { id: 3,  nome: 'Inês Ribeiro',        cpf: '345.678.901-23', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-    { id: 4,  nome: 'Sofia Costa',         cpf: '456.789.012-34', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-    { id: 5,  nome: 'Catarina Lima',       cpf: '567.890.123-45', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-    { id: 6,  nome: 'João Silva',          cpf: '678.901.234-56', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-    { id: 7,  nome: 'Thiago Carvalho',     cpf: '789.012.345-67', celular: '(15) 91234-5678', dataCadastro: '2026-03-30' },
-    { id: 8,  nome: 'Ricardo Almeida',     cpf: '890.123.456-78', celular: '(15) 91234-5678', dataCadastro: '2026-03-24' },
-    { id: 9,  nome: 'Filipe Rocha',        cpf: '901.234.567-89', celular: '(15) 91234-5678', dataCadastro: '2026-03-24' },
-    { id: 10, nome: 'Maria Souza',         cpf: '012.345.678-90', celular: '(15) 91234-5678', dataCadastro: '2026-03-24' },
-    { id: 11, nome: 'Beatriz Mendes',      cpf: '111.222.333-44', celular: '(15) 91234-5678', dataCadastro: '2026-03-24' },
-    { id: 12, nome: 'Mariana Fernandes',   cpf: '222.333.444-55', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-    { id: 13, nome: 'Vitor Santos',        cpf: '333.444.555-66', celular: '(15) 91234-5678', dataCadastro: '2026-03-24' },
-    { id: 14, nome: 'Pedro Santos',        cpf: '444.555.666-77', celular: '(15) 91234-5678', dataCadastro: '2026-03-24' },
-    { id: 15, nome: 'André Nunes',         cpf: '555.666.777-88', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-    { id: 16, nome: 'Luís Rodrigues',      cpf: '666.777.888-99', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-    { id: 17, nome: 'Ana Oliveira',        cpf: '777.888.999-00', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-    { id: 18, nome: 'Laura Pires',         cpf: '888.999.000-11', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-    { id: 19, nome: 'Patrícia Gomes',      cpf: '999.000.111-22', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-    { id: 20, nome: 'Carlos Pereira',      cpf: '100.200.300-40', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-    { id: 21, nome: 'Miguel Santos',       cpf: '200.300.400-50', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-    { id: 22, nome: 'Daniel Martins',      cpf: '300.400.500-60', celular: '(15) 91234-5678', dataCadastro: '2026-03-28' },
-];
+let PACIENTES = [];
 
 
 /* ══════════════════════════════════════
@@ -38,8 +12,9 @@ const PACIENTES = [
 
 /** Mascara CPF: ex: ***.***.**9-01 */
 function mascaraCPF(cpf) {
-    const partes = cpf.split(/[.\-]/);
-    return `***.***.*${partes[2].charAt(1)}${partes[2].charAt(2)}-${partes[3]}`;
+    const d = cpf.replace(/\D/g, '');
+    if (d.length !== 11) return cpf;
+    return `***.***.*${d[7]}${d[8]}-${d[9]}${d[10]}`;
 }
 
 /** Formata data ISO para DD/MM/YYYY */
@@ -93,16 +68,9 @@ const TabelaPacientes = {
       <tr style="animation: rowAppear 0.3s ease-out ${i * 0.03}s both;">
         <td class="td-nome">${p.nome}</td>
         <td class="td-cpf">${mascaraCPF(p.cpf)}</td>
-        <td class="td-celular">${p.celular}</td>
-        <td class="td-data">${formatarData(p.dataCadastro)}</td>
-        <td class="td-acoes">
-          <button class="btn-delete"
-                  onclick="PacientesPage.confirmarExclusao(${p.id})"
-                  title="Excluir ${p.nome}"
-                  id="btnDelete-${p.id}">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-        </td>
+        <td class="td-celular">${p.celular || '—'}</td>
+        <td class="td-data">${p.dataCadastro ? formatarData(p.dataCadastro) : '—'}</td>
+        <td class="td-acoes">—</td>
       </tr>
     `).join('');
     }
@@ -137,25 +105,14 @@ const CardMobilePaciente = {
         <div class="card-mobile-info">
           <div class="card-mobile-nome">${p.nome}</div>
           <div class="card-mobile-detail">
-            <span><i class="fa-solid fa-dollar-sign"></i> ${mascaraCPF(p.cpf)}</span>
-            <span><i class="fa-solid fa-calendar-days"></i> ${formatarData(p.dataCadastro)}</span>
+            <span><i class="bi bi-credit-card"></i> ${mascaraCPF(p.cpf)}</span>
+            <span><i class="bi bi-calendar3"></i> ${p.dataCadastro ? formatarData(p.dataCadastro) : '—'}</span>
           </div>
-        </div>
-        <div class="card-mobile-actions">
-          <button class="btn-delete"
-                  onclick="PacientesPage.confirmarExclusao(${p.id})"
-                  title="Excluir ${p.nome}"
-                  id="btnDeleteMobile-${p.id}">
-            <i class="fa-solid fa-trash"></i>
-          </button>
         </div>
       </div>
     `).join('');
     }
 };
-
-
-/* ModalConfirmacao foi substituído pelo Bootstrap Modal na tela principal */
 
 
 /* ══════════════════════════════════════
@@ -164,7 +121,22 @@ const CardMobilePaciente = {
 const PacientesPage = (() => {
     let sortCol = null;
     let sortAsc = true;
-    let pacienteParaExcluir = null;
+
+    async function carregarPacientes() {
+        try {
+            const res = await apiGetPacientes();
+            PACIENTES = (res.dados || []).map(p => ({
+                id:           p.id,
+                nome:         p.nome,
+                cpf:          p.cpf,
+                celular:      p.telefone || '',
+                dataCadastro: p.dataNascimento || ''
+            }));
+            atualizar();
+        } catch (erro) {
+            console.error('Erro ao carregar pacientes:', erro.message);
+        }
+    }
 
     /**
      * Lista filtrada de pacientes
@@ -211,51 +183,33 @@ const PacientesPage = (() => {
         }
     }
 
-    /**
-     * Prepara os dados no modal do Bootstrap e o exibe
-     */
-    function confirmarExclusao(id) {
-        const p = PACIENTES.find(pac => pac.id === id);
-        if (!p) return;
+    async function confirmarCadastro() {
+        const alerta = document.getElementById('alertaCadastro');
+        alerta.classList.add('d-none');
 
-        pacienteParaExcluir = id;
+        const nome           = document.getElementById('cadNome').value.trim();
+        const cpf            = document.getElementById('cadCpf').value.replace(/\D/g, '');
+        const telefone       = document.getElementById('cadTelefone').value.replace(/\D/g, '');
+        const email          = document.getElementById('cadEmail').value.trim();
+        const dataNascimento = document.getElementById('cadDataNascimento').value;
+        const endereco       = document.getElementById('cadEndereco').value.trim();
 
-        // Popula o modal
-        document.getElementById('mdlNome').textContent = p.nome;
-        document.getElementById('mdlCPF').textContent = mascaraCPF(p.cpf);
-        document.getElementById('mdlCelular').textContent = p.celular;
-        document.getElementById('mdlData').textContent = formatarData(p.dataCadastro);
+        try {
+            await apiCadastrarPaciente({ nome, cpf, telefone, email, dataNascimento, endereco });
 
-        // Abre o modal
-        const modalEl = document.getElementById('modalDeletarPaciente');
-        const modalInst = new bootstrap.Modal(modalEl);
-        modalInst.show();
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('modalCadastrarPaciente')).hide();
+            resetarModalCadastro();
+            await carregarPacientes();
+        } catch (erro) {
+            alerta.innerHTML = erro.message.split('\n').map(m => `<div>${m}</div>`).join('');
+            alerta.classList.remove('d-none');
+        }
     }
 
-    /**
-     * Remove o item da lista
-     */
-    function efetivarExclusao() {
-        if (pacienteParaExcluir !== null) {
-            const index = PACIENTES.findIndex(p => p.id === pacienteParaExcluir);
-            if (index > -1) {
-                PACIENTES.splice(index, 1);
-                atualizar();
-
-                // Esconde modal
-                const modalEl = document.getElementById('modalDeletarPaciente');
-                const modalInst = bootstrap.Modal.getInstance(modalEl);
-                if (modalInst) modalInst.hide();
-
-                // Remove backdrop em caso de travamento do BS
-                const backdrops = document.querySelectorAll('.modal-backdrop');
-                backdrops.forEach(b => b.remove());
-                document.body.classList.remove('modal-open');
-                document.body.style.overflow = '';
-                document.body.style.paddingRight = '';
-            }
-            pacienteParaExcluir = null;
-        }
+    function resetarModalCadastro() {
+        ['cadNome','cadCpf','cadTelefone','cadEmail','cadDataNascimento','cadEndereco']
+            .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+        document.getElementById('alertaCadastro').classList.add('d-none');
     }
 
     /**
@@ -319,7 +273,31 @@ const PacientesPage = (() => {
         const btnCadastrar = document.getElementById('btnCadastrar');
         if (btnCadastrar) {
             btnCadastrar.addEventListener('click', () => {
-                alert('Abrir formulário de cadastro');
+                bootstrap.Modal.getOrCreateInstance(document.getElementById('modalCadastrarPaciente')).show();
+            });
+        }
+
+        // Máscaras
+        const cadCpfEl = document.getElementById('cadCpf');
+        if (cadCpfEl) {
+            cadCpfEl.addEventListener('input', () => {
+                let v = cadCpfEl.value.replace(/\D/g, '').slice(0, 11);
+                v = v.replace(/(\d{3})(\d)/, '$1.$2');
+                v = v.replace(/(\d{3})(\d)/, '$1.$2');
+                v = v.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+                cadCpfEl.value = v;
+            });
+        }
+
+        const cadTelEl = document.getElementById('cadTelefone');
+        if (cadTelEl) {
+            cadTelEl.addEventListener('input', () => {
+                let v = cadTelEl.value.replace(/\D/g, '').slice(0, 11);
+                if (v.length > 10)     v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+                else if (v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+                else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+                else if (v.length > 0) v = `(${v}`;
+                cadTelEl.value = v;
             });
         }
 
@@ -345,11 +323,11 @@ const PacientesPage = (() => {
             });
         });
 
-        // 8. Render inicial
-        atualizar();
+        // 8. Carrega pacientes da API
+        carregarPacientes();
     }
 
-    return { init, confirmarExclusao, efetivarExclusao };
+    return { init, confirmarCadastro, resetarModalCadastro };
 })();
 
 

@@ -3,16 +3,7 @@
  * Componentes: CardFuncionario, GridFuncionarios, Header, Toolbar
  */
 
-/* ══════════════════════════════════════
-   DADOS MOCK
-══════════════════════════════════════ */
-const FUNCIONARIOS = [
-    { id: 1, nome: 'Ana Paula',        cargo: 'Secretária', tipo: 'secretaria' },
-    { id: 2, nome: 'Ana Costa',         cargo: 'Dentista',   tipo: 'dentista'   },
-    { id: 3, nome: 'Pedro Santos',      cargo: 'Dentista',   tipo: 'dentista'   },
-    { id: 4, nome: 'Yuri Fernandes',    cargo: 'TI/ADM',     tipo: 'ti'         },
-    { id: 5, nome: 'Miranda Cristina',  cargo: 'Secretária', tipo: 'secretaria' },
-];
+let FUNCIONARIOS = [];
 
 
 /* ══════════════════════════════════════
@@ -87,6 +78,34 @@ const FuncionariosPage = (() => {
     let filtroAtivo = 'todos';
     let termoBusca  = '';
 
+    async function carregarFuncionarios() {
+        try {
+            const [resFuncionarios, resDentistas] = await Promise.all([
+                apiGetFuncionarios(),
+                apiGetDentistas()
+            ]);
+
+            const funcionarios = (resFuncionarios.dados || []).map(f => ({
+                id:    f.id,
+                nome:  f.nome,
+                cargo: f.cargo,
+                tipo:  f.cargo.toLowerCase()
+            }));
+
+            const dentistas = (resDentistas.dados || []).map(d => ({
+                id:    d.id,
+                nome:  d.nome,
+                cargo: 'Dentista',
+                tipo:  'dentista'
+            }));
+
+            FUNCIONARIOS = [...funcionarios, ...dentistas];
+            atualizar();
+        } catch (erro) {
+            console.error('Erro ao carregar funcionários:', erro.message);
+        }
+    }
+
     /**
      * Retorna a lista filtrada
      */
@@ -147,8 +166,8 @@ const FuncionariosPage = (() => {
             });
         }
 
-        // 3. Renderiza o grid
-        atualizar();
+        // 3. Carrega funcionários da API
+        carregarFuncionarios();
 
         // 4. Filtros por cargo
         const filterChips = document.querySelectorAll('.filter-chip');

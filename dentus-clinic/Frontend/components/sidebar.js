@@ -18,8 +18,9 @@ const SidebarComponent = (() => {
       { id: 'pacientes',   icon: 'fa-solid fa-user-injured',        label: 'Meus Pacientes', href: '../dentista/pacientes.html' },
     ],
     admin: [
-      { id: 'funcionarios', icon: 'fa-solid fa-id-card', label: 'Funcionários',  href: '../admin/funcionarios.html' },
-      { id: 'pacientes',    icon: 'fa-solid fa-user-injured',       label: 'Pacientes',     href: '../admin/pacientes.html' }
+      { id: 'funcionarios', icon: 'fa-solid fa-id-card',     label: 'Funcionários', href: '../admin/funcionarios.html' },
+      { id: 'pacientes',    icon: 'fa-solid fa-user-injured', label: 'Pacientes',    href: '../admin/pacientes.html'    },
+      { id: 'servicos',     icon: 'fa-solid fa-tooth',        label: 'Serviços',     href: '../admin/servicos.html'     }
     ]
   };
 
@@ -90,13 +91,43 @@ const SidebarComponent = (() => {
       <div class="sidebar-overlay" id="sidebarOverlay"></div>
     `;
 
-    // Evento de logout
-    document.getElementById('btnSair').addEventListener('click', (e) => {
-      e.preventDefault();
-      if (confirm('Deseja realmente sair?')) {
+    // Injeta o modal de logout no body (se ainda não existir)
+    if (!document.getElementById('modalLogout')) {
+      const modalEl = document.createElement('div');
+      modalEl.innerHTML = `
+        <div class="modal fade" id="modalLogout" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+          <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content">
+              <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fw-bold">Sair da conta</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body text-center py-3">
+                <div class="mb-3">
+                  <i class="fa-solid fa-right-from-bracket fa-2x text-danger"></i>
+                </div>
+                <p class="mb-0">Deseja realmente sair?</p>
+              </div>
+              <div class="modal-footer border-0 pt-0 justify-content-center gap-2">
+                <button type="button" class="btn px-4 text-dark bg-white border" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn px-4 text-white" id="btnConfirmarLogout" style="background-color:#c0392b; border-color:#c0392b;">Sair</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modalEl.firstElementChild);
+
+      document.getElementById('btnConfirmarLogout').addEventListener('click', () => {
         sessionStorage.clear();
         window.location.href = '../index.html';
-      }
+      });
+    }
+
+    // Evento de logout — abre o modal
+    document.getElementById('btnSair').addEventListener('click', (e) => {
+      e.preventDefault();
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('modalLogout')).show();
     });
 
     // Fechar sidebar no mobile ao clicar no overlay

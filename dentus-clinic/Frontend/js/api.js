@@ -54,18 +54,33 @@ async function apiGetConsultas() {
     return request('/consultas');
 }
 
+async function apiGetConsultaPorId(id) {
+    return request(`/consultas/${id}`);
+}
+
 // 🔴 NOVA: consultas do dia (usada no dashboard da secretaria)
 async function apiGetConsultasDia() {
     return request('/consultas/hoje');
 }
 
 async function apiAgendarConsulta(dados) {
-    return request('/consultas', 'POST', dados);
+    return request('/consultas/agendar', 'POST', dados);
 }
 
-// 🔴 NOVA: atualizar status de uma consulta (setas do dashboard)
-async function apiAtualizarStatusConsulta(id, status) {
-    return request(`/consultas/${id}/status`, 'PATCH', { status });
+async function apiEditarConsulta(id, dados) {
+    return request(`/consultas/${id}`, 'PATCH', dados);
+}
+
+async function apiRegistrarChegada(id) {
+    return request(`/consultas/${id}/chegada`, 'PUT');
+}
+
+async function apiCancelarConsulta(id) {
+    return request(`/consultas/${id}/cancelar`, 'PUT');
+}
+
+async function apiInativarConsulta(id) {
+    return request(`/consultas/${id}/inativar`, 'PUT');
 }
 
 // ── Pacientes ──
@@ -74,7 +89,11 @@ async function apiGetPacientes() {
 }
 
 async function apiCadastrarPaciente(dados) {
-    return request('/pacientes', 'POST', dados);
+    return request('/pacientes/cadastrar', 'POST', dados);
+}
+
+async function apiEditarPaciente(id, dados) {
+    return request(`/pacientes/${id}`, 'PATCH', dados);
 }
 
 async function apiInativarPaciente(id) {
@@ -94,6 +113,10 @@ async function apiAtualizarFuncionario(id, dados) {
     return request(`/funcionarios/${id}`, 'PATCH', dados);
 }
 
+async function apiRemoverFuncionario(id) {
+    return request(`/funcionarios/${id}`, 'DELETE');
+}
+
 // ── Dentistas ──
 async function apiGetDentistas() {
     return request('/dentistas');
@@ -110,4 +133,25 @@ async function apiAtualizarDentista(id, dados) {
 // ── Especialidades ──
 async function apiGetEspecialidades() {
     return request('/especialidades');
+}
+
+// ── Serviços ──
+async function apiGetServicos() {
+    return request('/servicos');
+}
+
+async function apiGetServicosPorEspecialidade(idEspecialidade) {
+    return request(`/servicos/especialidade/${idEspecialidade}`);
+}
+
+async function apiCadastrarServico(dados) {
+    return request('/servicos', 'POST', dados);
+}
+
+async function apiRemoverServico(id) {
+    return request(`/servicos/${id}`, 'DELETE');
+}
+
+async function apiAtualizarStatusConsulta(id, status) {
+    return request(`/consultas/${id}/status`, 'PUT', { status });
 }

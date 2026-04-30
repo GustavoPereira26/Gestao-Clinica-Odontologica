@@ -154,6 +154,18 @@ body {
   background: var(--c4);
 }
 
+.badge-retorno {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 99px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  background: #fff3e0;
+  color: #e65100;
+  vertical-align: middle;
+  margin-left: 0.35rem;
+}
+
 /* badge padrão sistema */
 .status-badge {
   display: inline-block;

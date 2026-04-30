@@ -179,21 +179,149 @@
     </main>
   </div>
 
-  <!-- Modal de confirmação de exclusão -->
+  <!-- Modal de Agendamento -->
+  <div class="modal fade" id="modalAgendar" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-6"><i class="fa-solid fa-calendar-plus me-2"></i>Agendar Consulta</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetarModalAgendar()"></button>
+        </div>
+        <div class="modal-body px-4 pb-2">
+          <div id="alertaAgendar" class="alert alert-danger d-none mb-3"></div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Paciente <span class="text-danger">*</span></label>
+            <div class="position-relative">
+              <input type="text" class="form-control" id="agdPacienteSearch"
+                     placeholder="Digite o nome do paciente..." autocomplete="off" />
+              <input type="hidden" id="agdPaciente" />
+              <div id="agdPacienteSugestoes"
+                   class="list-group position-absolute w-100 shadow"
+                   style="z-index:1060; max-height:180px; overflow-y:auto; display:none; border-radius:0 0 6px 6px;"></div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Dentista <span class="text-danger">*</span></label>
+            <select class="form-select" id="agdDentista">
+              <option value="">Carregando...</option>
+            </select>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-7">
+              <label class="form-label fw-semibold">Data <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" id="agdData" />
+            </div>
+            <div class="col-5">
+              <label class="form-label fw-semibold">Hora <span class="text-danger">*</span></label>
+              <input type="time" class="form-control" id="agdHora" />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Serviço</label>
+            <select class="form-select" id="agdServico">
+              <option value="">Nenhum</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="agdRetorno" />
+              <label class="form-check-label" for="agdRetorno">É uma consulta de retorno?</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0 gap-2">
+          <button type="button" class="btn px-4 text-dark bg-white border" data-bs-dismiss="modal" onclick="resetarModalAgendar()">Cancelar</button>
+          <button type="button" class="btn px-4 text-white" onclick="confirmarAgendamento()" style="background-color:#0d6efd; border-color:#0d6efd;">Agendar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Editar Consulta -->
+  <div class="modal fade" id="modalEditar" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-6"><i class="fa-solid fa-pen me-2"></i>Editar Consulta</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="resetarModalEditar()"></button>
+        </div>
+        <div class="modal-body px-4 pb-2">
+          <div id="alertaEditar" class="alert alert-danger d-none mb-3"></div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Paciente <span class="text-danger">*</span></label>
+            <div class="position-relative">
+              <input type="text" class="form-control" id="edtPacienteSearch"
+                     placeholder="Carregando..." autocomplete="off" disabled />
+              <input type="hidden" id="edtPaciente" />
+              <div id="edtPacienteSugestoes"
+                   class="list-group position-absolute w-100 shadow"
+                   style="z-index:1060; max-height:180px; overflow-y:auto; display:none; border-radius:0 0 6px 6px;"></div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Dentista <span class="text-danger">*</span></label>
+            <select class="form-select" id="edtDentista">
+              <option value="">Carregando...</option>
+            </select>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-7">
+              <label class="form-label fw-semibold">Data <span class="text-danger">*</span></label>
+              <input type="date" class="form-control" id="edtData" />
+            </div>
+            <div class="col-5">
+              <label class="form-label fw-semibold">Hora <span class="text-danger">*</span></label>
+              <input type="time" class="form-control" id="edtHora" />
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold">Serviço</label>
+            <select class="form-select" id="edtServico" disabled>
+              <option value="">Selecione um dentista primeiro</option>
+            </select>
+          </div>
+
+          <div class="mb-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="edtRetorno" />
+              <label class="form-check-label" for="edtRetorno">É uma consulta de retorno?</label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0 gap-2">
+          <button type="button" class="btn px-4 text-dark bg-white border" data-bs-dismiss="modal" onclick="resetarModalEditar()">Cancelar</button>
+          <button type="button" class="btn px-4 text-white" id="btnConfirmarEdicao"
+                  style="background-color:#0d6efd; border-color:#0d6efd;">Salvar alterações</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmação de inativação -->
   <div class="modal-overlay hidden" id="modalConfirmacao" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
     <div class="modal-box">
       <div class="modal-icon">
-        <i class="fa-solid fa-triangle-exclamation"></i>
+        <i class="fa-solid fa-ban"></i>
       </div>
-      <h2 class="modal-title" id="modalTitulo">Excluir consulta?</h2>
+      <h2 class="modal-title" id="modalTitulo">Cancelar consulta?</h2>
       <p class="modal-text">
-        Tem certeza que deseja excluir a consulta de
+        Tem certeza que deseja cancelar a consulta de
         <strong id="modalNomePaciente"></strong>?
-        Esta ação não pode ser desfeita.
+        Essa ação não poderá ser desfeita.
       </p>
+      <p class="modal-erro hidden" id="modalErro"></p>
       <div class="modal-actions">
-        <button class="modal-btn modal-btn-cancel" id="btnModalCancelar" type="button">Cancelar</button>
-        <button class="modal-btn modal-btn-confirm" id="btnModalConfirmar" type="button">Excluir</button>
+        <button class="modal-btn modal-btn-cancel" id="btnModalCancelar" type="button">Voltar</button>
+        <button class="modal-btn modal-btn-confirm" id="btnModalConfirmar" type="button">Cancelar consulta</button>
       </div>
     </div>
   </div>

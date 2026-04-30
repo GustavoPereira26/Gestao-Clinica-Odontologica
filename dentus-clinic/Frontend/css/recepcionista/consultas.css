@@ -333,7 +333,8 @@
   color: var(--c1);
   margin-bottom: 0.4rem;
 }
-.modal-text { font-size: 0.84rem; color: var(--c2); margin-bottom: var(--space-6); }
+.modal-text { font-size: 0.84rem; color: var(--c2); margin-bottom: var(--space-4); }
+.modal-erro { font-size: 0.82rem; color: #c0392b; background: #fdf0ee; border: 1px solid #f5c6cb; border-radius: var(--radius-md); padding: 0.45rem 0.75rem; margin-bottom: var(--space-4); text-align: center; }
 .modal-actions { display: flex; gap: var(--space-3); justify-content: center; }
 .modal-btn {
   padding: 0.55rem 1.4rem;

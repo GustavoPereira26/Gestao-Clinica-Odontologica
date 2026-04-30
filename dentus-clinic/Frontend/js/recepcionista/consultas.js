@@ -3,33 +3,7 @@
  * Padrão idêntico ao pacientes.js
  */
 
-/* ══════════════════════════════════════
-   DADOS MOCK — 22 consultas
-══════════════════════════════════════ */
-const CONSULTAS = [
-  { id: 1,  paciente: 'Ricardo Henrique',  data: '2026-03-30', hora: '08:00', doutor: 'Dra. Ana Costa',    servico: 'Limpeza' },
-  { id: 2,  paciente: 'Lilian Marques',    data: '2026-03-30', hora: '08:20', doutor: 'Dr. Pedro Santos',  servico: 'Restauração' },
-  { id: 3,  paciente: 'Inês Ribeiro',      data: '2026-03-30', hora: '09:00', doutor: 'Dra. Ana Costa',    servico: 'Extração' },
-  { id: 4,  paciente: 'Sofia Costa',       data: '2026-03-30', hora: '09:30', doutor: 'Dr. Pedro Santos',  servico: 'Clareamento' },
-  { id: 5,  paciente: 'Catarina Lima',     data: '2026-03-30', hora: '09:30', doutor: 'Dra. Ana Costa',    servico: 'Restauração' },
-  { id: 6,  paciente: 'João Silva',        data: '2026-03-30', hora: '10:00', doutor: 'Dr. Pedro Santos',  servico: 'Limpeza' },
-  { id: 7,  paciente: 'Tiago Carvalho',    data: '2026-03-30', hora: '10:00', doutor: 'Dra. Ana Costa',    servico: 'Clareamento' },
-  { id: 8,  paciente: 'Ricardo Almeida',   data: '2026-03-29', hora: '10:30', doutor: 'Dr. Pedro Santos',  servico: 'Extração' },
-  { id: 9,  paciente: 'Filipe Rocha',      data: '2026-03-29', hora: '10:30', doutor: 'Dra. Ana Costa',    servico: 'Consulta' },
-  { id: 10, paciente: 'Maria Souza',       data: '2026-03-29', hora: '11:00', doutor: 'Dr. Pedro Santos',  servico: 'Limpeza' },
-  { id: 11, paciente: 'Beatriz Mendes',    data: '2026-03-29', hora: '11:00', doutor: 'Dra. Ana Costa',    servico: 'Restauração' },
-  { id: 12, paciente: 'Mariana Fernandes', data: '2026-03-29', hora: '11:30', doutor: 'Dr. Pedro Santos',  servico: 'Consulta' },
-  { id: 13, paciente: 'Vera Barros',       data: '2026-03-29', hora: '11:30', doutor: 'Dra. Ana Costa',    servico: 'Consulta' },
-  { id: 14, paciente: 'Pedro Santos',      data: '2026-03-29', hora: '14:00', doutor: 'Dr. Pedro Santos',  servico: 'Canal' },
-  { id: 15, paciente: 'André Nunes',       data: '2026-03-29', hora: '14:00', doutor: 'Dra. Ana Costa',    servico: 'Limpeza' },
-  { id: 16, paciente: 'Luís Rodrigues',    data: '2026-03-28', hora: '14:30', doutor: 'Dr. Pedro Santos',  servico: 'Canal' },
-  { id: 17, paciente: 'Ana Oliveira',      data: '2026-03-28', hora: '15:00', doutor: 'Dra. Ana Costa',    servico: 'Restauração' },
-  { id: 18, paciente: 'Laura Pires',       data: '2026-03-28', hora: '15:00', doutor: 'Dr. Pedro Santos',  servico: 'Extração' },
-  { id: 19, paciente: 'Patrícia Gomes',    data: '2026-03-28', hora: '15:30', doutor: 'Dra. Ana Costa',    servico: 'Limpeza' },
-  { id: 20, paciente: 'Carlos Pereira',    data: '2026-03-28', hora: '16:00', doutor: 'Dr. Pedro Santos',  servico: 'Canal' },
-  { id: 21, paciente: 'Miguel Santos',     data: '2026-03-28', hora: '16:00', doutor: 'Dra. Ana Costa',    servico: 'Restauração' },
-  { id: 22, paciente: 'Daniel Martins',    data: '2026-03-28', hora: '16:30', doutor: 'Dr. Pedro Santos',  servico: 'Clareamento' },
-];
+let CONSULTAS = [];
 
 /* ══════════════════════════════════════
    UTILITÁRIOS
@@ -128,22 +102,72 @@ const ModalConfirmacao = {
   show(nome, cb) {
     this._cb = cb;
     document.getElementById('modalNomePaciente').textContent = nome;
+    document.getElementById('modalErro').classList.add('hidden');
+    document.getElementById('modalErro').textContent = '';
     document.getElementById('modalConfirmacao').classList.remove('hidden');
   },
   hide() {
     document.getElementById('modalConfirmacao').classList.add('hidden');
     this._cb = null;
   },
-  confirmar() {
-    if (typeof this._cb === 'function') this._cb();
-    this.hide();
+  async confirmar() {
+    if (typeof this._cb !== 'function') return;
+
+    const btnConfirmar = document.getElementById('btnModalConfirmar');
+    const btnCancelar  = document.getElementById('btnModalCancelar');
+    const erroEl       = document.getElementById('modalErro');
+
+    btnConfirmar.disabled = true;
+    btnCancelar.disabled  = true;
+    btnConfirmar.textContent = 'Cancelando...';
+    erroEl.classList.add('hidden');
+
+    try {
+      await this._cb();
+      this.hide();
+    } catch (erro) {
+      erroEl.textContent = erro.message || 'Erro ao cancelar. Tente novamente.';
+      erroEl.classList.remove('hidden');
+    } finally {
+      btnConfirmar.disabled = false;
+      btnCancelar.disabled  = false;
+      btnConfirmar.textContent = 'Cancelar consulta';
+    }
   }
 };
 
 /* ══════════════════════════════════════
+   CARREGAMENTO DA API
+══════════════════════════════════════ */
+async function carregarConsultas() {
+  try {
+    const res = await apiGetConsultas();
+    CONSULTAS = (res.dados || []).map(c => ({
+      id:         c.id,
+      paciente:   c.nomePaciente,
+      idPaciente: c.idPaciente,
+      data:       c.dataConsulta,
+      hora:       (c.horaConsulta || '').slice(0, 5),
+      doutor:     c.nomeDentista,
+      idDentista: c.idDentista,
+      servico:    c.nomeServico || '—',
+      idServico:  c.idServico || null,
+      retorno:    c.retorno || false,
+      status:     c.status || ''
+    }));
+    dadosAtivos = [...CONSULTAS];
+    TabelaConsultas.render(dadosAtivos);
+    CardsMobileConsultas.render(dadosAtivos);
+    atualizarBadge(dadosAtivos.length);
+  } catch (erro) {
+    console.error('Erro ao carregar consultas:', erro.message);
+  }
+}
+
+/* ══════════════════════════════════════
    FILTROS
 ══════════════════════════════════════ */
-let dadosAtivos = [...CONSULTAS];
+let dadosAtivos = [];
 
 function aplicarFiltros() {
   const fPaciente = document.getElementById('fPaciente').value.trim().toLowerCase();
@@ -167,7 +191,8 @@ function aplicarFiltros() {
 
 function limparFiltros() {
   ['fPaciente','fData','fHora','fDoutor','fServico'].forEach(id => {
-    document.getElementById(id).value = '';
+    const el = document.getElementById(id);
+    if (el) el.value = '';
   });
   dadosAtivos = [...CONSULTAS];
   TabelaConsultas.render(dadosAtivos);
@@ -182,15 +207,15 @@ function atualizarBadge(total) {
 /* ══════════════════════════════════════
    EXCLUSÃO
 ══════════════════════════════════════ */
-let idParaExcluir = null;
+let idParaInativar = null;
 
-function excluirConsulta(id) {
-  const idx = CONSULTAS.findIndex(c => c.id === id);
-  if (idx === -1) return;
-  CONSULTAS.splice(idx, 1);
+async function inativarConsulta(id) {
+  await apiInativarConsulta(id);
+  CONSULTAS   = CONSULTAS.filter(c => c.id !== id);
   dadosAtivos = dadosAtivos.filter(c => c.id !== id);
   TabelaConsultas.render(dadosAtivos);
   CardsMobileConsultas.render(dadosAtivos);
+  atualizarBadge(dadosAtivos.length);
 }
 
 /* ══════════════════════════════════════
@@ -200,10 +225,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initSidebar();
   initHamburger();
 
-  // Renderização inicial
-  TabelaConsultas.render(CONSULTAS);
-  CardsMobileConsultas.render(CONSULTAS);
-  atualizarBadge(CONSULTAS.length);
+  // Carrega consultas da API
+  carregarConsultas();
 
   // Filtros em tempo real
   ['fPaciente','fHora','fDoutor','fServico'].forEach(id => {
@@ -224,11 +247,252 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Botão agendar
-  document.getElementById('btnAgendar')?.addEventListener('click', () => {
-    // TODO: abrir modal de agendamento ou navegar para formulário
-    alert('Abrir formulário de agendamento');
+  document.getElementById('btnAgendar')?.addEventListener('click', abrirModalAgendar);
+
+  // Botão confirmar edição
+  document.getElementById('btnConfirmarEdicao')?.addEventListener('click', confirmarEdicao);
+
+  // Dentista no modal de edição → recarrega serviços
+  document.getElementById('edtDentista')?.addEventListener('change', async (e) => {
+    const idDentista = parseInt(e.target.value) || null;
+    if (!idDentista) {
+      document.getElementById('edtServico').innerHTML = '<option value="">Selecione um dentista primeiro</option>';
+      document.getElementById('edtServico').disabled  = true;
+      return;
+    }
+    await carregarServicosEditar(idDentista, null);
+  });
+
+  // Autocomplete de paciente no modal de edição
+  document.getElementById('edtPacienteSearch')?.addEventListener('input', (e) => {
+    if (consultaEditando) consultaEditando.idPaciente = null;
+    const termo = e.target.value.trim().toLowerCase();
+    if (!termo) { document.getElementById('edtPacienteSugestoes').style.display = 'none'; return; }
+    const filtrados = edtPacientesCache.filter(p => p.nome.toLowerCase().includes(termo));
+    renderSugestoesEdt(filtrados);
+  });
+
+  document.getElementById('edtPacienteSugestoes')?.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    const btn = e.target.closest('button[data-id]');
+    if (!btn) return;
+    const paciente = edtPacientesCache.find(p => p.id === parseInt(btn.dataset.id));
+    if (paciente) {
+      if (consultaEditando) consultaEditando.idPaciente = paciente.id;
+      document.getElementById('edtPacienteSearch').value        = paciente.nome;
+      document.getElementById('edtPacienteSugestoes').style.display = 'none';
+    }
+  });
+
+  document.addEventListener('mousedown', (e) => {
+    if (!e.target.closest('#edtPacienteSearch') && !e.target.closest('#edtPacienteSugestoes')) {
+      document.getElementById('edtPacienteSugestoes').style.display = 'none';
+    }
+  });
+
+  // Ao selecionar dentista, carrega serviços da especialidade dele
+  document.getElementById('agdDentista')?.addEventListener('change', async (e) => {
+    const selOpt = e.target.selectedOptions[0];
+    const idEspecialidade = selOpt?.dataset.especialidade;
+    const selServico = document.getElementById('agdServico');
+
+    if (!idEspecialidade) {
+      selServico.innerHTML = '<option value="">Selecione um dentista primeiro</option>';
+      selServico.disabled = true;
+      return;
+    }
+
+    selServico.innerHTML = '<option value="">Carregando...</option>';
+    selServico.disabled = true;
+
+    try {
+      const res = await apiGetServicosPorEspecialidade(idEspecialidade);
+      const servicos = res.dados || [];
+      if (servicos.length === 0) {
+        selServico.innerHTML = '<option value="">Nenhum serviço cadastrado para esta especialidade</option>';
+      } else {
+        selServico.innerHTML = '<option value="">Nenhum</option>' +
+          servicos.map(s => `<option value="${s.id}">${s.nome}</option>`).join('');
+        selServico.disabled = false;
+      }
+    } catch {
+      selServico.innerHTML = '<option value="">Erro ao carregar serviços</option>';
+    }
+  });
+
+  // Autocomplete de paciente no modal — filtra ao digitar
+  document.getElementById('agdPacienteSearch')?.addEventListener('input', (e) => {
+    document.getElementById('agdPaciente').value = '';
+    const termo = e.target.value.trim().toLowerCase();
+    if (!termo) { fecharSugestoes(); return; }
+    const filtrados = pacientesCache.filter(p => p.nome.toLowerCase().includes(termo));
+    renderSugestoes(filtrados);
+  });
+
+  // Autocomplete de paciente — seleciona ao clicar na sugestão (delegação no container)
+  document.getElementById('agdPacienteSugestoes')?.addEventListener('mousedown', (e) => {
+    e.preventDefault();
+    const btn = e.target.closest('button[data-id]');
+    if (!btn) return;
+    const paciente = pacientesCache.find(p => p.id === parseInt(btn.dataset.id));
+    if (paciente) selecionarPaciente(paciente.id, paciente.nome);
+  });
+
+  // Fecha sugestões ao clicar fora
+  document.addEventListener('mousedown', (e) => {
+    if (!e.target.closest('#agdPacienteSearch') && !e.target.closest('#agdPacienteSugestoes')) {
+      fecharSugestoes();
+    }
   });
 });
+
+/* ══════════════════════════════════════
+   MODAL DE AGENDAMENTO
+══════════════════════════════════════ */
+let pacientesCache = [];
+let dentistasCache = [];
+
+function formatCPF(cpf) {
+  const d = cpf.replace(/\D/g, '');
+  if (d.length !== 11) return cpf;
+  return `${d.slice(0,3)}.${d.slice(3,6)}.${d.slice(6,9)}-${d.slice(9)}`;
+}
+
+function renderSugestoes(lista) {
+  const box = document.getElementById('agdPacienteSugestoes');
+  if (lista.length === 0) {
+    box.innerHTML = '<div class="list-group-item text-muted py-2 px-3">Nenhum paciente encontrado</div>';
+  } else {
+    box.innerHTML = lista.map(p => `
+      <button type="button"
+              class="list-group-item list-group-item-action py-2 px-3"
+              data-id="${p.id}">
+        <div class="fw-semibold">${p.nome}</div>
+        <small class="text-muted">CPF: ${formatCPF(p.cpf)}</small>
+      </button>
+    `).join('');
+  }
+  box.style.display = 'block';
+}
+
+function selecionarPaciente(id, nome) {
+  document.getElementById('agdPaciente').value        = id;
+  document.getElementById('agdPacienteSearch').value  = nome;
+  document.getElementById('agdPacienteSugestoes').style.display = 'none';
+}
+
+function fecharSugestoes() {
+  document.getElementById('agdPacienteSugestoes').style.display = 'none';
+}
+
+function renderSugestoesEdt(lista) {
+  const box = document.getElementById('edtPacienteSugestoes');
+  if (lista.length === 0) {
+    box.innerHTML = '<div class="list-group-item text-muted py-2 px-3">Nenhum paciente encontrado</div>';
+  } else {
+    box.innerHTML = lista.map(p => `
+      <button type="button"
+              class="list-group-item list-group-item-action py-2 px-3"
+              data-id="${p.id}">
+        <div class="fw-semibold">${p.nome}</div>
+        <small class="text-muted">CPF: ${formatCPF(p.cpf)}</small>
+      </button>
+    `).join('');
+  }
+  box.style.display = 'block';
+}
+
+async function abrirModalAgendar() {
+  resetarModalAgendar();
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('modalAgendar')).show();
+
+  try {
+    const [resPacientes, resDentistas] = await Promise.all([
+      apiGetPacientes(),
+      apiGetDentistas()
+    ]);
+
+    pacientesCache = resPacientes.dados || [];
+    dentistasCache = resDentistas.dados || [];
+
+    const selDentista = document.getElementById('agdDentista');
+    selDentista.innerHTML = '<option value="">Selecione um dentista</option>' +
+      dentistasCache.map(d => `<option value="${d.id}" data-especialidade="${d.idEspecialidade}">${d.nome}</option>`).join('');
+
+    document.getElementById('agdServico').innerHTML = '<option value="">Selecione um dentista primeiro</option>';
+    document.getElementById('agdServico').disabled = true;
+
+    // Ativa busca de paciente
+    const searchInput = document.getElementById('agdPacienteSearch');
+    searchInput.disabled = false;
+    searchInput.placeholder = 'Digite o nome do paciente...';
+  } catch (erro) {
+    mostrarErroAgendar('Erro ao carregar dados: ' + erro.message);
+  }
+}
+
+async function confirmarAgendamento() {
+  const alerta = document.getElementById('alertaAgendar');
+  alerta.classList.add('d-none');
+
+  const idPaciente = parseInt(document.getElementById('agdPaciente').value);
+  const idDentista = parseInt(document.getElementById('agdDentista').value);
+  const data       = document.getElementById('agdData').value;
+  const hora       = document.getElementById('agdHora').value;
+  const idServico  = parseInt(document.getElementById('agdServico').value) || null;
+  const retorno    = document.getElementById('agdRetorno').checked;
+
+  const agora = new Date();
+  const hoje  = agora.toISOString().split('T')[0];
+  const horaAtual = agora.toTimeString().slice(0, 5);
+
+  if (!idPaciente) { mostrarErroAgendar('Selecione um paciente na lista.'); return; }
+  if (!idDentista) { mostrarErroAgendar('Selecione um dentista.'); return; }
+  if (!data)       { mostrarErroAgendar('Informe a data da consulta.'); return; }
+  if (data < hoje) { mostrarErroAgendar('Não é possível agendar uma consulta em uma data passada.'); return; }
+  if (!hora)       { mostrarErroAgendar('Informe o horário da consulta.'); return; }
+  if (data === hoje && hora < horaAtual) { mostrarErroAgendar('Não é possível agendar uma consulta em um horário que já passou.'); return; }
+
+  try {
+    await apiAgendarConsulta({
+      dataConsulta: data,
+      horaConsulta: hora + ':00',
+      retorno,
+      idDentista,
+      idPaciente,
+      idServico
+    });
+
+    bootstrap.Modal.getOrCreateInstance(document.getElementById('modalAgendar')).hide();
+    resetarModalAgendar();
+    await carregarConsultas();
+  } catch (erro) {
+    mostrarErroAgendar(erro.message);
+  }
+}
+
+function mostrarErroAgendar(msg) {
+  const alerta = document.getElementById('alertaAgendar');
+  alerta.innerHTML = msg.split('\n').map(m => `<div>${m}</div>`).join('');
+  alerta.classList.remove('d-none');
+}
+
+function resetarModalAgendar() {
+  pacientesCache = [];
+  document.getElementById('agdPacienteSearch').value          = '';
+  document.getElementById('agdPacienteSearch').disabled        = true;
+  document.getElementById('agdPacienteSearch').placeholder     = 'Carregando...';
+  document.getElementById('agdPaciente').value                 = '';
+  document.getElementById('agdPacienteSugestoes').style.display = 'none';
+  dentistasCache = [];
+  document.getElementById('agdDentista').innerHTML             = '<option value="">Carregando...</option>';
+  document.getElementById('agdServico').innerHTML              = '<option value="">Selecione um dentista primeiro</option>';
+  document.getElementById('agdServico').disabled               = true;
+  document.getElementById('agdData').value                     = '';
+  document.getElementById('agdHora').value                     = '';
+  document.getElementById('agdRetorno').checked                = false;
+  document.getElementById('alertaAgendar').classList.add('d-none');
+}
 
 function handleAcaoTabela(e) {
   const btn = e.target.closest('.btn-acao');
@@ -238,13 +502,12 @@ function handleAcaoTabela(e) {
   if (!consulta) return;
 
   if (btn.classList.contains('btn-visualizar')) {
-    alert(`Visualizar consulta de ${consulta.paciente}\nData: ${formatarData(consulta.data)} às ${consulta.hora}\nDoutor: ${consulta.doutor}\nServiço: ${consulta.servico}`);
+    alert(`Consulta de ${consulta.paciente}\nData: ${formatarData(consulta.data)} às ${consulta.hora}\nDentista: ${consulta.doutor}\nServiço: ${consulta.servico}\nStatus: ${consulta.status}`);
   } else if (btn.classList.contains('btn-editar')) {
-    alert(`Editar consulta de ${consulta.paciente}`);
-    // TODO: abrir modal/formulário de edição
+    abrirModalEditar(id);
   } else if (btn.classList.contains('btn-excluir')) {
-    idParaExcluir = id;
-    ModalConfirmacao.show(consulta.paciente, () => excluirConsulta(idParaExcluir));
+    idParaInativar = id;
+    ModalConfirmacao.show(consulta.paciente, () => inativarConsulta(idParaInativar));
   }
 }
 
@@ -254,8 +517,176 @@ function handleAcaoMobile(e) {
   const id = Number(btn.dataset.id);
   const consulta = CONSULTAS.find(c => c.id === id);
   if (!consulta) return;
-  idParaExcluir = id;
-  ModalConfirmacao.show(consulta.paciente, () => excluirConsulta(idParaExcluir));
+  idParaInativar = id;
+  ModalConfirmacao.show(consulta.paciente, () => inativarConsulta(idParaInativar));
+}
+
+/* ══════════════════════════════════════
+   MODAL DE EDIÇÃO
+══════════════════════════════════════ */
+let consultaEditando  = null;
+let edtPacientesCache = [];
+let edtDentistasCache = [];
+
+async function abrirModalEditar(id) {
+  resetarModalEditar();
+  consultaEditando = { id };
+  bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditar')).show();
+
+  try {
+    const [resConsulta, resPacientes, resDentistas] = await Promise.all([
+      apiGetConsultaPorId(id),
+      apiGetPacientes(),
+      apiGetDentistas()
+    ]);
+
+    const c             = resConsulta.dados;
+    edtPacientesCache   = resPacientes.dados || [];
+    edtDentistasCache   = resDentistas.dados || [];
+
+    // Resolve IDs: prefere o que veio da API, senão busca pelo nome na lista
+    const idPaciente = c.idPaciente
+      || edtPacientesCache.find(p => p.nome === c.nomePaciente)?.id
+      || null;
+    const idDentista = c.idDentista
+      || edtDentistasCache.find(d => d.nome === c.nomeDentista)?.id
+      || null;
+
+    consultaEditando = { id: c.id, idPaciente, idDentista, idServico: c.idServico || null };
+
+    // Preenche dentistas
+    document.getElementById('edtDentista').innerHTML =
+      '<option value="">Selecione um dentista</option>' +
+      edtDentistasCache.map(d =>
+        `<option value="${d.id}" data-especialidade="${d.idEspecialidade}"${d.id === idDentista ? ' selected' : ''}>${d.nome}</option>`
+      ).join('');
+
+    // Preenche paciente
+    const searchInput       = document.getElementById('edtPacienteSearch');
+    searchInput.disabled    = false;
+    searchInput.placeholder = 'Digite o nome do paciente...';
+    searchInput.value       = c.nomePaciente;
+
+    // Data, hora, retorno
+    document.getElementById('edtData').value      = c.dataConsulta;
+    document.getElementById('edtHora').value      = (c.horaConsulta || '').slice(0, 5);
+    document.getElementById('edtRetorno').checked = c.retorno;
+
+    // Carrega serviços da especialidade do dentista atual
+    await carregarServicosEditar(idDentista, c.idServico);
+
+  } catch (erro) {
+    mostrarErroEditar('Erro ao carregar dados: ' + erro.message);
+  }
+}
+
+async function carregarServicosEditar(idDentista, idServicoAtual) {
+  const selDentista = document.getElementById('edtDentista');
+  const selServico  = document.getElementById('edtServico');
+
+  const opt = selDentista.querySelector(`option[value="${idDentista}"]`);
+  const idEspecialidade = opt?.dataset.especialidade;
+
+  if (!idEspecialidade) {
+    selServico.innerHTML = '<option value="">Nenhum serviço disponível</option>';
+    selServico.disabled  = true;
+    return;
+  }
+
+  selServico.innerHTML = '<option value="">Carregando...</option>';
+  selServico.disabled  = true;
+
+  try {
+    const res = await apiGetServicosPorEspecialidade(idEspecialidade);
+    const servicos = res.dados || [];
+    if (servicos.length === 0) {
+      selServico.innerHTML = '<option value="">Nenhum serviço para esta especialidade</option>';
+    } else {
+      selServico.innerHTML =
+        '<option value="">Nenhum</option>' +
+        servicos.map(s =>
+          `<option value="${s.id}"${s.id === idServicoAtual ? ' selected' : ''}>${s.nome}</option>`
+        ).join('');
+      selServico.disabled = false;
+    }
+  } catch {
+    selServico.innerHTML = '<option value="">Erro ao carregar serviços</option>';
+  }
+}
+
+async function confirmarEdicao() {
+  if (!consultaEditando) return;
+
+  document.getElementById('alertaEditar').classList.add('d-none');
+
+  const idPaciente = consultaEditando.idPaciente || null;
+  const idDentista = parseInt(document.getElementById('edtDentista').value) || null;
+  const data       = document.getElementById('edtData').value;
+  const hora       = document.getElementById('edtHora').value;
+  const idServico  = parseInt(document.getElementById('edtServico').value) || null;
+  const retorno    = document.getElementById('edtRetorno').checked;
+
+  const agora = new Date();
+  const hoje  = agora.toISOString().split('T')[0];
+  const horaAtual = agora.toTimeString().slice(0, 5);
+
+  if (!idPaciente) { mostrarErroEditar('Selecione um paciente na lista.'); return; }
+  if (!idDentista) { mostrarErroEditar('Selecione um dentista.'); return; }
+  if (!data)       { mostrarErroEditar('Informe a data da consulta.'); return; }
+  if (data < hoje) { mostrarErroEditar('Não é possível alterar uma consulta para uma data passada.'); return; }
+  if (!hora)       { mostrarErroEditar('Informe o horário da consulta.'); return; }
+  if (data === hoje && hora < horaAtual) { mostrarErroEditar('Não é possível alterar uma consulta para um horário que já passou.'); return; }
+
+  const btn = document.getElementById('btnConfirmarEdicao');
+  btn.disabled    = true;
+  btn.textContent = 'Salvando...';
+
+  try {
+    await apiEditarConsulta(consultaEditando.id, {
+      dataConsulta: data,
+      horaConsulta: hora + ':00',
+      retorno,
+      idDentista,
+      idPaciente,
+      idServico
+    });
+
+    bootstrap.Modal.getInstance(document.getElementById('modalEditar')).hide();
+    resetarModalEditar();
+    await carregarConsultas();
+  } catch (erro) {
+    mostrarErroEditar(erro.message);
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Salvar alterações';
+  }
+}
+
+function mostrarErroEditar(msg) {
+  const alerta = document.getElementById('alertaEditar');
+  alerta.innerHTML = msg.split('\n').map(m => `<div>${m}</div>`).join('');
+  alerta.classList.remove('d-none');
+}
+
+function resetarModalEditar() {
+  consultaEditando  = null;
+  edtPacientesCache = [];
+  edtDentistasCache = [];
+
+  const search = document.getElementById('edtPacienteSearch');
+  search.value       = '';
+  search.disabled    = true;
+  search.placeholder = 'Carregando...';
+
+  document.getElementById('edtPaciente').value               = '';
+  document.getElementById('edtPacienteSugestoes').style.display = 'none';
+  document.getElementById('edtDentista').innerHTML           = '<option value="">Carregando...</option>';
+  document.getElementById('edtServico').innerHTML            = '<option value="">Selecione um dentista primeiro</option>';
+  document.getElementById('edtServico').disabled             = true;
+  document.getElementById('edtData').value                   = '';
+  document.getElementById('edtHora').value                   = '';
+  document.getElementById('edtRetorno').checked              = false;
+  document.getElementById('alertaEditar').classList.add('d-none');
 }
 
 /* ── Sidebar (padrão do projeto) ── */

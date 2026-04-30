@@ -73,9 +73,9 @@ const TabelaPacientes = {
         <td class="td-acoes">
           <button class="btn-delete"
                   onclick="PacientesPage.confirmarExclusao(${p.id})"
-                  title="Excluir ${p.nome}"
+                  title="Inativar ${p.nome}"
                   id="btnDelete-${p.id}">
-            <i class="fa-solid fa-trash"></i>
+            <i class="bi bi-person-slash"></i>
           </button>
         </td>
       </tr>
@@ -119,9 +119,9 @@ const CardMobilePaciente = {
         <div class="card-mobile-actions">
           <button class="btn-delete"
                   onclick="PacientesPage.confirmarExclusao(${p.id})"
-                  title="Excluir ${p.nome}"
+                  title="Inativar ${p.nome}"
                   id="btnDeleteMobile-${p.id}">
-            <i class="fa-solid fa-trash"></i>
+            <i class="bi bi-person-slash"></i>
           </button>
         </div>
       </div>
