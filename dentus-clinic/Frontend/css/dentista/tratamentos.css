@@ -6,6 +6,7 @@
   background-color: var(--c4, #e7e7db) !important;
   min-height: 100vh;
   padding-bottom: 2rem;
+  overflow-x: hidden;
 }
 
 /* ══════════════════════════════════
@@ -2341,5 +2342,515 @@
   .prontuario-sidebar {
     flex-direction: column;
   }
+}
+
+/* ══════════════════════════════════════════════════
+   TELA FINALIZAR CONSULTA
+   ══════════════════════════════════════════════════ */
+
+/* Header */
+.finalizar-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.finalizar-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.finalizar-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+  background: #e67e22;
+  border-radius: 99px;
+  white-space: nowrap;
+}
+
+/* Aviso informativo */
+.finalizar-aviso-bar {
+  background: #e8f4fd;
+  border: 1.5px solid #a8d4f0;
+  border-radius: var(--radius-md);
+  padding: 0.65rem 1.15rem;
+  font-size: 0.82rem;
+  color: #1a5276;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: var(--space-5);
+}
+
+/* Layout principal */
+.finalizar-layout {
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.finalizar-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.finalizar-sidebar {
+  width: 300px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Sections */
+.finalizar-section {
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.finalizar-section-titulo {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c1);
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--c4);
+}
+
+/* Odontograma snapshot */
+.finalizar-odontograma {
+  margin-bottom: 1.25rem;
+}
+
+.dente-finalizar {
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  font-weight: 700;
+  border-radius: 4px;
+  user-select: none;
+  border: 1px solid transparent;
+}
+
+.dente-finalizar.saudavel {
+  background: #fff;
+  color: var(--c1);
+  border-color: #ccc;
+}
+
+.dente-finalizar.tratado-consulta {
+  background: #3498db;
+  color: #fff;
+  border-color: #2980b9;
+  box-shadow: 0 0 0 2px rgba(52,152,219,.3);
+}
+
+/* Detalhes row */
+.finalizar-detalhes-row {
+  display: flex;
+  gap: var(--space-4);
+}
+
+.finalizar-detalhes-esq {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.finalizar-detalhes-dir {
+  flex: 1;
+}
+
+/* Radio buttons */
+.finalizar-etapa-row {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.finalizar-radio-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--c1);
+  cursor: pointer;
+}
+
+.finalizar-radio-item input[type="radio"] {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--c1);
+  cursor: pointer;
+}
+
+/* Campos de agendamento */
+.finalizar-campos-row {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.finalizar-campo {
+  flex: 1;
+  min-width: 150px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Badge tratamento concluído */
+.finalizar-concluido-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.15rem;
+  background: #eafaf1;
+  border: 1.5px solid #27ae60;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #27ae60;
+}
+
+/* Footer */
+.finalizar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--c4);
+  flex-wrap: wrap;
+}
+
+.btn-cancelar-finalizar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.5rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--c1);
+  background: #fff;
+  border: 2px solid var(--c1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-cancelar-finalizar:hover {
+  background: var(--c1);
+  color: #fff;
+}
+
+.finalizar-aviso-info {
+  background: #f5e6b8;
+  border: 1.5px solid #d4a017;
+  border-radius: var(--radius-md);
+  padding: 0.65rem 1.15rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #8B6914;
+  text-align: center;
+  line-height: 1.35;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-confirmar-finalizar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.8rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  background: #27ae60;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-confirmar-finalizar:hover {
+  background: #219a52;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(39,174,96,.25);
+}
+
+/* Responsividade */
+@media (max-width: 992px) {
+  .finalizar-layout {
+    flex-direction: column;
+  }
+
+  .finalizar-sidebar {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .finalizar-sidebar > * {
+    flex: 1;
+    min-width: 260px;
+  }
+}
+
+@media (max-width: 768px) {
+  .finalizar-detalhes-row {
+    flex-direction: column;
+  }
+
+  .finalizar-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .finalizar-aviso-info {
+    text-align: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .finalizar-sidebar {
+    flex-direction: column;
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   MOBILE — COMPLEMENTO RESPONSIVO
+   ══════════════════════════════════════════════════ */
+
+/* ── 768px: dentes das outras views (consulta/prontuário/finalizar) ── */
+@media (max-width: 768px) {
+  .dente-consulta,
+  .dente-prontuario,
+  .dente-finalizar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.6rem;
+  }
+
+  .consulta-header-nome { font-size: 1.25rem; }
+  .consulta-header-servico { font-size: 1.05rem; }
+
+  .prontuario-nome { font-size: 1.25rem; }
+}
+
+/* ── 480px: Telefones pequenos e médios ── */
+@media (max-width: 480px) {
+
+  /* Métricas */
+  .metrica-card { padding: 0.85rem 1rem; gap: 0.75rem; }
+  .metrica-icon { width: 36px; height: 36px; font-size: 1rem; }
+  .metrica-valor { font-size: 1.35rem; }
+
+  /* Filter */
+  .filter-bar { padding: var(--space-3); gap: var(--space-2); }
+
+  /* Tabs */
+  .tab-btn { font-size: 0.7rem; padding: 0.5rem 0.75rem; }
+
+  /* ── Odontograma — todos os tipos de dentes ── */
+  .dente,
+  .dente-consulta,
+  .dente-prontuario,
+  .dente-finalizar {
+    width: 16px;
+    height: 16px;
+    font-size: 0.42rem;
+    border-radius: 2px;
+  }
+  .arcada-grupo { gap: 1px; }
+  .arcada-gap { width: 6px; }
+  /* Overflow de segurança caso a tela seja estreitíssima */
+  .odontograma-chart { overflow-x: auto; padding-bottom: 0.25rem; }
+
+  /* Legenda */
+  .odontograma-legenda { gap: 0.75rem; }
+  .legenda-item { font-size: 0.68rem; }
+
+  /* Seções com padding excessivo em mobile */
+  .odontograma-section,
+  .consulta-odontograma-section,
+  .prontuario-plano-section,
+  .finalizar-section { padding: 0.85rem; }
+
+  /* ── Header da Consulta ── */
+  .consulta-header-left { gap: 0.75rem; }
+  .consulta-header-nome { font-size: 1.05rem; }
+  .consulta-header-servico { font-size: 0.9rem; }
+  .consulta-header-divider { height: 26px; }
+  .consulta-odontograma-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  /* ── Prontuário ── */
+  .prontuario-nome { font-size: 1.1rem; }
+  .prontuario-foto-placeholder { width: 60px; height: 60px; }
+  .prontuario-card { padding: 0.85rem; }
+  .prontuario-contato { font-size: 0.76rem; }
+
+  /* ── Resumo card ── */
+  .resumo-card { padding: 1rem; }
+  .foto-placeholder { width: 80px; height: 80px; }
+  .resumo-nome { font-size: 0.95rem; }
+  .resumo-servico { font-size: 0.85rem; }
+
+  /* ── Checklist full-width ── */
+  .checklist-card { min-width: 0; max-width: 100%; width: 100%; }
+  .observacoes-textarea { min-height: 100px; }
+
+  /* ── Botão Voltar ── */
+  .btn-voltar {
+    font-size: 0.8rem;
+    padding: 0.45rem 0.9rem;
+    margin-bottom: var(--space-4);
+  }
+
+  /* ── Etapas do planejamento ── */
+  .etapa-card { min-width: 180px; }
+
+  /* ── Alerta clínico ── */
+  .alerta-clinico { padding: 0.75rem; }
+  .alerta-item { font-size: 0.7rem; }
+
+  /* ── Modal ── */
+  .modal-confirmar { padding: 1.25rem; }
+  .modal-confirmar-titulo { font-size: 1rem; margin-bottom: 1.25rem; }
+  .modal-confirmar-body { gap: 0.75rem; }
+  .modal-foto-placeholder { width: 80px; height: 80px; }
+  .modal-info-valor { font-size: 1rem; }
+  .modal-info-destaque { font-size: 1.2rem; }
+  .modal-confirmar-acoes { gap: 0.75rem; }
+  .btn-modal-iniciar,
+  .btn-modal-cancelar { padding: 0.55rem 1.25rem; font-size: 0.88rem; }
+
+  /* ── Finalizar ── */
+  .finalizar-aviso-bar { font-size: 0.75rem; padding: 0.5rem 0.85rem; }
+  .finalizar-aviso-info { justify-content: center; }
+}
+
+/* ══════════════════════════════════════════════════
+   TABELA → CARDS NO MOBILE (≤640px)
+   ══════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+
+  /* Container: sem max-height e sem overflow lateral */
+  .table-container {
+    max-height: none;
+    overflow-x: hidden;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  /* Tabela e body viram blocos */
+  .table-custom,
+  .table-custom tbody {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Cabeçalho some */
+  .table-custom thead { display: none; }
+
+  /* Cada tr vira um card */
+  .table-custom tr {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    background: #fff !important;
+    border: 1.5px solid var(--c4);
+    border-radius: var(--radius-md);
+    margin-bottom: 0.65rem;
+    padding: 0.85rem;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+    overflow: hidden;
+    transition: box-shadow var(--transition), border-color var(--transition);
+  }
+
+  .table-custom tr:hover { border-color: var(--c3); box-shadow: var(--shadow-md); }
+  .table-custom tr.selected { border-color: var(--c1) !important; background: #f7f4f0 !important; }
+
+  /* Cada célula usa grid: [label 95px] [valor 1fr] */
+  .table-custom td {
+    display: grid;
+    grid-template-columns: 95px 1fr;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.38rem 0;
+    border: none;
+    border-bottom: 1px solid #f0ece5;
+    font-size: 0.82rem;
+    color: var(--c1);
+    white-space: normal;        /* anula o nowrap do desktop */
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .table-custom td:last-child { border-bottom: none; }
+
+  /* Label gerado pelo data-label (coluna 1 do grid) */
+  .table-custom td::before {
+    content: attr(data-label);
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--c3);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    align-self: center;
+  }
+
+  /* Primeiro td = nome do paciente: sem label, ocupa coluna inteira */
+  .table-custom td:first-child {
+    grid-template-columns: 1fr;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-bottom: 1px solid var(--c4);
+    padding-bottom: 0.55rem;
+    margin-bottom: 0.1rem;
+  }
+  .table-custom td:first-child::before { display: none; }
+
+  /* Progresso: alinha barra + % à direita */
+  .progress-cell { justify-content: flex-start; }
+  .progress-bar-wrapper { width: 55px; }
+
+  /* Botão prontuário */
+  .btn-prontuario { margin-left: 0; }
 }
 

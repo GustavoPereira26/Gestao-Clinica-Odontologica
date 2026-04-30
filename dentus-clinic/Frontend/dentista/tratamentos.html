@@ -958,6 +958,206 @@ Obturação temporária aplicada.</textarea>
 
     </div>
 
+    <!-- ══════════════════════════════════════════════════
+         TELA FINALIZAR CONSULTA (oculta por padrão)
+         ══════════════════════════════════════════════════ -->
+    <div class="finalizar-consulta-view" id="finalizarConsultaView" style="display:none;">
+
+      <!-- Header -->
+      <div class="finalizar-header-row">
+        <div class="finalizar-header-left">
+          <div class="consulta-header-item">
+            <span class="consulta-header-label">Paciente</span>
+            <span class="consulta-header-nome" id="finalizarNomePaciente">—</span>
+          </div>
+          <div class="consulta-header-divider"></div>
+          <div class="consulta-header-item">
+            <span class="consulta-header-label">Serviço</span>
+            <span class="consulta-header-servico" id="finalizarServico">—</span>
+          </div>
+          <span class="finalizar-badge">
+            <i class="fa-solid fa-circle-check fa-xs"></i> Finalizando Consulta
+          </span>
+        </div>
+      </div>
+
+      <!-- Aviso informativo -->
+      <div class="finalizar-aviso-bar">
+        <i class="fa-solid fa-circle-info"></i>
+        Revise as informações abaixo antes de confirmar. As observações serão salvas no prontuário do paciente.
+      </div>
+
+      <!-- Layout principal -->
+      <div class="finalizar-layout">
+
+        <!-- ═══ COLUNA PRINCIPAL ═══ -->
+        <div class="finalizar-main">
+
+          <!-- Resumo do que foi feito -->
+          <div class="finalizar-section">
+            <h3 class="finalizar-section-titulo">Resumo da Consulta</h3>
+
+            <!-- Odontograma (snapshot somente leitura) -->
+            <div class="finalizar-odontograma">
+              <h4 class="prontuario-sub-titulo">Dentes Tratados</h4>
+              <div class="odontograma-chart">
+                <!-- Arcada Superior -->
+                <div class="arcada-row">
+                  <div class="arcada-grupo">
+                    <div class="dente-finalizar saudavel" data-num="18">18</div>
+                    <div class="dente-finalizar saudavel" data-num="17">17</div>
+                    <div class="dente-finalizar saudavel" data-num="16">16</div>
+                    <div class="dente-finalizar saudavel" data-num="15">15</div>
+                    <div class="dente-finalizar saudavel" data-num="14">14</div>
+                    <div class="dente-finalizar saudavel" data-num="13">13</div>
+                    <div class="dente-finalizar saudavel" data-num="12">12</div>
+                    <div class="dente-finalizar saudavel" data-num="11">11</div>
+                  </div>
+                  <div class="arcada-gap"></div>
+                  <div class="arcada-grupo">
+                    <div class="dente-finalizar saudavel" data-num="21">21</div>
+                    <div class="dente-finalizar saudavel" data-num="22">22</div>
+                    <div class="dente-finalizar saudavel" data-num="23">23</div>
+                    <div class="dente-finalizar saudavel" data-num="24">24</div>
+                    <div class="dente-finalizar saudavel" data-num="25">25</div>
+                    <div class="dente-finalizar saudavel" data-num="26">26</div>
+                    <div class="dente-finalizar saudavel" data-num="27">27</div>
+                    <div class="dente-finalizar saudavel" data-num="28">28</div>
+                  </div>
+                </div>
+                <!-- Arcada Inferior -->
+                <div class="arcada-row">
+                  <div class="arcada-grupo">
+                    <div class="dente-finalizar saudavel" data-num="48">48</div>
+                    <div class="dente-finalizar saudavel" data-num="47">47</div>
+                    <div class="dente-finalizar saudavel" data-num="46">46</div>
+                    <div class="dente-finalizar saudavel" data-num="45">45</div>
+                    <div class="dente-finalizar saudavel" data-num="44">44</div>
+                    <div class="dente-finalizar saudavel" data-num="43">43</div>
+                    <div class="dente-finalizar saudavel" data-num="42">42</div>
+                    <div class="dente-finalizar saudavel" data-num="41">41</div>
+                  </div>
+                  <div class="arcada-gap"></div>
+                  <div class="arcada-grupo">
+                    <div class="dente-finalizar saudavel" data-num="31">31</div>
+                    <div class="dente-finalizar saudavel" data-num="32">32</div>
+                    <div class="dente-finalizar saudavel" data-num="33">33</div>
+                    <div class="dente-finalizar saudavel" data-num="34">34</div>
+                    <div class="dente-finalizar saudavel" data-num="35">35</div>
+                    <div class="dente-finalizar saudavel" data-num="36">36</div>
+                    <div class="dente-finalizar saudavel" data-num="37">37</div>
+                    <div class="dente-finalizar saudavel" data-num="38">38</div>
+                  </div>
+                </div>
+              </div>
+              <div class="odontograma-legenda" style="justify-content:flex-start;margin-top:0.5rem;">
+                <span class="legenda-item"><span class="legenda-cor tratado-consulta-bg"></span> Tratado na Consulta</span>
+              </div>
+            </div>
+
+            <!-- Condição + Observações -->
+            <div class="finalizar-detalhes-row">
+              <div class="finalizar-detalhes-esq">
+                <div class="prontuario-campo">
+                  <label class="prontuario-campo-label">Condição</label>
+                  <div class="prontuario-campo-valor" id="finalizarCondicao">—</div>
+                </div>
+                <div class="prontuario-campo">
+                  <label class="prontuario-campo-label">Descrição do Tratamento</label>
+                  <div class="prontuario-campo-textarea" id="finalizarDescricao">—</div>
+                </div>
+              </div>
+              <div class="finalizar-detalhes-dir">
+                <div class="prontuario-obs-card">
+                  <h4 class="prontuario-obs-titulo">Observações Clínicas</h4>
+                  <div class="prontuario-obs-texto" id="finalizarObservacoes">—</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ═══ COLUNA LATERAL ═══ -->
+        <div class="finalizar-sidebar">
+
+          <!-- Resumo do paciente -->
+          <div class="resumo-card">
+            <h3 class="resumo-titulo">Resumo do Paciente</h3>
+            <div class="resumo-foto">
+              <div class="foto-placeholder"><div class="foto-x"></div></div>
+            </div>
+            <div class="resumo-paciente-info">
+              <span class="resumo-label-small">Nome</span>
+              <span class="resumo-nome" id="finalizarResumoNome">—</span>
+              <span class="resumo-label-small">Serviço</span>
+              <span class="resumo-servico" id="finalizarResumoServico">—</span>
+            </div>
+            <div class="resumo-progresso-wrapper">
+              <div class="resumo-progresso-header">
+                <span class="resumo-label-small">Progresso Atual</span>
+                <span class="resumo-etapas" id="finalizarResumoEtapas">— Etapas</span>
+              </div>
+              <div class="resumo-progresso-bar">
+                <div class="resumo-progresso-fill" id="finalizarResumoProgressoFill" style="width:0%"></div>
+              </div>
+            </div>
+            <div class="resumo-etapas-info">
+              <div class="resumo-etapa-item">
+                <span class="resumo-label-small">Última etapa Feita</span>
+                <span class="resumo-etapa-nome" id="finalizarResumoUltimaEtapa">—</span>
+              </div>
+              <div class="resumo-etapa-item text-end">
+                <span class="resumo-label-small">Próxima Etapa</span>
+                <span class="resumo-etapa-nome" id="finalizarResumoProximaEtapa">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Alerta Clínico -->
+          <div class="alerta-clinico">
+            <h4 class="alerta-titulo"><i class="fa-solid fa-triangle-exclamation"></i> Alerta Clínico</h4>
+            <div class="alerta-grid">
+              <div class="alerta-item">
+                <span class="alerta-label">Alergias:</span>
+                <span class="alerta-valor">Penicilina</span>
+              </div>
+              <div class="alerta-item">
+                <span class="alerta-label">Condições:</span>
+                <span class="alerta-valor">Hipertensão (controlada)</span>
+              </div>
+              <div class="alerta-item">
+                <span class="alerta-label">Medicamentos:</span>
+                <span class="alerta-valor">Lisinopril (diário)</span>
+              </div>
+              <div class="alerta-item">
+                <span class="alerta-label">Cirurgias Anteriores:</span>
+                <span class="alerta-valor">Extração de siso (2018)</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="finalizar-footer">
+        <button class="btn-cancelar-finalizar" id="btnCancelarFinalizar">
+          <i class="fa-solid fa-arrow-left"></i> Voltar à Consulta
+        </button>
+        <div class="finalizar-aviso-info">
+          <i class="fa-solid fa-circle-info fa-xs"></i>
+          Observações serão adicionadas ao prontuário
+        </div>
+        <button class="btn-confirmar-finalizar" id="btnConfirmarFinalizar">
+          <i class="fa-solid fa-check"></i> Confirmar Finalização
+        </button>
+      </div>
+
+    </div>
+
   </main>
 
 </div><!-- /app-layout -->

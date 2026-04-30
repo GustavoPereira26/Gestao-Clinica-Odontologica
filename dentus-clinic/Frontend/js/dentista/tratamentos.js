@@ -6,6 +6,12 @@ document.addEventListener("DOMContentLoaded", () => {
     ativo: "tratamentos"
   });
 
+  // ── Hamburguer (mobile) ──
+  const btnHamburger = document.getElementById("btnHamburger");
+  if (btnHamburger) {
+    btnHamburger.addEventListener("click", () => SidebarComponent.toggleSidebar());
+  }
+
   // ══════════════════════════════════
   //  DADOS DE EXEMPLO
   // ══════════════════════════════════
@@ -89,10 +95,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (i === selectedIndex) tr.classList.add("selected");
 
       tr.innerHTML = `
-        <td>${t.paciente}</td>
-        <td>${t.servico}</td>
-        <td>${t.status}</td>
-        <td>
+        <td data-label="Paciente">${t.paciente}</td>
+        <td data-label="Serviço">${t.servico}</td>
+        <td data-label="Status">${t.status}</td>
+        <td data-label="Progresso">
           <div class="progress-cell">
             <div class="progress-bar-wrapper">
               <div class="progress-bar-fill" style="width: ${t.progresso}%"></div>
@@ -100,8 +106,8 @@ document.addEventListener("DOMContentLoaded", () => {
             <span class="progress-percent">${t.progresso}%</span>
           </div>
         </td>
-        <td>${t.proximaSessao}</td>
-        <td>
+        <td data-label="Próxima Sessão">${t.proximaSessao}</td>
+        <td data-label="Prontuário">
           <button class="btn-prontuario" title="Ver prontuário">
             <i class="fa-regular fa-eye"></i>
           </button>
@@ -427,15 +433,61 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ══════════════════════════════════════════════════════
-  //  CONSULTA — FINALIZAR (voltar para lista)
+  //  CONSULTA — FINALIZAR (abrir tela de finalização)
   // ══════════════════════════════════════════════════════
-  document.getElementById("btnFinalizarConsulta").addEventListener("click", () => {
-    if (!confirm("Deseja finalizar esta consulta?")) return;
+  document.getElementById("btnFinalizarConsulta").addEventListener("click", abrirFinalizarConsulta);
 
-    consultaView.style.display = "none";
-    metricasRow.style.display = "";
-    filterBar.style.display = "";
-    tratamentosLayout.style.display = "";
+  // ══════════════════════════════════════════════════════
+  //  TELA FINALIZAR CONSULTA
+  // ══════════════════════════════════════════════════════
+  const finalizarConsultaView = document.getElementById("finalizarConsultaView");
+
+  function abrirFinalizarConsulta() {
+    const t = currentTratamento;
+
+    // Preencher header e sidebar
+    document.getElementById("finalizarNomePaciente").textContent = t.paciente;
+    document.getElementById("finalizarServico").textContent = t.servico;
+    document.getElementById("finalizarResumoNome").textContent = t.paciente;
+    document.getElementById("finalizarResumoServico").textContent = t.servico;
+    document.getElementById("finalizarResumoEtapas").textContent = `${t.etapasFeitas} de ${t.etapasTotal} Etapas`;
+    const pct = t.etapasTotal > 0 ? Math.round((t.etapasFeitas / t.etapasTotal) * 100) : 0;
+    document.getElementById("finalizarResumoProgressoFill").style.width = pct + "%";
+    document.getElementById("finalizarResumoUltimaEtapa").textContent = t.ultimaEtapa;
+    document.getElementById("finalizarResumoProximaEtapa").textContent = t.proximaEtapa;
+
+    // Copiar dados da consulta
+    document.getElementById("finalizarCondicao").textContent =
+      document.getElementById("consultaCondicao").value || "—";
+    document.getElementById("finalizarDescricao").textContent =
+      document.getElementById("consultaDescricao").value || "—";
+    document.getElementById("finalizarObservacoes").textContent =
+      document.getElementById("observacoesClinicas").value || "—";
+
+    // Espelhar odontograma da consulta (snapshot somente leitura)
+    document.querySelectorAll(".dente-consulta").forEach(src => {
+      const dest = document.querySelector(`.dente-finalizar[data-num="${src.dataset.num}"]`);
+      if (!dest) return;
+      dest.classList.remove("saudavel", "tratado-consulta");
+      dest.classList.add(src.classList.contains("tratamento") ? "tratado-consulta" : "saudavel");
+    });
+
+    esconderTudo();
+    finalizarConsultaView.style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // Voltar à consulta
+  document.getElementById("btnCancelarFinalizar").addEventListener("click", () => {
+    finalizarConsultaView.style.display = "none";
+    consultaView.style.display = "block";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // Confirmar finalização
+  document.getElementById("btnConfirmarFinalizar").addEventListener("click", () => {
+    finalizarConsultaView.style.display = "none";
+    mostrarLista();
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
@@ -453,6 +505,7 @@ document.addEventListener("DOMContentLoaded", () => {
     editarPlanoView.style.display = "none";
     consultaView.style.display = "none";
     prontuarioView.style.display = "none";
+    finalizarConsultaView.style.display = "none";
   }
 
   function mostrarLista() {

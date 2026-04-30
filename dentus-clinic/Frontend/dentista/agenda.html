@@ -220,6 +220,46 @@
       </div>
 
     </div>
+    <!-- ═══ AGENDA MOBILE (visível apenas ≤768px) ═══ -->
+    <div class="agenda-mobile" id="agendaMobile">
+
+      <!-- Notificação compacta -->
+      <div class="am-notif" id="amNotif">
+        <div class="am-notif-icon"><i class="fa-solid fa-bell"></i></div>
+        <div class="am-notif-body">
+          <span class="am-notif-titulo">Novo Paciente na Fila</span>
+          <div class="am-notif-tags">
+            <span class="am-tag">João Silva</span>
+            <span class="am-tag">Limpeza</span>
+          </div>
+        </div>
+        <button class="am-notif-fechar" id="amNotifFechar"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Navegação de semana -->
+      <div class="am-nav">
+        <button class="am-nav-btn" id="amPrev"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="am-nav-info">
+          <span class="am-nav-semana" id="amSemana">Semana 12</span>
+          <span class="am-nav-mes" id="amMes">Março 2026</span>
+        </div>
+        <button class="am-nav-btn" id="amNext"><i class="fa-solid fa-chevron-right"></i></button>
+      </div>
+
+      <!-- Strip de dias (scroll horizontal) -->
+      <div class="am-strip-wrap">
+        <div class="am-strip" id="amStrip">
+          <!-- 7 pills gerados por JS -->
+        </div>
+      </div>
+
+      <!-- Lista de horários do dia selecionado -->
+      <div class="am-slots" id="amSlots">
+        <!-- Gerado por JS -->
+      </div>
+
+    </div>
+
   </main>
 </div>
 
