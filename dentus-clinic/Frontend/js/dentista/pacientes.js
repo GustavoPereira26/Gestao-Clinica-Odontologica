@@ -5,6 +5,11 @@ document.addEventListener("DOMContentLoaded", () => {
     ativo: "pacientes"
   });
 
+  const btnHamburger = document.getElementById("btnHamburger");
+  if (btnHamburger) {
+    btnHamburger.addEventListener("click", () => SidebarComponent.toggleSidebar());
+  }
+
   // Máscara de CPF para o input de filtro
   const cpfInput = document.getElementById('filterCpf');
   if (cpfInput) {
@@ -34,17 +39,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (consultaInput) {
     consultaInput.addEventListener('input', function (e) {
       let value = e.target.value.replace(/\D/g, '');
-      
-      if (value.length > 8) {
-        value = value.slice(0, 8);
-      }
-
+      if (value.length > 8) value = value.slice(0, 8);
       if (value.length > 4) {
         value = value.replace(/(\d{2})(\d{2})(\d{1,4})/, "$1/$2/$3");
       } else if (value.length > 2) {
         value = value.replace(/(\d{2})(\d{1,2})/, "$1/$2");
       }
-      
       e.target.value = value;
     });
   }
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
         cpf: filterInputs.cpf ? filterInputs.cpf.value.toLowerCase().trim() : '',
         nome: filterInputs.nome ? filterInputs.nome.value.toLowerCase().trim() : '',
         servico: filterInputs.servico ? filterInputs.servico.value.toLowerCase().trim() : '',
-        consulta: filterInputs.consulta ? filterInputs.consulta.value.toLowerCase().trim() : '',
+        consulta: filterInputs.consulta ? filterInputs.consulta.value.trim() : '',
         telefone: filterInputs.telefone ? filterInputs.telefone.value.toLowerCase().trim() : ''
       };
 

@@ -1,5 +1,8 @@
 /* agenda.css */
 
+/* Mobile view oculta por padrão */
+.agenda-mobile { display: none; }
+
 .custom-notification {
   max-width: 450px;
   background-color: #ffffff;
@@ -83,4 +86,335 @@
   width: 100%;
   height: 100%;
   display: block;
+}
+
+/* ══════════════════════════════════════════════════
+   AGENDA MOBILE — estilo Teams
+   ══════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* Esconder grade desktop, ajustar app-content */
+  .app-content > .container-fluid { display: none !important; }
+  .app-content {
+    padding: 0;
+    padding-top: 4.5rem;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100svh;
+  }
+
+  /* Mostrar mobile */
+  .agenda-mobile {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    background: var(--c4);
+  }
+
+  /* ── Notificação ── */
+  .am-notif {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: #fff;
+    border-left: 4px solid var(--c1);
+    border-radius: var(--radius-md);
+    padding: 0.65rem 0.85rem;
+    margin: 0.65rem;
+    box-shadow: var(--shadow-sm);
+    flex-shrink: 0;
+  }
+
+  .am-notif-icon {
+    width: 34px;
+    height: 34px;
+    background: var(--c4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--c1);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .am-notif-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .am-notif-titulo {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--c1);
+  }
+
+  .am-notif-tags { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+
+  .am-tag {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 0.12rem 0.45rem;
+    border-radius: 99px;
+    background: var(--c4);
+    color: var(--c2);
+    border: 1px solid rgba(110,84,48,.18);
+  }
+
+  .am-notif-fechar {
+    background: none;
+    border: none;
+    color: var(--c3);
+    font-size: 0.85rem;
+    padding: 0.25rem;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  /* ── Navegação de semana ── */
+  .am-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 1rem;
+    background: #fff;
+    border-bottom: 1px solid var(--c4);
+    flex-shrink: 0;
+  }
+
+  .am-nav-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--c4);
+    background: #fff;
+    color: var(--c2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 180ms cubic-bezier(.16,1,.3,1);
+  }
+
+  .am-nav-btn:hover { background: var(--c4); border-color: var(--c3); color: var(--c1); }
+
+  .am-nav-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.05rem;
+  }
+
+  .am-nav-semana {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--c1);
+    line-height: 1.2;
+  }
+
+  .am-nav-mes { font-size: 0.7rem; color: var(--c3); }
+
+  /* ── Strip de dias ── */
+  .am-strip-wrap {
+    background: #fff;
+    padding: 0.6rem 0.75rem 0.8rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    border-bottom: 2px solid var(--c4);
+    flex-shrink: 0;
+  }
+
+  .am-strip-wrap::-webkit-scrollbar { display: none; }
+
+  .am-strip {
+    display: flex;
+    gap: 0.2rem;
+    width: max-content;
+  }
+
+  .am-day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    padding: 0.3rem 0.45rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 180ms cubic-bezier(.16,1,.3,1);
+    min-width: 40px;
+    user-select: none;
+  }
+
+  .am-day-nome {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--c3);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: color 180ms;
+  }
+
+  .am-day-num {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--c2);
+    transition: all 180ms cubic-bezier(.16,1,.3,1);
+  }
+
+  /* Hoje */
+  .am-day.hoje .am-day-num {
+    border: 2px solid var(--c1);
+    color: var(--c1);
+  }
+
+  /* Dia selecionado */
+  .am-day.ativo .am-day-nome { color: var(--c1); }
+  .am-day.ativo .am-day-num {
+    background: var(--c1);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(110,84,48,.35);
+  }
+
+  .am-day.hoje.ativo .am-day-num { background: var(--c1); color: #fff; border-color: var(--c1); }
+
+  /* ── Lista de horários (scrollável) ── */
+  .am-slots {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.75rem 0 2rem;
+    background: var(--c4);
+  }
+
+  .am-slots::-webkit-scrollbar { width: 3px; }
+  .am-slots::-webkit-scrollbar-thumb { background: #ccc; border-radius: 2px; }
+
+  /* Cabeçalho do dia dentro da lista */
+  .am-slots-titulo {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--c2);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0 1rem 0.6rem 4.5rem;
+    border-bottom: 1px solid rgba(110,84,48,.12);
+    margin-bottom: 0.25rem;
+  }
+
+  /* Linha de horário */
+  .am-slot {
+    display: flex;
+    align-items: flex-start;
+    padding: 0 1rem 0 0.85rem;
+    min-height: 60px;
+    gap: 0.65rem;
+  }
+
+  .am-slot-hora {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: var(--c3);
+    width: 38px;
+    flex-shrink: 0;
+    padding-top: 0.38rem;
+    text-align: right;
+  }
+
+  .am-slot-linha {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    padding-top: 0.52rem;
+  }
+
+  .am-slot-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: #d0cfbf;
+    flex-shrink: 0;
+    transition: background 180ms;
+  }
+
+  .am-slot-dot.ocupado { background: var(--c1); }
+
+  .am-slot-fio {
+    width: 2px;
+    flex: 1;
+    min-height: 44px;
+    background: linear-gradient(to bottom, var(--c4), #d5d4c4);
+    border-radius: 1px;
+  }
+
+  .am-slot-corpo {
+    flex: 1;
+    min-width: 0;
+    padding-bottom: 0.5rem;
+    padding-top: 0.05rem;
+  }
+
+  /* Card de consulta ocupada */
+  .am-evento {
+    background: var(--c1);
+    border-radius: var(--radius-md);
+    padding: 0.6rem 0.9rem;
+    cursor: pointer;
+    transition: box-shadow 180ms, transform 180ms;
+    box-shadow: 0 2px 8px rgba(110,84,48,.25);
+  }
+
+  .am-evento:active { transform: scale(0.98); }
+
+  .am-evento-nome {
+    display: block;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .am-evento-servico {
+    display: block;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,.72);
+    margin-top: 0.1rem;
+  }
+
+  /* Horário livre */
+  .am-livre {
+    font-size: 0.74rem;
+    color: var(--c3);
+    padding-top: 0.28rem;
+    font-style: italic;
+  }
+
+  /* Nenhuma consulta no dia */
+  .am-vazio {
+    text-align: center;
+    padding: 3rem 1.5rem 1rem;
+    color: var(--c3);
+  }
+
+  .am-vazio i {
+    font-size: 2.2rem;
+    display: block;
+    margin-bottom: 0.75rem;
+    opacity: 0.35;
+  }
+
+  .am-vazio-texto {
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
 }
