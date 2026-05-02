@@ -1,0 +1,167 @@
+/* ═══════════════════════════════════════════════
+   Elementos repetíveis (Botões, cards, formulários, tabelas).
+   ═══════════════════════════════════════════════ */
+
+/* ── BUTTONS ── */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: 0.65rem 2rem;
+    background: var(--c1);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition);
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+}
+
+.btn:hover {
+    background: var(--c2);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn i {
+    font-size: 1rem;
+}
+
+.btn-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-6);
+}
+
+/* Floating Action Button */
+.fab-adicionar {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 200;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .7rem 1.4rem;
+    font-size: .88rem;
+    font-weight: 600;
+    color: var(--c1);
+    background: #fff;
+    border: 2px solid rgba(110, 84, 48, 0.40);
+    border-radius: .5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(110, 84, 48, 0.18);
+    transition: all var(--transition);
+    letter-spacing: .02em;
+    text-decoration: none;
+}
+
+.fab-adicionar:hover {
+    background: var(--c1);
+    color: #fff;
+    border-color: var(--c1);
+    box-shadow: 0 6px 24px rgba(110, 84, 48, 0.30);
+    transform: translateY(-2px);
+}
+
+/* ── FORMS ── */
+.form-label {
+    display: block;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--c2);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-bottom: .35rem;
+}
+
+.form-control {
+    width: 100%;
+    border: 1.5px solid var(--c3);
+    border-radius: .5rem;
+    background: #fff;
+    color: var(--c1);
+    font-size: .95rem;
+    padding: .65rem .85rem;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.form-control:focus {
+    border-color: var(--c1);
+    box-shadow: 0 0 0 3px rgba(110, 84, 48, .15);
+    outline: none;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper .input-icon {
+    position: absolute;
+    right: .75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--c3);
+    font-size: 1rem;
+    pointer-events: none;
+}
+
+/* ── CARDS ── */
+.card-funcionario {
+    background: #fff;
+    border: 1px solid rgba(110, 84, 48, .15);
+    border-radius: var(--radius-md);
+    padding: 1.5rem 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: .6rem;
+    transition: all var(--transition);
+    cursor: default;
+}
+
+.card-funcionario:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--c3);
+}
+
+/* ── BADGES ── */
+.badge-cargo {
+    display: inline-block;
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    padding: .2rem .65rem;
+    border-radius: 99px;
+    margin-bottom: .5rem;
+}
+
+.badge-cargo.secretaria {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.badge-cargo.dentista {
+    background: #e3f2fd;
+    color: #1565c0;
+}
+
+.badge-cargo.ti-adm {
+    background: #fce4ec;
+    color: #ad1457;
+}
+
+.badge-cargo.default {
+    background: #f3e5f5;
+    color: #6a1b9a;
+}

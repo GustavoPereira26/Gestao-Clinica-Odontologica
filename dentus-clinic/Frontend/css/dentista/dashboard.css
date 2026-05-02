@@ -1,0 +1,123 @@
+/* ═══════════════════════════════════════════════
+   DENTISTA — Dashboard Composition
+   ═══════════════════════════════════════════════ */
+
+/* Page Header */
+.page-header {
+    padding: 2rem 2rem 1rem;
+    text-align: center;
+}
+
+.page-title {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--c1);
+    letter-spacing: .02em;
+    position: relative;
+    display: inline-block;
+    padding-bottom: .5rem;
+}
+
+.page-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 2%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 3px;
+    background: var(--c1);
+    border-radius: 99px;
+}
+
+/* Grids */
+.funcionarios-grid {
+    padding: 1.5rem 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1.25rem;
+    align-content: start;
+}
+
+/* Card inner elements */
+.card-foto {
+    width: 90px;
+    height: 90px;
+    border: 1.5px solid rgba(110, 84, 48, .20);
+    border-radius: var(--radius-sm);
+    background: #f7f4f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.card-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card-nome {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--c1);
+    margin-top: .25rem;
+}
+
+.card-cargo {
+    font-size: .8rem;
+    color: #777;
+    margin-bottom: .25rem;
+}
+
+/* Specific Buttons */
+.btn-visualizar {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .42rem 1rem;
+    font-size: .82rem;
+    font-weight: 600;
+    color: var(--c1);
+    background: #fff;
+    border: 1.5px solid rgba(110, 84, 48, .35);
+    border-radius: .4rem;
+    transition: all var(--transition);
+}
+
+.btn-visualizar:hover {
+    background: var(--c1);
+    color: #fff;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 1.25rem 1rem .75rem;
+    }
+
+    .page-title {
+        font-size: 1.35rem;
+    }
+
+    .funcionarios-grid {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+}

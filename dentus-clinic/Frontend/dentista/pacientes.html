@@ -19,14 +19,10 @@
     href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;500;600&display=swap"
     rel="stylesheet" />
 
-  <!-- Tokens globais -->
-  <link rel="stylesheet" href="../root.css" />
-
-  <!-- Base layout -->
+  <link rel="stylesheet" href="../css/variables.css" />
   <link rel="stylesheet" href="../css/base.css" />
-
-  <!-- Sidebar / Layout -->
   <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
 
   <!-- Estilos da página -->
   <link rel="stylesheet" href="../css/dentista/pacientes.css" />
@@ -52,52 +48,55 @@
 
         <!-- Barra de Filtros -->
         <section class="filter-bar" id="filterBar">
-            <div class="filter-field">
-                <label class="filter-label" for="filterNome">Paciente</label>
-                <div class="filter-input-wrapper">
-                    <i class="bi bi-search filter-input-icon"></i>
-                    <input type="text" class="filter-input" id="filterNome" placeholder="Buscar por nome..." autocomplete="off" />
-                </div>
+          <div class="filter-field">
+            <label class="filter-label" for="filterNome">Paciente</label>
+            <div class="filter-input-wrapper">
+              <i class="bi bi-search filter-input-icon"></i>
+              <input type="text" class="filter-input" id="filterNome" placeholder="Buscar por nome..."
+                autocomplete="off" />
             </div>
+          </div>
 
-            <div class="filter-field">
-                <label class="filter-label" for="filterCpf">CPF</label>
-                <div class="filter-input-wrapper">
-                    <i class="bi bi-credit-card filter-input-icon"></i>
-                    <input type="text" class="filter-input" id="filterCpf" placeholder="000.000.000-00" autocomplete="off" />
-                </div>
+          <div class="filter-field">
+            <label class="filter-label" for="filterCpf">CPF</label>
+            <div class="filter-input-wrapper">
+              <i class="bi bi-credit-card filter-input-icon"></i>
+              <input type="text" class="filter-input" id="filterCpf" placeholder="000.000.000-00" autocomplete="off" />
             </div>
+          </div>
 
-            <div class="filter-field">
-                <label class="filter-label" for="filterServico">Serviço</label>
-                <div class="filter-input-wrapper">
-                    <i class="bi bi-clipboard2-pulse filter-input-icon"></i>
-                    <input type="text" class="filter-input" id="filterServico" placeholder="Serviço..." autocomplete="off" />
-                </div>
+          <div class="filter-field">
+            <label class="filter-label" for="filterServico">Serviço</label>
+            <div class="filter-input-wrapper">
+              <i class="bi bi-clipboard2-pulse filter-input-icon"></i>
+              <input type="text" class="filter-input" id="filterServico" placeholder="Serviço..." autocomplete="off" />
             </div>
+          </div>
 
-            <div class="filter-field">
-                <label class="filter-label" for="filterTelefone">Telefone</label>
-                <div class="filter-input-wrapper">
-                    <i class="bi bi-telephone filter-input-icon"></i>
-                    <input type="text" class="filter-input" id="filterTelefone" placeholder="(00) 00000-0000" autocomplete="off" />
-                </div>
+          <div class="filter-field">
+            <label class="filter-label" for="filterTelefone">Telefone</label>
+            <div class="filter-input-wrapper">
+              <i class="bi bi-telephone filter-input-icon"></i>
+              <input type="text" class="filter-input" id="filterTelefone" placeholder="(00) 00000-0000"
+                autocomplete="off" />
             </div>
+          </div>
 
-            <div class="filter-field">
-                <label class="filter-label" for="filterConsulta">Data Consulta</label>
-                <div class="filter-input-wrapper">
-                    <i class="bi bi-calendar filter-input-icon"></i>
-                    <input type="text" class="filter-input" id="filterConsulta" placeholder="DD/MM/AAAA" maxlength="10" autocomplete="off" />
-                </div>
+          <div class="filter-field">
+            <label class="filter-label" for="filterConsulta">Data Consulta</label>
+            <div class="filter-input-wrapper">
+              <i class="bi bi-calendar filter-input-icon"></i>
+              <input type="text" class="filter-input" id="filterConsulta" placeholder="DD/MM/AAAA" maxlength="10"
+                autocomplete="off" />
             </div>
+          </div>
 
-            <div class="filter-actions">
-                <button class="btn-filter-clear" id="btnClearFilters" title="Limpar filtros">
-                    <i class="bi bi-x-lg"></i>
-                    Limpar
-                </button>
-            </div>
+          <div class="filter-actions">
+            <button class="btn-filter-clear" id="btnClearFilters" title="Limpar filtros">
+              <i class="bi bi-x-lg"></i>
+              Limpar
+            </button>
+          </div>
         </section>
 
         <!-- Table -->
