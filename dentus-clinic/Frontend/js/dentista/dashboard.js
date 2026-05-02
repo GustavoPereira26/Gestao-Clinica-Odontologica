@@ -152,7 +152,7 @@ function renderizarFila(pacientes) {
     const tr = document.createElement('tr');
     tr.dataset.id = p.id;
     tr.innerHTML = `
-      <td>${p.nome}</td>
+      <td class="ps-4 fw-medium">${p.nome}</td>
       <td>${p.servico}</td>
       <td>${p.tempo}</td>
     `;
@@ -164,11 +164,11 @@ function renderizarFila(pacientes) {
 // ─── Seleciona paciente e atualiza painel ───────────────────────────────────
 function selecionarPaciente(id) {
   // Remove destaque da linha anterior
-  const linhaAnterior = document.querySelector('.dash-table tbody tr.selecionado');
+  const linhaAnterior = document.querySelector('#tabelaFila tbody tr.selecionado');
   if (linhaAnterior) linhaAnterior.classList.remove('selecionado');
 
   // Destaca nova linha
-  const linhaNova = document.querySelector(`.dash-table tbody tr[data-id="${id}"]`);
+  const linhaNova = document.querySelector(`#tabelaFila tbody tr[data-id="${id}"]`);
   if (linhaNova) linhaNova.classList.add('selecionado');
 
   pacienteSelecionadoId = id;

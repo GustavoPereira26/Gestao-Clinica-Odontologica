@@ -123,70 +123,56 @@
   margin-bottom: var(--space-4);
 }
 
-.dash-table-wrapper {
-  background: #fff;
-  border: 1px solid rgba(110, 84, 48, .12);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  max-height: 440px;
+/* ── TABELA (mesmo visual de pacientes.html) ── */
+.table-container {
+  border-radius: var(--radius-md);
   overflow-y: auto;
+  box-shadow: var(--shadow-sm);
+  background-color: #fff;
 }
 
-/* ── TABELA ── */
-.dash-table {
-  width: 100%;
+.table-container::-webkit-scrollbar { width: 8px; }
+.table-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+.table-container::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+
+.table-custom {
   border-collapse: collapse;
-  font-size: 0.875rem;
+  margin-bottom: 0;
 }
 
-.dash-table thead th {
-  background: var(--c4);
-  color: var(--c2);
+.table-custom thead th {
+  background-color: var(--c1) !important;
+  color: #fff !important;
   font-weight: 600;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  border: none;
+  padding: 1rem 0.5rem;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 0.7rem 1rem;
-  border-bottom: 1px solid rgba(110, 84, 48, .12);
-  white-space: nowrap;
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 10;
 }
 
-.dash-table tbody tr {
+.table-custom tbody tr {
+  border-bottom: 1px solid transparent;
   cursor: pointer;
   transition: background var(--transition);
-  border-bottom: 1px solid rgba(110, 84, 48, .06);
 }
 
-.dash-table tbody tr:last-child {
-  border-bottom: none;
-}
+.table-custom tbody tr:nth-child(odd)  { background-color: #ffffff; }
+.table-custom tbody tr:nth-child(even) { background-color: #f6f5ef; }
+.table-custom tbody tr:hover           { background-color: #ece9e2 !important; }
+.table-custom tbody tr.selecionado     { background-color: #e0d9ce !important; }
 
-.dash-table tbody tr:hover {
-  background: var(--c4);
-}
-
-.dash-table tbody tr.selecionado {
-  background: rgba(110, 84, 48, .14);
-}
-
-.dash-table tbody tr.selecionado td {
-  color: var(--c1);
-  font-weight: 600;
-}
-
-.dash-table tbody td {
-  padding: 0.65rem 1rem;
-  color: var(--c1);
+.table-custom tbody td {
+  padding: 1rem 0.5rem;
+  font-size: 0.85rem;
+  color: #555;
   vertical-align: middle;
+  border: none;
 }
 
-.dash-table tbody tr:nth-child(even):not(.selecionado):not(:hover) {
-  background: rgba(110, 84, 48, .03);
-}
 
 /* ── PAINEL DE DETALHE ── */
 .dash-detalhe {
