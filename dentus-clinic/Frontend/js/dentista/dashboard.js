@@ -222,9 +222,9 @@ function preencherPainel(p) {
   document.getElementById('detalheMedicamentos').textContent = p.medicamentos;
   document.getElementById('detalheHistorico').textContent   = p.historico;
 
-  // Botão prontuário (preparado para rota com ID)
+  // Botão prontuário (redireciona para tela de tratamentos abrindo o prontuário)
   document.getElementById('btnProntuario').onclick = () => {
-    window.location.href = `../dentista/pacientes.html?id=${p.id}`;
+    window.location.href = `../dentista/tratamentos.html?prontuario=${encodeURIComponent(p.nome)}`;
   };
 }
 

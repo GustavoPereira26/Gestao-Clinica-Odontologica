@@ -853,4 +853,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // ══════════════════════════════════════════════════════
+  //  VERIFICAR REDIRECIONAMENTO PARA PRONTUÁRIO
+  // ══════════════════════════════════════════════════════
+  const urlParams = new URLSearchParams(window.location.search);
+  const prontuarioNome = urlParams.get("prontuario");
+  if (prontuarioNome) {
+    const idx = tratamentos.findIndex(t => t.paciente === prontuarioNome);
+    if (idx !== -1) {
+      selectedIndex = idx;
+      currentTratamento = tratamentos[idx];
+      renderTabela(tratamentos);
+      atualizarResumo(currentTratamento);
+    } else {
+      // Cria um mock temporário caso o paciente não esteja na lista local
+      currentTratamento = {
+        paciente: prontuarioNome,
+        servico: "Consulta",
+        status: "Em andamento",
+        progresso: 0,
+        proximaSessao: "A definir",
+        etapasFeitas: 0,
+        etapasTotal: 0,
+        ultimaEtapa: "—",
+        proximaEtapa: "—"
+      };
+      atualizarResumo(currentTratamento);
+    }
+    abrirProntuario("lista");
+  }
+
 });
