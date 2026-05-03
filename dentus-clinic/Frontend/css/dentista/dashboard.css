@@ -408,6 +408,630 @@
 }
 
 
+/* ══════════════════════════════════════════════════
+   TELA: INICIAR TRATAMENTO
+   ══════════════════════════════════════════════════ */
+
+.it-view {
+  animation: fadeIn 180ms ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Botão Voltar */
+.it-btn-voltar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.5rem 1rem;
+  background: none;
+  border: 1.5px solid var(--c3);
+  border-radius: var(--radius-md);
+  color: var(--c1);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: var(--space-4);
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.it-btn-voltar:hover {
+  background: var(--c4);
+  border-color: var(--c2);
+}
+
+/* Cabeçalho */
+.it-header {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-6);
+  padding: var(--space-5) var(--space-6);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.it-header-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.it-header-divider {
+  width: 1px;
+  height: 52px;
+  background: var(--c4);
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.it-header-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--c2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.it-header-nome {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--c1);
+  line-height: 1.2;
+}
+
+.it-header-sub {
+  font-size: 0.88rem;
+  color: var(--c2);
+}
+
+.it-header-servico-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.it-badge-atendimento {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.22rem 0.7rem;
+  background: #d4edda;
+  color: #1a6e35;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+/* Layout 2 colunas */
+.it-main-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: var(--space-6);
+  align-items: start;
+}
+
+/* Títulos de seção */
+.it-section-title {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--c1);
+  margin-bottom: var(--space-4);
+}
+
+/* ── Seção Odontograma ── */
+.it-odontograma-section {
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.it-odontograma-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: var(--space-4);
+}
+
+.it-arcada-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.it-arcada-grupo {
+  display: flex;
+  gap: 4px;
+}
+
+.it-arcada-gap {
+  width: 18px;
+  flex-shrink: 0;
+}
+
+.it-dente {
+  width: 40px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+  transition: transform var(--transition), box-shadow var(--transition);
+  border: 1.5px solid transparent;
+}
+
+.it-dente:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.it-dente.saudavel {
+  background: #fff;
+  border-color: var(--c4);
+  color: var(--c1);
+}
+
+.it-dente.selecao {
+  background: #e74c3c;
+  border-color: #c0392b;
+  color: #fff;
+}
+
+.it-dente.tratado {
+  background: #2980b9;
+  border-color: #1f6391;
+  color: #fff;
+}
+
+.it-dente.ausente {
+  background: #bdc3c7;
+  border-color: #95a5a6;
+  color: #fff;
+}
+
+/* Controles e Legenda */
+.it-odontograma-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.it-select-todos {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--c1);
+  cursor: pointer;
+  user-select: none;
+}
+
+.it-select-todos input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  accent-color: var(--c1);
+  cursor: pointer;
+}
+
+.it-legenda {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.it-legenda-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.78rem;
+  color: var(--c2);
+}
+
+.it-legenda-cor {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.it-legenda-cor.saudavel-cor { background: transparent; border: 2px solid var(--c3); }
+.it-legenda-cor.selecao-cor  { background: #e74c3c; }
+.it-legenda-cor.tratado-cor  { background: #2980b9; }
+.it-legenda-cor.ausente-cor  { background: #bdc3c7; }
+
+/* Botão Prontuário */
+.it-btn-prontuario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 0.6rem var(--space-4);
+  background: #fff;
+  border: 1.5px solid var(--c3);
+  border-radius: var(--radius-md);
+  color: var(--c1);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.it-btn-prontuario:hover {
+  background: var(--c4);
+  border-color: var(--c2);
+}
+
+/* ── Seção Planejamento ── */
+.it-plano-section {
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.it-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.it-campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.it-campo-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--c2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.it-campo-input {
+  width: 100%;
+  padding: 0.6rem var(--space-3);
+  background: var(--c5);
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  color: var(--c1);
+  font-family: var(--font-body);
+  outline: none;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.it-campo-input:focus {
+  border-color: var(--c2);
+  background: #fff;
+}
+
+.it-campo-input[readonly] {
+  cursor: default;
+  color: var(--c2);
+}
+
+.it-campo-textarea {
+  width: 100%;
+  padding: 0.6rem var(--space-3);
+  background: var(--c5);
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  color: var(--c1);
+  font-family: var(--font-body);
+  resize: vertical;
+  min-height: 110px;
+  line-height: 1.6;
+  outline: none;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.it-campo-textarea:focus {
+  border-color: var(--c2);
+  background: #fff;
+}
+
+.it-btn-adicionar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 0.85rem var(--space-4);
+  background: var(--c1);
+  border: none;
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  margin-top: var(--space-2);
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.it-btn-adicionar:hover {
+  background: var(--c2);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.it-btn-adicionar:active {
+  transform: translateY(0);
+}
+
+/* Responsivo */
+@media (max-width: 1100px) {
+  .it-main-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .it-header {
+    gap: var(--space-4);
+    padding: var(--space-4);
+  }
+
+  .it-header-divider { display: none; }
+
+  .it-dente {
+    width: 30px;
+    height: 34px;
+    font-size: 0.65rem;
+  }
+
+  .it-arcada-gap { width: 8px; }
+  .it-arcada-grupo { gap: 2px; }
+  .it-arcada-row { gap: 2px; }
+}
+
+/* ══════════════════════════════════════════════════
+   TELA: PLANO DE TRATAMENTO
+   ══════════════════════════════════════════════════ */
+
+.ap-view {
+  animation: fadeIn 180ms ease;
+}
+
+.ap-content {
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Topo: título + contador */
+.ap-topo-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.ap-contador {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--c2);
+  background: var(--c4);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+}
+
+/* Lista de etapas */
+.ap-etapas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+/* Card de cada etapa */
+.ap-etapa-card {
+  background: var(--c5);
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.ap-etapa-card:hover {
+  border-color: var(--c3);
+  box-shadow: var(--shadow-sm);
+}
+
+.ap-etapa-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--c4);
+  border-bottom: 1px solid var(--c4);
+}
+
+.ap-etapa-num {
+  width: 26px;
+  height: 26px;
+  background: var(--c1);
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.ap-etapa-dente-nome {
+  flex: 1;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--c1);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ap-etapa-delete {
+  background: none;
+  border: none;
+  color: var(--c3);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  line-height: 1;
+  transition: color var(--transition), background var(--transition);
+  flex-shrink: 0;
+}
+
+.ap-etapa-delete:hover {
+  color: #c0392b;
+  background: #fdf0ee;
+}
+
+.ap-etapa-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.ap-etapa-campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.ap-etapa-campo.full {
+  grid-column: 1 / -1;
+}
+
+.ap-etapa-campo-label {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--c2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ap-etapa-campo-valor {
+  font-size: 0.85rem;
+  color: var(--c1);
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+/* Estado vazio */
+.ap-etapas-vazio {
+  text-align: center;
+  padding: var(--space-8) var(--space-4);
+  color: var(--c3);
+  font-size: 0.88rem;
+}
+
+/* Ações */
+.ap-acoes {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--c4);
+}
+
+.ap-btn-add-etapa {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.65rem 1.2rem;
+  background: #fff;
+  border: 1.5px solid var(--c3);
+  border-radius: var(--radius-md);
+  color: var(--c1);
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.ap-btn-add-etapa:hover {
+  background: var(--c4);
+  border-color: var(--c2);
+}
+
+.ap-btn-confirmar {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.65rem 1.4rem;
+  background: var(--c1);
+  border: none;
+  border-radius: var(--radius-md);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  margin-left: auto;
+  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+}
+
+.ap-btn-confirmar:hover {
+  background: var(--c2);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.ap-btn-confirmar:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+  .ap-etapa-body {
+    grid-template-columns: 1fr;
+  }
+
+  .ap-acoes {
+    flex-direction: column;
+  }
+
+  .ap-btn-confirmar {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .ap-btn-add-etapa {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
 /* ── RESPONSIVO ── */
 @media (max-width: 900px) {
   .dash-body {

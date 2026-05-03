@@ -185,6 +185,223 @@
 
     </div><!-- /dash-body -->
 
+    <!-- ══════════════════════════════════════════════════
+       TELA: INICIAR TRATAMENTO (oculta por padrão)
+       ══════════════════════════════════════════════════ -->
+    <div class="it-view" id="iniciarTratamentoView" style="display:none;">
+
+      <!-- Botão Voltar -->
+      <button class="it-btn-voltar" id="btnVoltarDash">
+        <i class="fa-solid fa-arrow-left"></i> Voltar
+      </button>
+
+      <!-- Cabeçalho: Paciente | Serviço -->
+      <div class="it-header">
+
+        <div class="it-header-col">
+          <span class="it-header-label">Paciente</span>
+          <span class="it-header-nome" id="itNomePaciente"></span>
+          <span class="it-header-sub">Avaliação Clinica</span>
+        </div>
+
+        <div class="it-header-divider"></div>
+
+        <div class="it-header-col">
+          <span class="it-header-label">Serviço</span>
+          <div class="it-header-servico-row">
+            <span class="it-header-nome" id="itServico"></span>
+            <span class="it-badge-atendimento">
+              <i class="fa-solid fa-circle fa-2xs"></i> Em Atendimento
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Layout: Odontograma (esq) + Diagnóstico e Planejamento (dir) -->
+      <div class="it-main-layout">
+
+        <!-- ─ COLUNA ESQUERDA: Odontograma ─ -->
+        <section class="it-odontograma-section">
+
+          <h2 class="it-section-title">Odontograma</h2>
+
+          <div class="it-odontograma-chart">
+
+            <!-- Arcada Superior -->
+            <div class="it-arcada-row">
+              <div class="it-arcada-grupo">
+                <div class="it-dente saudavel" data-num="18">18</div>
+                <div class="it-dente saudavel" data-num="17">17</div>
+                <div class="it-dente saudavel" data-num="16">16</div>
+                <div class="it-dente saudavel" data-num="15">15</div>
+                <div class="it-dente saudavel" data-num="14">14</div>
+                <div class="it-dente saudavel" data-num="13">13</div>
+                <div class="it-dente saudavel" data-num="12">12</div>
+                <div class="it-dente saudavel" data-num="11">11</div>
+              </div>
+              <div class="it-arcada-gap"></div>
+              <div class="it-arcada-grupo">
+                <div class="it-dente saudavel" data-num="21">21</div>
+                <div class="it-dente saudavel" data-num="22">22</div>
+                <div class="it-dente saudavel" data-num="23">23</div>
+                <div class="it-dente saudavel" data-num="24">24</div>
+                <div class="it-dente saudavel" data-num="25">25</div>
+                <div class="it-dente saudavel" data-num="26">26</div>
+                <div class="it-dente saudavel" data-num="27">27</div>
+                <div class="it-dente saudavel" data-num="28">28</div>
+              </div>
+            </div>
+
+            <!-- Arcada Inferior -->
+            <div class="it-arcada-row">
+              <div class="it-arcada-grupo">
+                <div class="it-dente saudavel" data-num="48">48</div>
+                <div class="it-dente saudavel" data-num="47">47</div>
+                <div class="it-dente selecao"  data-num="46">46</div>
+                <div class="it-dente saudavel" data-num="45">45</div>
+                <div class="it-dente saudavel" data-num="44">44</div>
+                <div class="it-dente saudavel" data-num="43">43</div>
+                <div class="it-dente saudavel" data-num="42">42</div>
+                <div class="it-dente saudavel" data-num="41">41</div>
+              </div>
+              <div class="it-arcada-gap"></div>
+              <div class="it-arcada-grupo">
+                <div class="it-dente saudavel" data-num="31">31</div>
+                <div class="it-dente saudavel" data-num="32">32</div>
+                <div class="it-dente saudavel" data-num="33">33</div>
+                <div class="it-dente saudavel" data-num="34">34</div>
+                <div class="it-dente saudavel" data-num="35">35</div>
+                <div class="it-dente saudavel" data-num="36">36</div>
+                <div class="it-dente saudavel" data-num="37">37</div>
+                <div class="it-dente saudavel" data-num="38">38</div>
+              </div>
+            </div>
+
+          </div><!-- /it-odontograma-chart -->
+
+          <!-- Controles e Legenda -->
+          <div class="it-odontograma-controls">
+
+            <label class="it-select-todos">
+              <input type="checkbox" id="chkSelecionarTodos"/>
+              Selecionar Todos
+            </label>
+
+            <div class="it-legenda">
+              <span class="it-legenda-item">
+                <span class="it-legenda-cor saudavel-cor"></span> Saudável
+              </span>
+              <span class="it-legenda-item">
+                <span class="it-legenda-cor selecao-cor"></span> Seleção
+              </span>
+              <span class="it-legenda-item">
+                <span class="it-legenda-cor tratado-cor"></span> Tratado
+              </span>
+              <span class="it-legenda-item">
+                <span class="it-legenda-cor ausente-cor"></span> Ausente
+              </span>
+            </div>
+
+          </div>
+
+          <!-- Botão Prontuário -->
+          <button class="it-btn-prontuario" id="btnProntuarioIt">
+            <i class="fa-regular fa-eye"></i> Prontuário
+          </button>
+
+        </section>
+
+        <!-- ─ COLUNA DIREITA: Diagnóstico e Planejamento ─ -->
+        <section class="it-plano-section">
+
+          <h2 class="it-section-title">Diagnóstico e Planejamento</h2>
+
+          <form class="it-form" id="formPlano" novalidate>
+
+            <div class="it-campo">
+              <label class="it-campo-label" for="itInputDente">Dente Selecionado</label>
+              <input type="text" id="itInputDente" class="it-campo-input"
+                     value="46 - Primeiro Molar Inferior Direito" readonly/>
+            </div>
+
+            <div class="it-campo">
+              <label class="it-campo-label" for="itInputCondicao">Condição</label>
+              <input type="text" id="itInputCondicao" class="it-campo-input" value="Cárie Profunda"/>
+            </div>
+
+            <div class="it-campo">
+              <label class="it-campo-label" for="itTextareaDescricao">Descrição do Tratamento</label>
+              <textarea id="itTextareaDescricao" class="it-campo-textarea" rows="6">Tratamento endodôntico necessário. Obturação temporária aplicada</textarea>
+            </div>
+
+            <button type="submit" class="it-btn-adicionar">
+              <i class="fa-solid fa-plus"></i> Adicionar Plano ao Tratamento
+            </button>
+
+          </form>
+
+        </section>
+
+      </div><!-- /it-main-layout -->
+
+    </div><!-- /iniciarTratamentoView -->
+
+    <!-- ══════════════════════════════════════════════════
+       TELA: PLANO DE TRATAMENTO (oculta por padrão)
+       ══════════════════════════════════════════════════ -->
+    <div class="ap-view" id="adicionarPlanoView" style="display:none;">
+
+      <button class="it-btn-voltar" id="btnVoltarParaTratamento">
+        <i class="fa-solid fa-arrow-left"></i> Voltar
+      </button>
+
+      <!-- Cabeçalho -->
+      <div class="it-header">
+        <div class="it-header-col">
+          <span class="it-header-label">Paciente</span>
+          <span class="it-header-nome" id="apNomePaciente"></span>
+          <span class="it-header-sub">Avaliação Clinica</span>
+        </div>
+        <div class="it-header-divider"></div>
+        <div class="it-header-col">
+          <span class="it-header-label">Serviço</span>
+          <div class="it-header-servico-row">
+            <span class="it-header-nome" id="apServico"></span>
+            <span class="it-badge-atendimento">
+              <i class="fa-solid fa-circle fa-2xs"></i> Em Atendimento
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conteúdo -->
+      <div class="ap-content">
+
+        <div class="ap-topo-row">
+          <h2 class="it-section-title" style="margin-bottom:0;">Plano de Tratamento</h2>
+          <span class="ap-contador" id="apContador">1 etapa</span>
+        </div>
+
+        <!-- Lista de etapas adicionadas -->
+        <div class="ap-etapas-lista" id="apEtapasLista">
+          <!-- Renderizado pelo JS -->
+        </div>
+
+        <!-- Ações -->
+        <div class="ap-acoes">
+          <button class="ap-btn-add-etapa" id="apBtnAddEtapa">
+            <i class="fa-solid fa-plus"></i> Adicionar outra etapa
+          </button>
+          <button class="ap-btn-confirmar" id="apBtnConfirmar">
+            <i class="fa-solid fa-check"></i> Confirmar Plano de Tratamento
+          </button>
+        </div>
+
+      </div>
+
+    </div><!-- /adicionarPlanoView -->
+
   </main>
 </div><!-- /app-layout -->
 

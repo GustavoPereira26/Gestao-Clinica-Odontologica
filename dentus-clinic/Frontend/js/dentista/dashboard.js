@@ -105,6 +105,28 @@ const PACIENTES_FILA = [
 
 // ─── Estado local ───────────────────────────────────────────────────────────
 let pacienteSelecionadoId = null;
+let planosTratamento = [];
+
+const ESTADOS_DENTE = ['saudavel', 'selecao', 'tratado', 'ausente'];
+
+const NOMES_DENTES = {
+  11:'Incisivo Central Superior Direito', 12:'Incisivo Lateral Superior Direito',
+  13:'Canino Superior Direito',           14:'Primeiro Pré-Molar Superior Direito',
+  15:'Segundo Pré-Molar Superior Direito',16:'Primeiro Molar Superior Direito',
+  17:'Segundo Molar Superior Direito',    18:'Terceiro Molar Superior Direito',
+  21:'Incisivo Central Superior Esquerdo',22:'Incisivo Lateral Superior Esquerdo',
+  23:'Canino Superior Esquerdo',          24:'Primeiro Pré-Molar Superior Esquerdo',
+  25:'Segundo Pré-Molar Superior Esquerdo',26:'Primeiro Molar Superior Esquerdo',
+  27:'Segundo Molar Superior Esquerdo',   28:'Terceiro Molar Superior Esquerdo',
+  31:'Incisivo Central Inferior Esquerdo',32:'Incisivo Lateral Inferior Esquerdo',
+  33:'Canino Inferior Esquerdo',          34:'Primeiro Pré-Molar Inferior Esquerdo',
+  35:'Segundo Pré-Molar Inferior Esquerdo',36:'Primeiro Molar Inferior Esquerdo',
+  37:'Segundo Molar Inferior Esquerdo',   38:'Terceiro Molar Inferior Esquerdo',
+  41:'Incisivo Central Inferior Direito', 42:'Incisivo Lateral Inferior Direito',
+  43:'Canino Inferior Direito',           44:'Primeiro Pré-Molar Inferior Direito',
+  45:'Segundo Pré-Molar Inferior Direito',46:'Primeiro Molar Inferior Direito',
+  47:'Segundo Molar Inferior Direito',    48:'Terceiro Molar Inferior Direito',
+};
 
 // ─── Inicialização ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
@@ -131,6 +153,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Botão iniciar consulta
   document.getElementById('btnIniciarConsulta').addEventListener('click', iniciarConsulta);
+
+  // Botão voltar da tela de tratamento
+  document.getElementById('btnVoltarDash').addEventListener('click', voltarAoDashboard);
+
+  // Tela de plano de tratamento
+  document.getElementById('btnVoltarParaTratamento').addEventListener('click', () => {
+    mostrarView('iniciarTratamento');
+  });
+  document.getElementById('apBtnAddEtapa').addEventListener('click', () => {
+    mostrarView('iniciarTratamento');
+  });
+  document.getElementById('apBtnConfirmar').addEventListener('click', confirmarPlano);
+
+  // Odontograma
+  inicializarOdontograma();
+
+  // Formulário de planejamento → adiciona ao array e vai para tela de plano
+  document.getElementById('formPlano').addEventListener('submit', e => {
+    e.preventDefault();
+    const dente    = document.getElementById('itInputDente').value.trim();
+    const condicao = document.getElementById('itInputCondicao').value.trim();
+    const descricao = document.getElementById('itTextareaDescricao').value.trim();
+    if (!condicao || !descricao) {
+      alert('Preencha todos os campos antes de adicionar o plano.');
+      return;
+    }
+    planosTratamento.push({ id: Date.now(), dente, condicao, descricao });
+    mostrarTelaDePlano();
+  });
+
+  // Botão prontuário dentro da tela de tratamento
+  document.getElementById('btnProntuarioIt').addEventListener('click', () => {
+    const paciente = PACIENTES_FILA.find(p => p.id === pacienteSelecionadoId);
+    if (paciente) {
+      window.location.href = `../dentista/tratamentos.html?prontuario=${encodeURIComponent(paciente.nome)}`;
+    }
+  });
 });
 
 // ─── Renderiza as linhas da tabela ──────────────────────────────────────────
@@ -228,17 +287,149 @@ function preencherPainel(p) {
   };
 }
 
-// ─── Iniciar consulta ───────────────────────────────────────────────────────
+// ─── Controle de views ───────────────────────────────────────────────────────
+function mostrarView(qual) {
+  document.querySelector('.dash-topbar').style.display       = qual === 'dashboard'         ? '' : 'none';
+  document.querySelector('.dash-body').style.display         = qual === 'dashboard'         ? '' : 'none';
+  document.getElementById('iniciarTratamentoView').style.display = qual === 'iniciarTratamento' ? 'block' : 'none';
+  document.getElementById('adicionarPlanoView').style.display    = qual === 'adicionarPlano'    ? 'block' : 'none';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── Iniciar consulta → exibe tela de tratamento ────────────────────────────
 function iniciarConsulta() {
   if (!pacienteSelecionadoId) return;
-
   const paciente = PACIENTES_FILA.find(p => p.id === pacienteSelecionadoId);
   if (!paciente) return;
 
-  // TODO: integrar com API
-  // apiAtualizarStatusConsulta(paciente.id, 'em_atendimento')
-  //   .then(() => { /* navegar para tela de consulta */ })
-  //   .catch(err => console.error('Erro ao iniciar consulta:', err));
+  document.getElementById('itNomePaciente').textContent = paciente.nome;
+  document.getElementById('itServico').textContent      = paciente.servico;
 
-  alert(`Iniciando consulta com ${paciente.nome} — ${paciente.servico}`);
+  planosTratamento = [];
+  resetarOdontograma();
+  mostrarView('iniciarTratamento');
+}
+
+// ─── Voltar ao dashboard ─────────────────────────────────────────────────────
+function voltarAoDashboard() {
+  mostrarView('dashboard');
+}
+
+// ─── Exibe a tela de plano de tratamento ────────────────────────────────────
+function mostrarTelaDePlano() {
+  const paciente = PACIENTES_FILA.find(p => p.id === pacienteSelecionadoId);
+  if (paciente) {
+    document.getElementById('apNomePaciente').textContent = paciente.nome;
+    document.getElementById('apServico').textContent      = paciente.servico;
+  }
+  renderizarPlanos();
+  mostrarView('adicionarPlano');
+}
+
+// ─── Renderiza os cards de plano ─────────────────────────────────────────────
+function renderizarPlanos() {
+  const lista = document.getElementById('apEtapasLista');
+  const contador = document.getElementById('apContador');
+
+  contador.textContent = planosTratamento.length === 1
+    ? '1 etapa'
+    : `${planosTratamento.length} etapas`;
+
+  if (!planosTratamento.length) {
+    lista.innerHTML = '<p class="ap-etapas-vazio">Nenhuma etapa adicionada ainda.</p>';
+    return;
+  }
+
+  lista.innerHTML = planosTratamento.map((p, i) => `
+    <div class="ap-etapa-card" data-id="${p.id}">
+      <div class="ap-etapa-header">
+        <span class="ap-etapa-num">${i + 1}</span>
+        <span class="ap-etapa-dente-nome">${p.dente || 'Dente não especificado'}</span>
+        <button class="ap-etapa-delete" data-id="${p.id}" title="Remover etapa">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="ap-etapa-body">
+        <div class="ap-etapa-campo">
+          <span class="ap-etapa-campo-label">Condição</span>
+          <span class="ap-etapa-campo-valor">${p.condicao}</span>
+        </div>
+        <div class="ap-etapa-campo full">
+          <span class="ap-etapa-campo-label">Descrição do Tratamento</span>
+          <span class="ap-etapa-campo-valor">${p.descricao}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  lista.querySelectorAll('.ap-etapa-delete').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = Number(btn.dataset.id);
+      planosTratamento = planosTratamento.filter(p => p.id !== id);
+      renderizarPlanos();
+    });
+  });
+}
+
+// ─── Confirmar plano ─────────────────────────────────────────────────────────
+function confirmarPlano() {
+  if (!planosTratamento.length) {
+    alert('Adicione pelo menos uma etapa antes de confirmar.');
+    return;
+  }
+  alert(`Plano de tratamento confirmado com ${planosTratamento.length} etapa(s)!`);
+  planosTratamento = [];
+  mostrarView('dashboard');
+}
+
+// ─── Odontograma ─────────────────────────────────────────────────────────────
+function inicializarOdontograma() {
+  document.querySelectorAll('.it-dente').forEach(dente => {
+    dente.addEventListener('click', () => {
+      const num         = parseInt(dente.dataset.num, 10);
+      const idxAtual    = ESTADOS_DENTE.findIndex(e => dente.classList.contains(e));
+      const proximoIdx  = (idxAtual + 1) % ESTADOS_DENTE.length;
+
+      ESTADOS_DENTE.forEach(e => dente.classList.remove(e));
+      dente.classList.add(ESTADOS_DENTE[proximoIdx]);
+
+      if (ESTADOS_DENTE[proximoIdx] === 'selecao') {
+        atualizarCampoDente(num);
+        document.getElementById('chkSelecionarTodos').checked = false;
+      }
+    });
+  });
+
+  document.getElementById('chkSelecionarTodos').addEventListener('change', e => {
+    const estado = e.target.checked ? 'selecao' : 'saudavel';
+    document.querySelectorAll('.it-dente').forEach(d => {
+      ESTADOS_DENTE.forEach(s => d.classList.remove(s));
+      d.classList.add(estado);
+    });
+    document.getElementById('itInputDente').value = e.target.checked
+      ? 'Todos os dentes selecionados'
+      : '';
+  });
+}
+
+function atualizarCampoDente(num) {
+  const nome = NOMES_DENTES[num] || '';
+  document.getElementById('itInputDente').value = nome ? `${num} - ${nome}` : String(num);
+}
+
+function resetarOdontograma() {
+  document.querySelectorAll('.it-dente').forEach(d => {
+    ESTADOS_DENTE.forEach(s => d.classList.remove(s));
+    d.classList.add('saudavel');
+  });
+  // Marca o 46 como seleção por padrão
+  const d46 = document.querySelector('.it-dente[data-num="46"]');
+  if (d46) {
+    d46.classList.remove('saudavel');
+    d46.classList.add('selecao');
+  }
+  document.getElementById('chkSelecionarTodos').checked = false;
+  document.getElementById('itInputDente').value         = '46 - Primeiro Molar Inferior Direito';
+  document.getElementById('itInputCondicao').value      = 'Cárie Profunda';
+  document.getElementById('itTextareaDescricao').value  = 'Tratamento endodôntico necessário. Obturação temporária aplicada';
 }
