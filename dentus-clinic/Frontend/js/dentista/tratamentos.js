@@ -115,11 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
           </div>
         </td>
         <td data-label="Próxima Sessão">${t.proximaSessao}</td>
-        <td data-label="Prontuário">
-          <button class="btn-prontuario" title="Ver prontuário" data-idx="${i}">
-            <i class="fa-regular fa-eye"></i>
-          </button>
-        </td>
       `;
 
       tr.addEventListener("click", () => {
@@ -160,11 +155,6 @@ document.addEventListener("DOMContentLoaded", () => {
               <i class="fa-regular fa-calendar"></i>
               <span>Próxima Sessão: ${t.proximaSessao}</span>
             </div>
-          </div>
-          <div class="pcm-footer">
-            <button class="btn-prontuario-mobile" title="Ver prontuário" data-idx="${i}">
-              <i class="fa-regular fa-eye"></i> Prontuário
-            </button>
           </div>
         `;
 
@@ -787,6 +777,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Botão "Prontuário" no rodapé da consulta
   document.getElementById("btnProntuarioConsulta").addEventListener("click", () => {
     abrirProntuario("consulta");
+  });
+
+  // Botão "Prontuário" no Resumo do Tratamento
+  document.getElementById("btnResumoProntuario").addEventListener("click", () => {
+    abrirProntuario("lista");
   });
 
   // Voltar do Prontuário

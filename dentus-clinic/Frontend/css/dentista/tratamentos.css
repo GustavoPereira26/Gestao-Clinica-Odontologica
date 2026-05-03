@@ -555,6 +555,28 @@
   box-shadow: 0 4px 12px rgba(39,174,96,.25);
 }
 
+.btn-resumo-prontuario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--c1);
+  background: transparent;
+  border: 1.5px solid var(--c1);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.btn-resumo-prontuario:hover {
+  background: var(--c1);
+  color: #fff;
+}
+
 /* ══════════════════════════════════
    RESPONSIVIDADE
    ══════════════════════════════════ */
