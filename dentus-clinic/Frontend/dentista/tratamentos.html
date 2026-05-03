@@ -475,48 +475,51 @@ coodihoo</textarea>
                 </div>
               </div>
 
-              <!-- Datas Consultas -->
-              <div class="datas-consultas">
-                <h4 class="datas-titulo">Datas Consultas</h4>
-                <div class="datas-lista" id="datasLista">
-                  <div class="data-item">
-                    <i class="fa-regular fa-calendar"></i>
-                    <span>20/03/2026</span>
-                  </div>
-                  <div class="data-item destaque">
-                    <i class="fa-regular fa-calendar"></i>
-                    <span>05/04/2026</span>
-                  </div>
-                  <div class="data-item">
-                    <i class="fa-regular fa-calendar"></i>
-                    <span>20/03/2026</span>
+              <!-- Container para Datas e Calendário -->
+              <div class="datas-calendario-row">
+                <!-- Datas Consultas -->
+                <div class="datas-consultas">
+                  <h4 class="datas-titulo">Datas Consultas</h4>
+                  <div class="datas-lista" id="datasLista">
+                    <div class="data-item">
+                      <i class="fa-regular fa-calendar"></i>
+                      <span>20/03/2026</span>
+                    </div>
+                    <div class="data-item destaque">
+                      <i class="fa-regular fa-calendar"></i>
+                      <span>05/04/2026</span>
+                    </div>
+                    <div class="data-item">
+                      <i class="fa-regular fa-calendar"></i>
+                      <span>20/03/2026</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <!-- Calendário -->
-              <div class="calendario-wrapper">
-                <div class="calendario-header">
-                  <button class="calendario-nav" id="calPrev"><i class="fa-solid fa-chevron-left"></i></button>
-                  <span class="calendario-mes" id="calMesAno">APRIL 2026</span>
-                  <button class="calendario-nav" id="calNext"><i class="fa-solid fa-chevron-right"></i></button>
+                <!-- Calendário -->
+                <div class="calendario-wrapper">
+                  <div class="calendario-header">
+                    <button class="calendario-nav" id="calPrev"><i class="fa-solid fa-chevron-left"></i></button>
+                    <span class="calendario-mes" id="calMesAno">APRIL 2026</span>
+                    <button class="calendario-nav" id="calNext"><i class="fa-solid fa-chevron-right"></i></button>
+                  </div>
+                  <table class="calendario-table">
+                    <thead>
+                      <tr>
+                        <th>D</th>
+                        <th>S</th>
+                        <th>T</th>
+                        <th>Q</th>
+                        <th>Q</th>
+                        <th>S</th>
+                        <th>S</th>
+                      </tr>
+                    </thead>
+                    <tbody id="calBody">
+                      <!-- Preenchido pelo JS -->
+                    </tbody>
+                  </table>
                 </div>
-                <table class="calendario-table">
-                  <thead>
-                    <tr>
-                      <th>D</th>
-                      <th>S</th>
-                      <th>T</th>
-                      <th>Q</th>
-                      <th>Q</th>
-                      <th>S</th>
-                      <th>S</th>
-                    </tr>
-                  </thead>
-                  <tbody id="calBody">
-                    <!-- Preenchido pelo JS -->
-                  </tbody>
-                </table>
               </div>
 
             </div>
