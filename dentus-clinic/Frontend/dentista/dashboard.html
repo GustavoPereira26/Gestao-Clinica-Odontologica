@@ -108,57 +108,80 @@
         <!-- Conteúdo do paciente (oculto até seleção) -->
         <div class="dash-detalhe-conteudo" id="detalheConteudo" hidden>
 
-          <!-- Foto + nome + botão -->
-          <div class="dash-detalhe-perfil">
-            <div class="dash-detalhe-foto-wrapper">
-              <img src="" alt="Foto do paciente" class="dash-detalhe-foto" id="detalheFoto"/>
-              <div class="dash-detalhe-foto-placeholder" id="detalheAvatarPlaceholder">
-                <i class="fa-solid fa-user"></i>
+          <!-- Grade 2 colunas: foto (esq) | info (dir) -->
+          <div class="dash-detalhe-grid">
+
+            <!-- Coluna esquerda: foto + nome + botão -->
+            <div class="dash-detalhe-col-foto">
+              <div class="dash-detalhe-foto-wrapper">
+                <img src="" alt="Foto do paciente" class="dash-detalhe-foto" id="detalheFoto" />
+                <div class="dash-detalhe-foto-placeholder" id="detalheAvatarPlaceholder">
+                  <!-- SVG placeholder X como no protótipo -->
+                  <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+                    <rect width="120" height="120" fill="#d6cfc4"/>
+                    <line x1="10" y1="10" x2="110" y2="110" stroke="#8a7560" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="110" y1="10" x2="10" y2="110" stroke="#8a7560" stroke-width="3" stroke-linecap="round"/>
+                    <rect x="1" y="1" width="118" height="118" fill="none" stroke="#8a7560" stroke-width="2"/>
+                  </svg>
+                </div>
+              </div>
+              <p class="dash-detalhe-nome" id="detalheNome">—</p>
+              <button class="dash-btn-prontuario" id="btnProntuario">
+                Prontuário
+              </button>
+            </div>
+
+            <!-- Coluna direita: serviço/aguardo + cards -->
+            <div class="dash-detalhe-col-info">
+              <!-- Serviço e tempo -->
+              <div class="dash-detalhe-servico-texto">
+                <p><strong>Serviço: </strong><span id="detalheServico">—</span></p>
+                <p><strong>Aguardo: </strong><span id="detalheTempo">—</span></p>
+              </div>
+
+              <!-- Contato -->
+              <div class="dash-detalhe-card">
+                <h4 class="dash-detalhe-card-titulo">Contato</h4>
+                <div class="dash-info-row">
+                  <span class="dash-info-label">Phone:</span>
+                  <span id="detalheTelefone">—</span>
+                </div>
+              </div>
+
+              <!-- Informações pessoais -->
+              <div class="dash-detalhe-card">
+                <h4 class="dash-detalhe-card-titulo">Informações Pessoais</h4>
+                <div class="dash-info-row">
+                  <span class="dash-info-label">CPF:</span>
+                  <span id="detalheCpf">—</span>
+                </div>
+                <div class="dash-info-row">
+                  <span class="dash-info-label">Address:</span>
+                  <span id="detalheEndereco">—</span>
+                </div>
               </div>
             </div>
-            <p class="dash-detalhe-nome" id="detalheNome">—</p>
-            <button class="btn dash-btn-prontuario" id="btnProntuario">
-              <i class="fa-solid fa-file-medical"></i>
-              Prontuário
-            </button>
-          </div>
 
-          <!-- Serviço e tempo -->
-          <div class="dash-detalhe-bloco dash-detalhe-servico">
-            <p><strong>Serviço:</strong> <span id="detalheServico">—</span></p>
-            <p><strong>Aguardo:</strong> <span id="detalheTempo">—</span></p>
-          </div>
+          </div><!-- /dash-detalhe-grid -->
 
-          <!-- Contato -->
-          <div class="dash-detalhe-bloco">
-            <h4 class="dash-detalhe-bloco-titulo">
-              <i class="fa-solid fa-phone"></i> Contato
-            </h4>
-            <p><span class="dash-info-label">Phone:</span> <span id="detalheTelefone">—</span></p>
-          </div>
-
-          <!-- Informações pessoais -->
-          <div class="dash-detalhe-bloco">
-            <h4 class="dash-detalhe-bloco-titulo">
-              <i class="fa-solid fa-id-card"></i> Informações Pessoais
-            </h4>
-            <p><span class="dash-info-label">CPF:</span> <span id="detalheCpf">—</span></p>
-            <p><span class="dash-info-label">Address:</span> <span id="detalheEndereco">—</span></p>
-          </div>
-
-          <!-- Observações -->
-          <div class="dash-detalhe-bloco">
-            <h4 class="dash-detalhe-bloco-titulo">
-              <i class="fa-solid fa-notes-medical"></i> Observações do paciente
-            </h4>
-            <p><span class="dash-info-label">Alergias:</span> <span id="detalheAlergias">—</span></p>
-            <p><span class="dash-info-label">Condições pré-existentes:</span> <span id="detalheCondicoes">—</span></p>
-            <p><span class="dash-info-label">Medicamentos:</span> <span id="detalheMedicamentos">—</span></p>
-            <p><span class="dash-info-label">Cirurgias dentárias anteriores:</span> <span id="detalheHistorico">—</span></p>
+          <!-- Observações: largura total, abaixo do grid -->
+          <div class="dash-detalhe-obs">
+            <h4 class="dash-detalhe-obs-titulo">Observações do paciente</h4>
+            <div class="dash-obs-grid">
+              <span class="dash-obs-label">Alergias:</span>
+              <span id="detalheAlergias">—</span>
+              <span class="dash-obs-label">Condições pré-existentes:</span>
+              <span id="detalheCondicoes">—</span>
+              <span class="dash-obs-label">Medicamentos:</span>
+              <span id="detalheMedicamentos">—</span>
+              <span class="dash-obs-label">Cirurgias dentárias anteriores:</span>
+              <span id="detalheHistorico">—</span>
+            </div>
           </div>
 
         </div><!-- /detalheConteudo -->
       </aside>
+
 
     </div><!-- /dash-body -->
 
