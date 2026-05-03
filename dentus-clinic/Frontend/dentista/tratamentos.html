@@ -300,8 +300,9 @@
             <div class="etapas-scroll" id="etapasScroll">
 
               <!-- Etapa 1 -->
-              <div class="etapa-card" data-etapa="1">
+              <div class="etapa-card" data-etapa="1" draggable="true">
                 <div class="etapa-header">
+                  <i class="fa-solid fa-grip-vertical etapa-drag-handle" title="Arrastar para reordenar"></i>
                   <span class="etapa-numero">1º</span>
                   <span class="etapa-header-titulo">Diagnóstico e Planejamento</span>
                   <button class="etapa-menu-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
@@ -327,8 +328,9 @@ oiowdfioo</textarea>
               </div>
 
               <!-- Etapa 2 (ativa/selecionada) -->
-              <div class="etapa-card active" data-etapa="2">
+              <div class="etapa-card active" data-etapa="2" draggable="true">
                 <div class="etapa-header">
+                  <i class="fa-solid fa-grip-vertical etapa-drag-handle" title="Arrastar para reordenar"></i>
                   <span class="etapa-numero">2º</span>
                   <span class="etapa-header-titulo">Diagnóstico e Planejamento</span>
                   <button class="etapa-menu-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
@@ -354,8 +356,9 @@ coodihoo</textarea>
               </div>
 
               <!-- Etapa 3 -->
-              <div class="etapa-card" data-etapa="3">
+              <div class="etapa-card" data-etapa="3" draggable="true">
                 <div class="etapa-header">
+                  <i class="fa-solid fa-grip-vertical etapa-drag-handle" title="Arrastar para reordenar"></i>
                   <span class="etapa-numero">3º</span>
                   <span class="etapa-header-titulo">Diagnóstico e Planejamento</span>
                   <button class="etapa-menu-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
@@ -481,7 +484,7 @@ coodihoo</textarea>
               <table class="calendario-table">
                 <thead>
                   <tr>
-                    <th>S</th><th>M</th><th>T</th><th>W</th><th>T</th><th>F</th><th>S</th>
+                    <th>D</th><th>S</th><th>T</th><th>Q</th><th>Q</th><th>S</th><th>S</th>
                   </tr>
                 </thead>
                 <tbody id="calBody">
@@ -492,6 +495,64 @@ coodihoo</textarea>
 
           </div>
 
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════
+         MODAL ADICIONAR ETAPA NO CHECKLIST
+         ══════════════════════════════════════════════════ -->
+    <div class="modal-overlay" id="modalNovaEtapaOverlay" style="display:none;">
+      <div class="mae-card">
+
+        <div class="mae-header">
+          <div class="mae-header-icon"><i class="fa-solid fa-list-check"></i></div>
+          <div>
+            <h2 class="mae-titulo">Nova Etapa</h2>
+            <p class="mae-subtitulo">Adicionar ao checklist da consulta</p>
+          </div>
+          <button class="mae-fechar" id="btnMaeFechar"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="mae-body">
+
+          <div class="mae-campo">
+            <label class="mae-label" for="inputMaeNome">Nome da etapa <span class="mae-obrigatorio">*</span></label>
+            <input
+              type="text"
+              id="inputMaeNome"
+              class="mae-input"
+              placeholder="Ex: Aplicação do anestésico..."
+              maxlength="80"
+              autocomplete="off"
+            />
+            <span class="mae-contador" id="maeContador">0 / 80</span>
+          </div>
+
+          <div class="mae-campo">
+            <label class="mae-label" for="inputMaeDescricao">Descrição <span class="mae-opcional">(opcional)</span></label>
+            <textarea
+              id="inputMaeDescricao"
+              class="mae-textarea"
+              placeholder="Observações ou detalhes sobre a etapa..."
+              rows="3"
+              maxlength="200"
+            ></textarea>
+          </div>
+
+          <label class="mae-check-row">
+            <input type="checkbox" id="chkMaeConcluida" class="mae-checkbox"/>
+            <span class="mae-check-label">Marcar como já concluída</span>
+          </label>
+
+        </div>
+
+        <div class="mae-acoes">
+          <button class="mae-btn-cancelar" id="btnMaeCancelar">Cancelar</button>
+          <button class="mae-btn-confirmar" id="btnMaeConfirmar">
+            <i class="fa-solid fa-plus"></i> Adicionar Etapa
+          </button>
         </div>
 
       </div>

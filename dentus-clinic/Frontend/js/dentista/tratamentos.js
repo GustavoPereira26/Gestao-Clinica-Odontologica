@@ -247,6 +247,102 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // ── Tornar campos das etapas editáveis ──────────────
+  document.querySelectorAll("#etapasScroll .etapa-input, #etapasScroll .etapa-textarea").forEach(el => {
+    el.removeAttribute("readonly");
+  });
+
+  // ── Botão de edição foca o campo correspondente ─────
+  document.querySelectorAll(".etapa-edit-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const campo = btn.closest(".etapa-campo");
+      if (!campo) return;
+      const input = campo.querySelector(".etapa-input, .etapa-textarea");
+      if (input) { input.focus(); input.select(); }
+    });
+  });
+
+  // ══════════════════════════════════════════════════════
+  //  ETAPAS — DRAG AND DROP (reordenação horizontal)
+  // ══════════════════════════════════════════════════════
+  function initEtapasDragDrop() {
+    const container = document.getElementById("etapasScroll");
+    if (!container) return;
+
+    let draggedCard = null;
+    let placeholder = null;
+
+    function getAfterElement(clientX) {
+      const cards = [...container.querySelectorAll(".etapa-card:not(.dragging)")];
+      return cards.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = clientX - box.left - box.width / 2;
+        if (offset < 0 && offset > closest.offset) {
+          return { offset, element: child };
+        }
+        return closest;
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    function renumerarEtapas() {
+      container.querySelectorAll(".etapa-card").forEach((card, i) => {
+        card.dataset.etapa = i + 1;
+        const numEl = card.querySelector(".etapa-numero");
+        if (numEl) numEl.textContent = `${i + 1}º`;
+      });
+    }
+
+    container.addEventListener("dragstart", (e) => {
+      const card = e.target.closest(".etapa-card");
+      if (!card) return;
+      draggedCard = card;
+      e.dataTransfer.effectAllowed = "move";
+      setTimeout(() => card.classList.add("dragging"), 0);
+    });
+
+    container.addEventListener("dragend", (e) => {
+      const card = e.target.closest(".etapa-card");
+      if (!card) return;
+      card.classList.remove("dragging");
+      if (placeholder && placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
+      placeholder = null;
+      draggedCard = null;
+      renumerarEtapas();
+    });
+
+    container.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "move";
+      if (!placeholder) {
+        placeholder = document.createElement("div");
+        placeholder.className = "etapa-placeholder";
+      }
+      const afterElement = getAfterElement(e.clientX);
+      if (afterElement == null) {
+        container.appendChild(placeholder);
+      } else {
+        container.insertBefore(placeholder, afterElement);
+      }
+    });
+
+    container.addEventListener("dragleave", (e) => {
+      if (e.relatedTarget && container.contains(e.relatedTarget)) return;
+      if (placeholder && placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
+      placeholder = null;
+    });
+
+    container.addEventListener("drop", (e) => {
+      e.preventDefault();
+      if (!draggedCard || !placeholder || !placeholder.parentNode) return;
+      placeholder.parentNode.insertBefore(draggedCard, placeholder);
+      placeholder.parentNode.removeChild(placeholder);
+      placeholder = null;
+    });
+  }
+
+  initEtapasDragDrop();
+
   // ══════════════════════════════════
   //  ODONTOGRAMA — TOGGLE DENTES
   // ══════════════════════════════════
@@ -264,18 +360,20 @@ document.addEventListener("DOMContentLoaded", () => {
   //  CALENDÁRIO
   // ══════════════════════════════════
   const mesesNome = [
-    "JANUARY", "FEBRUARY", "MARCH", "APRIL", "MAY", "JUNE",
-    "JULY", "AUGUST", "SEPTEMBER", "OCTOBER", "NOVEMBER", "DECEMBER"
+    "JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO",
+    "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"
   ];
 
   let calMes = 3; // Abril (0-indexed)
   let calAno = 2026;
+  let calDiaSelecionado = null;
 
   const consultaDatas = {
+    "2026-2": [20],
     "2026-3": [5, 27, 28]
   };
 
-  function renderCalendario(ano, mes) {
+  function renderCalendario(ano, mes, diaSelecionado = null) {
     const calBody = document.getElementById("calBody");
     const calMesAno = document.getElementById("calMesAno");
 
@@ -290,7 +388,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let html = "";
     let dia = 1;
-    let rows = Math.ceil((primeiroDia + totalDias) / 7);
+    const rows = Math.ceil((primeiroDia + totalDias) / 7);
 
     for (let r = 0; r < rows; r++) {
       html += "<tr>";
@@ -299,14 +397,13 @@ document.addEventListener("DOMContentLoaded", () => {
         if (cellIndex < primeiroDia || dia > totalDias) {
           html += '<td class="empty"></td>';
         } else {
-          let classes = "";
+          const classes = [];
           if (hoje.getFullYear() === ano && hoje.getMonth() === mes && hoje.getDate() === dia) {
-            classes = "today";
+            classes.push("today");
           }
-          if (diasConsulta.includes(dia)) {
-            classes = "consulta";
-          }
-          html += `<td class="${classes}">${dia}</td>`;
+          if (diasConsulta.includes(dia)) classes.push("consulta");
+          if (diaSelecionado === dia)     classes.push("selecionado");
+          html += `<td class="${classes.join(" ")}">${dia}</td>`;
           dia++;
         }
       }
@@ -319,13 +416,39 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("calPrev").addEventListener("click", () => {
     calMes--;
     if (calMes < 0) { calMes = 11; calAno--; }
+    calDiaSelecionado = null;
     renderCalendario(calAno, calMes);
   });
 
   document.getElementById("calNext").addEventListener("click", () => {
     calMes++;
     if (calMes > 11) { calMes = 0; calAno++; }
+    calDiaSelecionado = null;
     renderCalendario(calAno, calMes);
+  });
+
+  // ── Clicar em data da lista → navegar no calendário ──
+  document.getElementById("datasLista").addEventListener("click", (e) => {
+    const item = e.target.closest(".data-item");
+    if (!item) return;
+
+    // Remover ativo de todos e marcar o clicado
+    document.querySelectorAll("#datasLista .data-item").forEach(i => i.classList.remove("ativo"));
+    item.classList.add("ativo");
+
+    // Parsear "DD/MM/AAAA"
+    const texto = item.querySelector("span")?.textContent?.trim();
+    if (!texto) return;
+    const partes = texto.split("/");
+    if (partes.length !== 3) return;
+    const dia = parseInt(partes[0], 10);
+    const mes = parseInt(partes[1], 10) - 1; // 0-indexed
+    const ano = parseInt(partes[2], 10);
+
+    calDiaSelecionado = dia;
+    calMes = mes;
+    calAno = ano;
+    renderCalendario(calAno, calMes, calDiaSelecionado);
   });
 
   // Render inicial do calendário
@@ -411,25 +534,78 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ══════════════════════════════════════════════════════
-  //  CONSULTA — ADICIONAR ETAPA NO CHECKLIST
+  //  MODAL ADICIONAR ETAPA NO CHECKLIST
   // ══════════════════════════════════════════════════════
-  document.getElementById("btnAdicionarEtapa").addEventListener("click", () => {
+  const maeOverlay    = document.getElementById("modalNovaEtapaOverlay");
+  const maeInputNome  = document.getElementById("inputMaeNome");
+  const maeInputDesc  = document.getElementById("inputMaeDescricao");
+  const maeChkConc    = document.getElementById("chkMaeConcluida");
+  const maeContador   = document.getElementById("maeContador");
+
+  function abrirMae() {
+    maeInputNome.value  = "";
+    maeInputDesc.value  = "";
+    maeChkConc.checked  = false;
+    maeInputNome.classList.remove("erro");
+    maeContador.textContent = "0 / 80";
+    maeOverlay.style.display = "flex";
+    setTimeout(() => maeInputNome.focus(), 80);
+  }
+
+  function fecharMae() {
+    maeOverlay.style.display = "none";
+  }
+
+  function confirmarMae() {
+    const nome = maeInputNome.value.trim();
+    if (!nome) {
+      maeInputNome.classList.add("erro");
+      maeInputNome.focus();
+      return;
+    }
+
     const lista = document.getElementById("checklistLista");
     const novaEtapa = document.createElement("label");
     novaEtapa.className = "checklist-item";
 
-    const input = document.createElement("input");
-    input.type = "checkbox";
+    const chk = document.createElement("input");
+    chk.type = "checkbox";
+    if (maeChkConc.checked) chk.checked = true;
 
-    const texto = document.createElement("span");
+    novaEtapa.appendChild(chk);
+    novaEtapa.appendChild(document.createTextNode(" " + nome));
 
-    // Prompt simples via input temporário
-    const textoInput = prompt("Nome da nova etapa:");
-    if (!textoInput || textoInput.trim() === "") return;
+    if (maeInputDesc.value.trim()) {
+      const desc = document.createElement("span");
+      desc.className = "checklist-item-desc";
+      desc.textContent = maeInputDesc.value.trim();
+      novaEtapa.appendChild(desc);
+    }
 
-    novaEtapa.appendChild(input);
-    novaEtapa.appendChild(document.createTextNode(" " + textoInput.trim()));
     lista.appendChild(novaEtapa);
+    fecharMae();
+  }
+
+  document.getElementById("btnAdicionarEtapa").addEventListener("click", abrirMae);
+  document.getElementById("btnMaeFechar").addEventListener("click", fecharMae);
+  document.getElementById("btnMaeCancelar").addEventListener("click", fecharMae);
+  document.getElementById("btnMaeConfirmar").addEventListener("click", confirmarMae);
+
+  // Fechar ao clicar fora do card
+  maeOverlay.addEventListener("click", (e) => {
+    if (e.target === maeOverlay) fecharMae();
+  });
+
+  // Confirmar com Enter no campo nome
+  maeInputNome.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); confirmarMae(); }
+    if (e.key === "Escape") fecharMae();
+  });
+
+  // Remover estado de erro ao digitar
+  maeInputNome.addEventListener("input", () => {
+    maeInputNome.classList.remove("erro");
+    maeContador.textContent = `${maeInputNome.value.length} / 80`;
   });
 
   // ══════════════════════════════════════════════════════

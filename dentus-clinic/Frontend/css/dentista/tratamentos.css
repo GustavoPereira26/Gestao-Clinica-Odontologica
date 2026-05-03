@@ -908,6 +908,42 @@
   background: rgba(110,84,48,.1);
 }
 
+/* ── Drag Handle ── */
+.etapa-drag-handle {
+  cursor: grab;
+  color: var(--c3);
+  padding: 0 6px 0 2px;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+  opacity: 0.5;
+  transition: opacity var(--transition);
+}
+
+.etapa-drag-handle:active {
+  cursor: grabbing;
+}
+
+.etapa-card:hover .etapa-drag-handle {
+  opacity: 1;
+}
+
+/* ── Estado de arraste ── */
+.etapa-card.dragging {
+  opacity: 0.3;
+  border: 2px dashed var(--c3) !important;
+  box-shadow: none !important;
+}
+
+/* ── Indicador de posição de soltar ── */
+.etapa-placeholder {
+  min-width: 3px;
+  align-self: stretch;
+  background: var(--c1);
+  border-radius: 2px;
+  flex-shrink: 0;
+  pointer-events: none;
+}
+
 /* Body da Etapa */
 .etapa-body {
   padding: 0.85rem;
@@ -946,14 +982,21 @@
   padding: 0.45rem 0.65rem;
   border: 1.5px solid var(--c4);
   border-radius: var(--radius-sm);
-  background: var(--c5);
+  background: #fff;
   color: var(--c1);
   font-size: 0.8rem;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  cursor: text;
+}
+
+.etapa-input:hover {
+  border-color: var(--c3);
 }
 
 .etapa-input:focus {
   outline: none;
   border-color: var(--c2);
+  box-shadow: 0 0 0 2px rgba(138,120,63,.15);
 }
 
 .etapa-textarea {
@@ -962,16 +1005,23 @@
   padding: 0.45rem 0.65rem;
   border: 1.5px solid var(--c4);
   border-radius: var(--radius-sm);
-  background: var(--c5);
+  background: #fff;
   color: var(--c1);
   font-size: 0.78rem;
   resize: vertical;
   line-height: 1.45;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  cursor: text;
+}
+
+.etapa-textarea:hover {
+  border-color: var(--c3);
 }
 
 .etapa-textarea:focus {
   outline: none;
   border-color: var(--c2);
+  box-shadow: 0 0 0 2px rgba(138,120,63,.15);
 }
 
 /* ══════════════════════════════════
@@ -1003,12 +1053,13 @@
 .alerta-grid {
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 0.55rem;
 }
 
 .alerta-item {
   display: flex;
-  gap: 0.5rem;
+  flex-direction: column;
+  gap: 0.1rem;
   font-size: 0.75rem;
   line-height: 1.4;
 }
@@ -1016,8 +1067,6 @@
 .alerta-label {
   font-weight: 600;
   color: #6e5430;
-  white-space: nowrap;
-  min-width: 0;
 }
 
 .alerta-valor {
@@ -1057,6 +1106,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  cursor: pointer;
   font-size: 0.8rem;
   color: var(--c2);
   padding: 0.35rem 0.6rem;
@@ -1070,6 +1120,11 @@
   color: var(--c3);
 }
 
+.data-item:hover {
+  border-color: var(--c3);
+  background: var(--c4);
+}
+
 .data-item.destaque {
   background: #e8f4fd;
   border-color: #a8d4f0;
@@ -1079,6 +1134,17 @@
 
 .data-item.destaque i {
   color: #3498db;
+}
+
+.data-item.ativo {
+  background: var(--c1);
+  border-color: var(--c1);
+  color: #fff;
+  font-weight: 600;
+}
+
+.data-item.ativo i {
+  color: rgba(255,255,255,.8);
 }
 
 /* ── Calendário ── */
@@ -1169,6 +1235,13 @@
   background: #c0392b;
 }
 
+.calendario-table tbody td.selecionado {
+  outline: 2px solid var(--c1);
+  outline-offset: -2px;
+  border-radius: 50%;
+  font-weight: 700;
+}
+
 /* ══════════════════════════════════
    RESPONSIVIDADE — EDITAR PLANO
    ══════════════════════════════════ */
@@ -1230,6 +1303,240 @@
     min-width: 200px;
     max-width: none;
   }
+}
+
+/* ══════════════════════════════════════════════════
+   MODAL ADICIONAR ETAPA (mae)
+   ══════════════════════════════════════════════════ */
+.mae-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  animation: modalUp .22s cubic-bezier(.16,1,.3,1);
+  overflow: hidden;
+}
+
+.mae-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem 1.5rem 1.25rem;
+  border-bottom: 1px solid var(--c4);
+}
+
+.mae-header-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--c4);
+  color: var(--c1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.mae-titulo {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--c1);
+  margin: 0 0 0.15rem;
+  line-height: 1.2;
+}
+
+.mae-subtitulo {
+  font-size: 0.78rem;
+  color: var(--c2);
+  margin: 0;
+}
+
+.mae-fechar {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--c3);
+  font-size: 1rem;
+  cursor: pointer;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+  flex-shrink: 0;
+}
+
+.mae-fechar:hover {
+  background: var(--c4);
+  color: var(--c1);
+}
+
+.mae-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.mae-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  position: relative;
+}
+
+.mae-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--c1);
+}
+
+.mae-obrigatorio {
+  color: #e74c3c;
+}
+
+.mae-opcional {
+  font-weight: 400;
+  color: var(--c3);
+  font-size: 0.75rem;
+}
+
+.mae-input,
+.mae-textarea {
+  width: 100%;
+  padding: 0.6rem 0.85rem;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-sm);
+  background: var(--c5);
+  color: var(--c1);
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.mae-input::placeholder,
+.mae-textarea::placeholder {
+  color: var(--c3);
+}
+
+.mae-input:hover,
+.mae-textarea:hover {
+  border-color: var(--c3);
+}
+
+.mae-input:focus,
+.mae-textarea:focus {
+  outline: none;
+  border-color: var(--c2);
+  box-shadow: 0 0 0 3px rgba(110,84,48,.12);
+  background: #fff;
+}
+
+.mae-input.erro {
+  border-color: #e74c3c;
+  box-shadow: 0 0 0 3px rgba(231,76,60,.1);
+}
+
+.mae-textarea {
+  resize: vertical;
+  min-height: 72px;
+  line-height: 1.5;
+}
+
+.mae-contador {
+  font-size: 0.68rem;
+  color: var(--c3);
+  text-align: right;
+  position: absolute;
+  bottom: -1.1rem;
+  right: 0;
+}
+
+.mae-check-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  padding: 0.65rem 0.85rem;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-sm);
+  background: var(--c5);
+  transition: all var(--transition);
+  margin-top: 0.3rem;
+}
+
+.mae-check-row:hover {
+  border-color: var(--c3);
+  background: var(--c4);
+}
+
+.mae-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--c1);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.mae-check-label {
+  font-size: 0.83rem;
+  color: var(--c1);
+  font-weight: 500;
+}
+
+.mae-acoes {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid var(--c4);
+}
+
+.mae-btn-cancelar {
+  flex: 1;
+  padding: 0.65rem 1rem;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  color: var(--c2);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.mae-btn-cancelar:hover {
+  background: var(--c4);
+  color: var(--c1);
+}
+
+.mae-btn-confirmar {
+  flex: 2;
+  padding: 0.65rem 1rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--c1);
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--transition), transform var(--transition);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.mae-btn-confirmar:hover {
+  background: var(--c2);
+}
+
+.mae-btn-confirmar:active {
+  transform: scale(.98);
 }
 
 /* ══════════════════════════════════════════════════
@@ -1606,6 +1913,19 @@
 .checklist-item input[type="checkbox"]:checked + span,
 .checklist-item:has(input:checked) {
   color: var(--c2);
+}
+
+.checklist-item {
+  flex-wrap: wrap;
+}
+
+.checklist-item-desc {
+  width: 100%;
+  padding-left: 1.4rem;
+  font-size: 0.72rem;
+  color: var(--c3);
+  line-height: 1.4;
+  margin-top: -0.1rem;
 }
 
 .btn-adicionar-etapa {
@@ -2761,6 +3081,14 @@
 }
 
 /* ══════════════════════════════════════════════════
+   @keyframes MODAL UP (mae-card)
+   ══════════════════════════════════════════════════ */
+@keyframes modalUp {
+  from { transform: translateY(18px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* ══════════════════════════════════════════════════
    TABELA → CARDS NO MOBILE (≤640px)
    ══════════════════════════════════════════════════ */
 @media (max-width: 640px) {
@@ -2852,5 +3180,145 @@
 
   /* Botão prontuário */
   .btn-prontuario { margin-left: 0; }
+}
+
+/* ══════════════════════════════════════════════════
+   RESPONSIVIDADE COMPLEMENTAR — MÓVEL
+   ══════════════════════════════════════════════════ */
+
+/* ── Tabs: ocultar scrollbar visual mantendo o scroll ── */
+@media (max-width: 768px) {
+  .tratamentos-tabs {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .tratamentos-tabs::-webkit-scrollbar { display: none; }
+}
+
+/* ── Modal overlay: espaço nas bordas para não encostar na tela ── */
+@media (max-width: 600px) {
+  .modal-overlay {
+    padding: 0.75rem;
+    align-items: center;
+  }
+}
+
+/* ── Mae-card: padding reduzido e fonte menor em telas pequenas ── */
+@media (max-width: 480px) {
+  .mae-header {
+    padding: 1rem 1rem 0.85rem;
+    gap: 0.65rem;
+  }
+
+  .mae-header-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .mae-titulo    { font-size: 0.95rem; }
+  .mae-subtitulo { font-size: 0.72rem; }
+
+  .mae-body {
+    padding: 1rem;
+    gap: 0.85rem;
+  }
+
+  .mae-acoes {
+    padding: 0.75rem 1rem 1rem;
+    gap: 0.5rem;
+  }
+
+  .mae-btn-cancelar,
+  .mae-btn-confirmar { font-size: 0.82rem; }
+}
+
+/* ── Modal Iniciar Consulta: botões empilhados em telas muito estreitas ── */
+@media (max-width: 420px) {
+  .modal-confirmar-acoes {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .btn-modal-iniciar,
+  .btn-modal-cancelar {
+    width: 100%;
+    justify-content: center;
+    padding: 0.6rem 1rem;
+  }
+}
+
+/* ── app-content: padding menor em telas muito pequenas ── */
+@media (max-width: 480px) {
+  .app-content {
+    padding: 0.75rem !important;
+    padding-top: 4rem !important;
+  }
+}
+
+/* ── Prontuário info items: quebra de linha em labels longos ── */
+@media (max-width: 480px) {
+  .prontuario-info-item {
+    flex-wrap: wrap;
+    gap: 0.15rem;
+  }
+
+  .prontuario-info-label { white-space: normal; }
+
+  .prontuario-info-valor {
+    text-align: left;
+    word-break: break-word;
+  }
+}
+
+/* ── Consulta / Finalizar footer: botões ocupam 100% ── */
+@media (max-width: 480px) {
+  .btn-prontuario-footer,
+  .btn-finalizar-consulta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .btn-cancelar-finalizar,
+  .btn-confirmar-finalizar {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ── Aviso bars: texto menor em telas mínimas ── */
+@media (max-width: 360px) {
+  .finalizar-aviso-bar  { font-size: 0.72rem; padding: 0.45rem 0.75rem; }
+  .prontuario-aviso-tip { font-size: 0.72rem; padding: 0.45rem 0.75rem; }
+  .consulta-aviso-info  { font-size: 0.72rem; padding: 0.5rem 0.85rem; }
+
+  /* Dentes mínimos em telas < 360px */
+  .dente,
+  .dente-consulta,
+  .dente-prontuario,
+  .dente-finalizar {
+    width: 14px;
+    height: 14px;
+    font-size: 0.38rem;
+    border-radius: 2px;
+  }
+
+  .arcada-gap  { width: 4px; }
+  .arcada-grupo { gap: 1px; }
+}
+
+/* ── Editar plano sidebar: min-width reset em telas estreitas ── */
+@media (max-width: 480px) {
+  .alerta-clinico     { min-width: 0 !important; }
+  .editar-resumo-card { min-width: 0 !important; }
+}
+
+/* ── Cabeçalho do prontuário em telas estreitas ── */
+@media (max-width: 360px) {
+  .prontuario-nome   { font-size: 1rem; }
+  .prontuario-cpf    { font-size: 0.7rem; }
+  .prontuario-contato { font-size: 0.7rem; }
 }
 
