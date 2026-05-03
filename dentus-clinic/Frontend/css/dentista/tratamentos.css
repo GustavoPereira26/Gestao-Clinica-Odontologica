@@ -2967,17 +2967,6 @@
   color: var(--c3);
 }
 
-/* Aviso amarelo */
-.prontuario-aviso-tip {
-  background: #e74c3c;
-  color: #fff;
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 0.55rem 1rem;
-  border-radius: var(--radius-sm);
-  margin-bottom: var(--space-4);
-  display: inline-block;
-}
 
 /* Layout */
 .prontuario-layout {
