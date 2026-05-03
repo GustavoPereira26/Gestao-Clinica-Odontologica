@@ -166,6 +166,21 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('apBtnConfirmar').addEventListener('click', confirmarPlano);
 
+  // Tela de confirmação
+  document.getElementById('cfBtnDashboard').addEventListener('click', () => {
+    planosTratamento = [];
+    mostrarView('dashboard');
+  });
+  document.getElementById('cfBtnProntuario').addEventListener('click', () => {
+    const paciente = PACIENTES_FILA.find(p => p.id === pacienteSelecionadoId);
+    if (paciente) {
+      window.location.href = `../dentista/tratamentos.html?prontuario=${encodeURIComponent(paciente.nome)}`;
+    }
+  });
+  document.getElementById('cfBtnImprimir').addEventListener('click', () => {
+    window.print();
+  });
+
   // Odontograma
   inicializarOdontograma();
 
@@ -293,6 +308,7 @@ function mostrarView(qual) {
   document.querySelector('.dash-body').style.display         = qual === 'dashboard'         ? '' : 'none';
   document.getElementById('iniciarTratamentoView').style.display = qual === 'iniciarTratamento' ? 'block' : 'none';
   document.getElementById('adicionarPlanoView').style.display    = qual === 'adicionarPlano'    ? 'block' : 'none';
+  document.getElementById('confirmacaoView').style.display       = qual === 'confirmacao'       ? 'block' : 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -377,9 +393,44 @@ function confirmarPlano() {
     alert('Adicione pelo menos uma etapa antes de confirmar.');
     return;
   }
-  alert(`Plano de tratamento confirmado com ${planosTratamento.length} etapa(s)!`);
-  planosTratamento = [];
-  mostrarView('dashboard');
+
+  // Preenche dados da tela de confirmação
+  const paciente = PACIENTES_FILA.find(p => p.id === pacienteSelecionadoId);
+  if (paciente) {
+    document.getElementById('cfNomePaciente').textContent = paciente.nome;
+    document.getElementById('cfServico').textContent      = paciente.servico;
+  }
+  document.getElementById('cfTotalEtapas').textContent = planosTratamento.length;
+
+  // Data/hora
+  const agora = new Date();
+  const opcoes = { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+  document.getElementById('cfData').textContent = agora.toLocaleDateString('pt-BR', opcoes);
+
+  // Timeline de etapas
+  const timeline = document.getElementById('cfEtapasTimeline');
+  timeline.innerHTML = planosTratamento.map((p, i) => `
+    <div class="cf-timeline-item">
+      <div class="cf-timeline-marker">
+        <span class="cf-timeline-num">${i + 1}</span>
+        ${i < planosTratamento.length - 1 ? '<div class="cf-timeline-line"></div>' : ''}
+      </div>
+      <div class="cf-timeline-content">
+        <span class="cf-timeline-dente">${p.dente || 'Dente não especificado'}</span>
+        <span class="cf-timeline-condicao">${p.condicao}</span>
+        <p class="cf-timeline-descricao">${p.descricao}</p>
+      </div>
+    </div>
+  `).join('');
+
+  // Exibe a tela
+  mostrarView('confirmacao');
+
+  // Dispara animação do check
+  const animEl = document.getElementById('cfSucessoAnim');
+  animEl.classList.remove('cf-animate');
+  void animEl.offsetWidth; // force reflow
+  animEl.classList.add('cf-animate');
 }
 
 // ─── Odontograma ─────────────────────────────────────────────────────────────

@@ -402,6 +402,99 @@
 
     </div><!-- /adicionarPlanoView -->
 
+    <!-- ══════════════════════════════════════════════════
+       TELA: CONFIRMAÇÃO DO PLANO (oculta por padrão)
+       ══════════════════════════════════════════════════ -->
+    <div class="cf-view" id="confirmacaoView" style="display:none;">
+
+      <!-- Animação de sucesso -->
+      <div class="cf-sucesso-anim" id="cfSucessoAnim">
+        <div class="cf-check-circle">
+          <svg class="cf-check-svg" viewBox="0 0 52 52">
+            <circle class="cf-check-circle-bg" cx="26" cy="26" r="25" fill="none"/>
+            <path class="cf-check-mark" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+        <h2 class="cf-titulo-sucesso">Plano de Tratamento Confirmado!</h2>
+        <p class="cf-subtitulo-sucesso">O plano foi registrado com sucesso no sistema.</p>
+      </div>
+
+      <!-- Card de resumo -->
+      <div class="cf-resumo-card">
+
+        <!-- Cabeçalho do resumo -->
+        <div class="cf-resumo-header">
+          <div class="cf-resumo-header-icon">
+            <i class="fa-solid fa-clipboard-check"></i>
+          </div>
+          <div class="cf-resumo-header-info">
+            <h3 class="cf-resumo-titulo">Resumo do Tratamento</h3>
+            <span class="cf-resumo-data" id="cfData"></span>
+          </div>
+          <span class="cf-badge-confirmado">
+            <i class="fa-solid fa-circle-check"></i> Confirmado
+          </span>
+        </div>
+
+        <!-- Dados do paciente -->
+        <div class="cf-paciente-row">
+          <div class="cf-paciente-info">
+            <span class="cf-paciente-label">Paciente</span>
+            <span class="cf-paciente-nome" id="cfNomePaciente"></span>
+          </div>
+          <div class="cf-paciente-info">
+            <span class="cf-paciente-label">Serviço</span>
+            <span class="cf-paciente-servico" id="cfServico"></span>
+          </div>
+          <div class="cf-paciente-info">
+            <span class="cf-paciente-label">Total de Etapas</span>
+            <span class="cf-paciente-etapas" id="cfTotalEtapas"></span>
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="cf-divider"></div>
+
+        <!-- Lista de etapas confirmadas -->
+        <div class="cf-etapas-wrapper">
+          <h4 class="cf-etapas-titulo">Etapas do Tratamento</h4>
+          <div class="cf-etapas-timeline" id="cfEtapasTimeline">
+            <!-- Renderizado pelo JS -->
+          </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="cf-divider"></div>
+
+        <!-- Observações / próximos passos -->
+        <div class="cf-proximos-passos">
+          <h4 class="cf-proximos-titulo">
+            <i class="fa-solid fa-lightbulb"></i> Próximos Passos
+          </h4>
+          <ul class="cf-proximos-lista">
+            <li>O plano de tratamento foi registrado no prontuário do paciente.</li>
+            <li>A recepção foi notificada para agendamento das próximas sessões.</li>
+            <li>O paciente receberá um resumo por e-mail/SMS (se configurado).</li>
+          </ul>
+        </div>
+
+      </div><!-- /cf-resumo-card -->
+
+      <!-- Ações -->
+      <div class="cf-acoes">
+        <button class="cf-btn-prontuario" id="cfBtnProntuario">
+          <i class="fa-regular fa-eye"></i> Ver Prontuário
+        </button>
+        <button class="cf-btn-imprimir" id="cfBtnImprimir">
+          <i class="fa-solid fa-print"></i> Imprimir Plano
+        </button>
+        <button class="cf-btn-dashboard" id="cfBtnDashboard">
+          <i class="fa-solid fa-house"></i> Voltar ao Dashboard
+        </button>
+      </div>
+
+    </div><!-- /confirmacaoView -->
+
   </main>
 </div><!-- /app-layout -->
 
