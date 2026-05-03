@@ -2148,9 +2148,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-2);
-  margin-bottom: var(--space-2);
-  padding: 0.65rem 0.9rem;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
+  padding: 1rem 1.25rem;
   background: #fff;
   border: 1px solid var(--c4);
   border-radius: var(--radius-md);
@@ -2329,7 +2329,7 @@
   border: 1px solid var(--c4);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
-  padding: 0.9rem;
+  padding: 1.25rem;
 }
 
 .consulta-campo-card-titulo {
@@ -2347,26 +2347,34 @@
 /* Layout */
 .consulta-layout {
   display: flex;
-  gap: var(--space-4);
-  align-items: flex-start;
-  margin-bottom: var(--space-3);
+  gap: var(--space-5);
+  align-items: stretch;
+  flex: 1;
+  margin-bottom: var(--space-4);
 }
 
 @media (max-width: 768px) {
   .consulta-layout {
-    gap: var(--space-2);
-    margin-bottom: var(--space-2);
+    gap: var(--space-3);
+    margin-bottom: var(--space-3);
+    flex-direction: column;
   }
 }
 
 .consulta-main {
   flex: 1;
+  margin-top: 40px;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .consulta-sidebar {
-  width: 290px;
+  width: 320px;
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Odontograma da consulta */
@@ -2374,8 +2382,7 @@
   background: #fff;
   border: 1px solid var(--c4);
   border-radius: var(--radius-md);
-  padding: 0.9rem 1.1rem;
-  margin-bottom: var(--space-2);
+  padding: 1.25rem 1.5rem;
   box-shadow: var(--shadow-sm);
 }
 
@@ -2453,21 +2460,24 @@
 /* ── Checklist + Campos ── */
 .consulta-campos-row {
   display: flex;
-  gap: var(--space-3);
-  align-items: flex-start;
+  gap: var(--space-4);
+  align-items: stretch;
+  flex: 1;
 }
 
 /* consulta-campos-row: direção e gap mobile consolidados abaixo em @768px */
 
 /* Checklist Card */
 .checklist-card {
-  min-width: 230px;
-  max-width: 270px;
+  min-width: 250px;
+  max-width: 350px;
   background: #fffbea;
   border: 1.5px solid #f0d060;
   border-radius: var(--radius-md);
-  padding: 0.9rem;
+  padding: 1.25rem;
   box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
 }
 
 .checklist-titulo {
@@ -2556,7 +2566,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: 1rem;
 }
 
 @media (max-width: 768px) {
@@ -2623,11 +2633,12 @@
 /* Observações Clínicas */
 .observacoes-card {
   background: #fffbea;
+  margin-left: 30px;
   border: 1.5px solid #f0d060;
   border-radius: var(--radius-md);
-  padding: 0.9rem 1rem;
+  padding: 1.25rem 1.5rem;
   box-shadow: var(--shadow-sm);
-  height: 100%;
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -2674,10 +2685,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
-  padding-top: var(--space-3);
+  gap: var(--space-4);
+  padding-top: var(--space-4);
   border-top: 1px solid var(--c4);
   flex-wrap: wrap;
+  margin-top: auto;
 }
 
 .btn-prontuario-footer {
@@ -2725,10 +2737,13 @@
    RESPONSIVIDADE — CONSULTA
    ══════════════════════════════════ */
 
-/* Adiciona overflow-x: hidden no container da view */
+/* Adiciona overflow-x: hidden no container da view e flexbox para preencher tela */
 .consulta-view {
   overflow-x: hidden;
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 6rem);
 }
 
 @media (max-width: 1200px) {
