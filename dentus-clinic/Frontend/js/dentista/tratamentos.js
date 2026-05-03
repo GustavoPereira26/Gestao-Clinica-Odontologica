@@ -11,6 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnHamburger) {
     btnHamburger.addEventListener("click", () => SidebarComponent.toggleSidebar());
   }
+  const btnHamburgerMobile = document.getElementById("btnHamburgerMobile");
+  if (btnHamburgerMobile) {
+    btnHamburgerMobile.addEventListener("click", () => SidebarComponent.toggleSidebar());
+  }
 
   // ══════════════════════════════════
   //  DADOS DE EXEMPLO
@@ -85,12 +89,16 @@ document.addEventListener("DOMContentLoaded", () => {
   //  RENDERIZAR TABELA
   // ══════════════════════════════════
   const tbody = document.getElementById("tbodyTratamentos");
+  const cardsContainer = document.getElementById("cardsTratamentos");
   let selectedIndex = 1;
   let currentTratamento = tratamentos[selectedIndex];
 
   function renderTabela(dados) {
     tbody.innerHTML = "";
+    if (cardsContainer) cardsContainer.innerHTML = "";
+
     dados.forEach((t, i) => {
+      // -- Desktop Row --
       const tr = document.createElement("tr");
       if (i === selectedIndex) tr.classList.add("selected");
 
@@ -108,7 +116,7 @@ document.addEventListener("DOMContentLoaded", () => {
         </td>
         <td data-label="Próxima Sessão">${t.proximaSessao}</td>
         <td data-label="Prontuário">
-          <button class="btn-prontuario" title="Ver prontuário">
+          <button class="btn-prontuario" title="Ver prontuário" data-idx="${i}">
             <i class="fa-regular fa-eye"></i>
           </button>
         </td>
@@ -122,6 +130,59 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
       tbody.appendChild(tr);
+
+      // -- Mobile Card --
+      if (cardsContainer) {
+        const card = document.createElement("div");
+        card.className = "paciente-card-mobile";
+        
+        card.innerHTML = `
+          <div class="pcm-header">
+            <h3 class="pcm-nome">${t.paciente}</h3>
+            <i class="fa-solid fa-hands-asl-interpreting pcm-icon-acessibilidade"></i>
+          </div>
+          <div class="pcm-body">
+            <div class="pcm-item">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <span>Serviço: ${t.servico}</span>
+            </div>
+            <div class="pcm-item">
+              <i class="fa-regular fa-clock"></i>
+              <span>Status: ${t.status}</span>
+            </div>
+            <div class="pcm-progresso-row">
+              <div class="pcm-progresso-bar-wrapper">
+                <div class="pcm-progresso-fill" style="width: ${t.progresso}%"></div>
+              </div>
+              <span class="pcm-progresso-text">${t.progresso}%</span>
+            </div>
+            <div class="pcm-item">
+              <i class="fa-regular fa-calendar"></i>
+              <span>Próxima Sessão: ${t.proximaSessao}</span>
+            </div>
+          </div>
+          <div class="pcm-footer">
+            <button class="btn-prontuario-mobile" title="Ver prontuário" data-idx="${i}">
+              <i class="fa-regular fa-eye"></i> Prontuário
+            </button>
+          </div>
+        `;
+
+        card.addEventListener("click", (e) => {
+          if (e.target.closest('.btn-prontuario-mobile')) return;
+          selectedIndex = i;
+          currentTratamento = t;
+          atualizarResumo(t);
+          
+          // Smooth scroll para o resumo no mobile
+          const resumoEl = document.getElementById("painelResumo");
+          if (resumoEl && window.innerWidth <= 992) {
+            resumoEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+
+        cardsContainer.appendChild(card);
+      }
     });
   }
 
@@ -702,17 +763,21 @@ document.addEventListener("DOMContentLoaded", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  // Botão "olho" na tabela (Prontuário)
-  document.getElementById("tbodyTratamentos").addEventListener("click", (e) => {
-    const btn = e.target.closest(".btn-prontuario");
+  // Botão "olho" na tabela (Prontuário) E Botão Prontuário Mobile
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest(".btn-prontuario") || e.target.closest(".btn-prontuario-mobile");
     if (!btn) return;
+    
+    // Only handle clicks within tratamentos view lists
+    if (!document.getElementById("tbodyTratamentos").contains(btn) && 
+        !document.getElementById("cardsTratamentos").contains(btn)) {
+      return;
+    }
+    
     e.stopPropagation();
 
-    // Pegar o índice da linha
-    const tr = btn.closest("tr");
-    const rows = Array.from(document.getElementById("tbodyTratamentos").children);
-    const idx = rows.indexOf(tr);
-    if (idx >= 0 && idx < tratamentos.length) {
+    const idx = parseInt(btn.dataset.idx, 10);
+    if (!isNaN(idx) && idx >= 0 && idx < tratamentos.length) {
       currentTratamento = tratamentos[idx];
     }
 

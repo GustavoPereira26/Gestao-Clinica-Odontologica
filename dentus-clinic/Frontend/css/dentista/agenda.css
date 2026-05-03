@@ -374,33 +374,7 @@
   margin-top: 1px;
 }
 
-/* ══════════════════════════════════════════════════
-   LINHA DO HORÁRIO ATUAL
-   ══════════════════════════════════════════════════ */
-.tcal-now-indicator {
-  position: absolute;
-  left: 0;
-  right: 0;
-  display: flex;
-  align-items: center;
-  pointer-events: none;
-  z-index: 8;
-}
 
-.tcal-now-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--tcal-now-color);
-  flex-shrink: 0;
-  margin-left: -1px;
-}
-
-.tcal-now-bar {
-  flex: 1;
-  height: 2px;
-  background: var(--tcal-now-color);
-}
 
 /* ══════════════════════════════════════════════════
    AGENDA MOBILE — estilo Teams

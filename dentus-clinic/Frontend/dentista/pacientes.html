@@ -30,11 +30,6 @@
 
 <body>
 
-  <!-- Botão hamburguer (mobile) -->
-  <button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
-    <i class="fa-solid fa-bars"></i>
-  </button>
-
   <!-- Layout principal -->
   <div class="app-layout">
 
@@ -42,145 +37,248 @@
     <div id="sidebarContainer"></div>
 
     <!-- ═══ CONTEÚDO ═══ -->
-    <main class="app-content d-flex align-items-center">
+    <main class="app-content">
 
-      <div class="container py-4">
+      <div class="container py-3">
+
+        <header class="mobile-header d-flex align-items-center mb-4">
+          <button class="btn-hamburger-mobile d-lg-none" id="btnHamburgerMobile" aria-label="Abrir menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="mobile-header-title ms-3 mb-0">Consultas Agendadas</h1>
+        </header>
 
         <!-- Barra de Filtros -->
-        <section class="filter-bar" id="filterBar">
-          <div class="filter-field">
-            <label class="filter-label" for="filterNome">Paciente</label>
-            <div class="filter-input-wrapper">
-              <i class="bi bi-search filter-input-icon"></i>
-              <input type="text" class="filter-input" id="filterNome" placeholder="Buscar por nome..."
-                autocomplete="off" />
+        <section class="filter-card-mobile" id="filterBar">
+          <div class="row g-3">
+            <div class="col-12">
+              <div class="filter-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass filter-input-icon"></i>
+                <input type="text" class="filter-input" id="filterNome" placeholder="Buscar paciente por nome..." autocomplete="off" />
+              </div>
             </div>
-          </div>
-
-          <div class="filter-field">
-            <label class="filter-label" for="filterCpf">CPF</label>
-            <div class="filter-input-wrapper">
-              <i class="bi bi-credit-card filter-input-icon"></i>
-              <input type="text" class="filter-input" id="filterCpf" placeholder="000.000.000-00" autocomplete="off" />
+            <div class="col-12 col-md-6">
+              <div class="filter-input-wrapper">
+                <i class="fa-regular fa-id-card filter-input-icon"></i>
+                <input type="text" class="filter-input" id="filterCpf" placeholder="CPF" autocomplete="off" />
+              </div>
             </div>
-          </div>
-
-          <div class="filter-field">
-            <label class="filter-label" for="filterServico">Serviço</label>
-            <div class="filter-input-wrapper">
-              <i class="bi bi-clipboard2-pulse filter-input-icon"></i>
-              <input type="text" class="filter-input" id="filterServico" placeholder="Serviço..." autocomplete="off" />
+            <div class="col-12 col-md-6">
+              <div class="filter-input-wrapper">
+                <i class="fa-solid fa-stethoscope filter-input-icon"></i>
+                <select class="filter-input" id="filterServico">
+                  <option value="">Todos os Serviços</option>
+                  <option value="Limpeza">Limpeza</option>
+                  <option value="Extração">Extração</option>
+                  <option value="Clareamento">Clareamento</option>
+                  <option value="Restauração">Restauração</option>
+                  <option value="Check-up">Check-up</option>
+                  <option value="Periodontia">Periodontia</option>
+                </select>
+              </div>
             </div>
-          </div>
-
-          <div class="filter-field">
-            <label class="filter-label" for="filterTelefone">Telefone</label>
-            <div class="filter-input-wrapper">
-              <i class="bi bi-telephone filter-input-icon"></i>
-              <input type="text" class="filter-input" id="filterTelefone" placeholder="(00) 00000-0000"
-                autocomplete="off" />
+            <div class="col-6">
+              <div class="filter-input-wrapper">
+                <i class="fa-solid fa-phone filter-input-icon"></i>
+                <input type="text" class="filter-input" id="filterTelefone" placeholder="Telefone" autocomplete="off" />
+              </div>
             </div>
-          </div>
-
-          <div class="filter-field">
-            <label class="filter-label" for="filterConsulta">Data Consulta</label>
-            <div class="filter-input-wrapper">
-              <i class="bi bi-calendar filter-input-icon"></i>
-              <input type="text" class="filter-input" id="filterConsulta" placeholder="DD/MM/AAAA" maxlength="10"
-                autocomplete="off" />
+            <div class="col-6">
+              <div class="filter-input-wrapper">
+                <i class="fa-regular fa-calendar filter-input-icon"></i>
+                <input type="text" class="filter-input" id="filterConsulta" placeholder="Data" maxlength="10" autocomplete="off" />
+              </div>
             </div>
-          </div>
-
-          <div class="filter-actions">
-            <button class="btn-filter-clear" id="btnClearFilters" title="Limpar filtros">
-              <i class="bi bi-x-lg"></i>
-              Limpar
-            </button>
+            <div class="col-12 d-flex justify-content-end mt-1">
+              <button class="btn-filter-clear-mobile" id="btnClearFilters">Limpar</button>
+            </div>
           </div>
         </section>
 
-        <!-- Table -->
-        <div class="table-container" style="max-height: 65vh;">
-          <table class="table table-custom mb-0 w-100">
-            <thead>
-              <tr>
-                <th class="ps-4">NOME DO PACIENTE <i class="bi bi-chevron-expand ms-1 opacity-75"></i></th>
-                <th>CPF</th>
-                <th>SERVIÇO</th>
-                <th>TELEFONE</th>
-                <th>DATA CADASTRO <i class="bi bi-chevron-expand ms-1 opacity-75"></i></th>
-              </tr>
-            </thead>
-            <tbody id="pacientesTableBody">
-              <tr>
-                <td class="ps-4 fw-medium">Ricardo Henrique</td>
-                <td>123.456.789-01</td>
-                <td>Limpeza</td>
-                <td>(15) 91234-5678</td>
-                <td>30/03/2026</td>
-              </tr>
-              <tr>
-                <td class="ps-4 fw-medium">Lillian Marques</td>
-                <td>234.567.890-12</td>
-                <td>Limpeza</td>
-                <td>(15) 91234-5678</td>
-                <td>30/03/2026</td>
-              </tr>
-              <tr>
-                <td class="ps-4 fw-medium">Inês Ribeiro</td>
-                <td>345.678.901-23</td>
-                <td>Extração</td>
-                <td>(15) 91234-5678</td>
-                <td>30/03/2026</td>
-              </tr>
-              <tr>
-                <td class="ps-4 fw-medium">Sofia Costa</td>
-                <td>456.789.012-34</td>
-                <td>Clareamento</td>
-                <td>(15) 91234-5678</td>
-                <td>30/03/2026</td>
-              </tr>
-              <tr>
-                <td class="ps-4 fw-medium">Catarina Lima</td>
-                <td>567.890.123-45</td>
-                <td>Restauração</td>
-                <td>(15) 91234-5678</td>
-                <td>30/03/2026</td>
-              </tr>
-              <tr>
-                <td class="ps-4 fw-medium">João Silva</td>
-                <td>678.901.234-56</td>
-                <td>Check-up</td>
-                <td>(15) 91234-5678</td>
-                <td>30/03/2026</td>
-              </tr>
-              <tr>
-                <td class="ps-4 fw-medium">Thiago Carvalho</td>
-                <td>789.012.345-67</td>
-                <td>Periodontia</td>
-                <td>(15) 91234-5678</td>
-                <td>30/03/2026</td>
-              </tr>
-              <tr>
-                <td class="ps-4 fw-medium">Ricardo Almeida</td>
-                <td>890.123.456-78</td>
-                <td>Limpeza</td>
-                <td>(15) 91234-5678</td>
-                <td>24/03/2026</td>
-              </tr>
-              <tr>
-                <td class="ps-4 fw-medium">Filipe Rocha</td>
-                <td>901.234.567-89</td>
-                <td>Extração</td>
-                <td>(15) 91234-5678</td>
-                <td>24/03/2026</td>
-              </tr>
-            </tbody>
-          </table>
+        <h2 class="section-title-mobile mb-3">Agendamentos</h2>
+
+        <!-- Cards Container -->
+        <div class="patient-cards-list" id="pacientesCardsList">
+          <!-- Ricardo Henrique -->
+          <div class="patient-card" data-nome="Ricardo Henrique" data-cpf="123.456.789-01" data-servico="Limpeza" data-telefone="(15) 91234-5678" data-consulta="30/03/2026">
+            <div class="pc-header">
+              <h3 class="pc-name">Ricardo Henrique</h3>
+            </div>
+            <div class="pc-body">
+              <div class="pc-item"><i class="fa-regular fa-id-card"></i><span>123.456.789-01</span></div>
+              <div class="pc-item"><i class="fa-solid fa-phone"></i><span>(15) 91234-5678</span></div>
+              <div class="pc-item pc-service"><i class="fa-solid fa-stethoscope"></i><span>Limpeza</span></div>
+              <div class="pc-item"><i class="fa-regular fa-calendar"></i><span>30/03/2026</span></div>
+            </div>
+            <div class="pc-footer">
+              <button class="btn-detalhes">Ver Detalhes</button>
+            </div>
+          </div>
+          <!-- Lillian Marques -->
+          <div class="patient-card" data-nome="Lillian Marques" data-cpf="234.567.890-12" data-servico="Limpeza" data-telefone="(15) 91234-5678" data-consulta="30/03/2026">
+            <div class="pc-header">
+              <h3 class="pc-name">Lillian Marques</h3>
+            </div>
+            <div class="pc-body">
+              <div class="pc-item"><i class="fa-regular fa-id-card"></i><span>234.567.890-12</span></div>
+              <div class="pc-item"><i class="fa-solid fa-phone"></i><span>(15) 91234-5678</span></div>
+              <div class="pc-item pc-service"><i class="fa-solid fa-stethoscope"></i><span>Limpeza</span></div>
+              <div class="pc-item"><i class="fa-regular fa-calendar"></i><span>30/03/2026</span></div>
+            </div>
+            <div class="pc-footer">
+              <button class="btn-detalhes">Ver Detalhes</button>
+            </div>
+          </div>
+          <!-- Inês Ribeiro -->
+          <div class="patient-card" data-nome="Inês Ribeiro" data-cpf="345.678.901-23" data-servico="Extração" data-telefone="(15) 91234-5678" data-consulta="30/03/2026">
+            <div class="pc-header">
+              <h3 class="pc-name">Inês Ribeiro</h3>
+            </div>
+            <div class="pc-body">
+              <div class="pc-item"><i class="fa-regular fa-id-card"></i><span>345.678.901-23</span></div>
+              <div class="pc-item"><i class="fa-solid fa-phone"></i><span>(15) 91234-5678</span></div>
+              <div class="pc-item pc-service"><i class="fa-solid fa-stethoscope"></i><span>Extração</span></div>
+              <div class="pc-item"><i class="fa-regular fa-calendar"></i><span>30/03/2026</span></div>
+            </div>
+            <div class="pc-footer">
+              <button class="btn-detalhes">Ver Detalhes</button>
+            </div>
+          </div>
+          <!-- Sofia Costa -->
+          <div class="patient-card" data-nome="Sofia Costa" data-cpf="456.789.012-34" data-servico="Clareamento" data-telefone="(15) 91234-5678" data-consulta="30/03/2026">
+            <div class="pc-header">
+              <h3 class="pc-name">Sofia Costa</h3>
+            </div>
+            <div class="pc-body">
+              <div class="pc-item"><i class="fa-regular fa-id-card"></i><span>456.789.012-34</span></div>
+              <div class="pc-item"><i class="fa-solid fa-phone"></i><span>(15) 91234-5678</span></div>
+              <div class="pc-item pc-service"><i class="fa-solid fa-stethoscope"></i><span>Clareamento</span></div>
+              <div class="pc-item"><i class="fa-regular fa-calendar"></i><span>30/03/2026</span></div>
+            </div>
+            <div class="pc-footer">
+              <button class="btn-detalhes">Ver Detalhes</button>
+            </div>
+          </div>
+          <!-- Catarina Lima -->
+          <div class="patient-card" data-nome="Catarina Lima" data-cpf="567.890.123-45" data-servico="Restauração" data-telefone="(15) 91234-5678" data-consulta="30/03/2026">
+            <div class="pc-header">
+              <h3 class="pc-name">Catarina Lima</h3>
+            </div>
+            <div class="pc-body">
+              <div class="pc-item"><i class="fa-regular fa-id-card"></i><span>567.890.123-45</span></div>
+              <div class="pc-item"><i class="fa-solid fa-phone"></i><span>(15) 91234-5678</span></div>
+              <div class="pc-item pc-service"><i class="fa-solid fa-stethoscope"></i><span>Restauração</span></div>
+              <div class="pc-item"><i class="fa-regular fa-calendar"></i><span>30/03/2026</span></div>
+            </div>
+            <div class="pc-footer">
+              <button class="btn-detalhes">Ver Detalhes</button>
+            </div>
+          </div>
+          <!-- João Silva -->
+          <div class="patient-card" data-nome="João Silva" data-cpf="678.901.234-56" data-servico="Check-up" data-telefone="(15) 91234-5678" data-consulta="30/03/2026">
+            <div class="pc-header">
+              <h3 class="pc-name">João Silva</h3>
+            </div>
+            <div class="pc-body">
+              <div class="pc-item"><i class="fa-regular fa-id-card"></i><span>678.901.234-56</span></div>
+              <div class="pc-item"><i class="fa-solid fa-phone"></i><span>(15) 91234-5678</span></div>
+              <div class="pc-item pc-service"><i class="fa-solid fa-stethoscope"></i><span>Check-up</span></div>
+              <div class="pc-item"><i class="fa-regular fa-calendar"></i><span>30/03/2026</span></div>
+            </div>
+            <div class="pc-footer">
+              <button class="btn-detalhes">Ver Detalhes</button>
+            </div>
+          </div>
+          <!-- Thiago Carvalho -->
+          <div class="patient-card" data-nome="Thiago Carvalho" data-cpf="789.012.345-67" data-servico="Periodontia" data-telefone="(15) 91234-5678" data-consulta="30/03/2026">
+            <div class="pc-header">
+              <h3 class="pc-name">Thiago Carvalho</h3>
+            </div>
+            <div class="pc-body">
+              <div class="pc-item"><i class="fa-regular fa-id-card"></i><span>789.012.345-67</span></div>
+              <div class="pc-item"><i class="fa-solid fa-phone"></i><span>(15) 91234-5678</span></div>
+              <div class="pc-item pc-service"><i class="fa-solid fa-stethoscope"></i><span>Periodontia</span></div>
+              <div class="pc-item"><i class="fa-regular fa-calendar"></i><span>30/03/2026</span></div>
+            </div>
+            <div class="pc-footer">
+              <button class="btn-detalhes">Ver Detalhes</button>
+            </div>
+          </div>
+          <!-- Ricardo Almeida -->
+          <div class="patient-card" data-nome="Ricardo Almeida" data-cpf="890.123.456-78" data-servico="Limpeza" data-telefone="(15) 91234-5678" data-consulta="24/03/2026">
+            <div class="pc-header">
+              <h3 class="pc-name">Ricardo Almeida</h3>
+            </div>
+            <div class="pc-body">
+              <div class="pc-item"><i class="fa-regular fa-id-card"></i><span>890.123.456-78</span></div>
+              <div class="pc-item"><i class="fa-solid fa-phone"></i><span>(15) 91234-5678</span></div>
+              <div class="pc-item pc-service"><i class="fa-solid fa-stethoscope"></i><span>Limpeza</span></div>
+              <div class="pc-item"><i class="fa-regular fa-calendar"></i><span>24/03/2026</span></div>
+            </div>
+            <div class="pc-footer">
+              <button class="btn-detalhes">Ver Detalhes</button>
+            </div>
+          </div>
+          <!-- Filipe Rocha -->
+          <div class="patient-card" data-nome="Filipe Rocha" data-cpf="901.234.567-89" data-servico="Extração" data-telefone="(15) 91234-5678" data-consulta="24/03/2026">
+            <div class="pc-header">
+              <h3 class="pc-name">Filipe Rocha</h3>
+            </div>
+            <div class="pc-body">
+              <div class="pc-item"><i class="fa-regular fa-id-card"></i><span>901.234.567-89</span></div>
+              <div class="pc-item"><i class="fa-solid fa-phone"></i><span>(15) 91234-5678</span></div>
+              <div class="pc-item pc-service"><i class="fa-solid fa-stethoscope"></i><span>Extração</span></div>
+              <div class="pc-item"><i class="fa-regular fa-calendar"></i><span>24/03/2026</span></div>
+            </div>
+            <div class="pc-footer">
+              <button class="btn-detalhes">Ver Detalhes</button>
+            </div>
+          </div>
         </div>
 
       </div>
     </main>
+  </div>
+
+  <!-- Modal Detalhes do Paciente -->
+  <div class="modal fade" id="detalhesModal" tabindex="-1" aria-labelledby="detalhesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border-radius: 16px; border: none; background-color: #FAF9F6; box-shadow: 0 10px 30px rgba(110, 84, 48, 0.15);">
+        <div class="modal-header border-0 pb-0">
+          <h5 class="modal-title" id="detalhesModalLabel" style="color: #6e5430; font-weight: 700; font-size: 1.3rem;">Detalhes do Agendamento</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body pt-4 pb-4">
+          <div class="text-center mb-4">
+            <h3 id="modalNome" style="color: #4a3520; font-weight: 700; margin-bottom: 0.5rem; font-size: 1.5rem;">Nome do Paciente</h3>
+            <span id="modalServico" class="badge" style="background-color: rgba(110, 84, 48, 0.1); color: #6e5430; font-size: 0.95rem; padding: 0.4rem 0.8rem; border-radius: 6px;">Serviço</span>
+          </div>
+          
+          <div class="row g-3">
+            <div class="col-6">
+              <label style="font-size: 0.75rem; color: #a68a64; font-weight: 600; text-transform: uppercase;">CPF</label>
+              <div id="modalCpf" style="color: #6e5430; font-weight: 500;">000.000.000-00</div>
+            </div>
+            <div class="col-6">
+              <label style="font-size: 0.75rem; color: #a68a64; font-weight: 600; text-transform: uppercase;">Telefone</label>
+              <div id="modalTelefone" style="color: #6e5430; font-weight: 500;">(00) 00000-0000</div>
+            </div>
+            <div class="col-12">
+              <label style="font-size: 0.75rem; color: #a68a64; font-weight: 600; text-transform: uppercase;">Data da Consulta</label>
+              <div id="modalConsulta" style="color: #6e5430; font-weight: 500;">00/00/0000</div>
+            </div>
+          </div>
+          
+          <div class="mt-4 pt-3" style="border-top: 1px solid rgba(110, 84, 48, 0.08);">
+            <label style="font-size: 0.75rem; color: #a68a64; font-weight: 600; text-transform: uppercase;">Observações</label>
+            <p style="color: #8c765c; font-size: 0.9rem; margin-top: 0.3rem;">Nenhuma observação registrada para este agendamento.</p>
+          </div>
+        </div>
+        <div class="modal-footer border-0 pt-0 pb-3 justify-content-center">
+          <button type="button" class="btn w-100" data-bs-dismiss="modal" style="background-color: #6e5430; color: #fff; font-weight: 600; border-radius: 8px; padding: 0.75rem;">Fechar</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Impotação do VLibras-->

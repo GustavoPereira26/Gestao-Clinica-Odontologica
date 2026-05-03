@@ -30,17 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Consulta","Prótese","Ortodontia","Restauração",
   ];
 
-  const EVENT_COLORS = {
-    "Limpeza":    { bg: "rgba(46,125,50,.13)",   border: "#388e3c", text: "#1b5e20" },
-    "Clareamento":{ bg: "rgba(21,101,192,.12)",  border: "#1565c0", text: "#0d47a1" },
-    "Extração":   { bg: "rgba(198,40,40,.12)",   border: "#c62828", text: "#b71c1c" },
-    "Canal":      { bg: "rgba(198,40,40,.12)",   border: "#c62828", text: "#b71c1c" },
-    "Consulta":   { bg: "rgba(110,84,48,.12)",   border: "#6e5430", text: "#4a3520" },
-    "Prótese":    { bg: "rgba(106,27,154,.12)",  border: "#6a1b9a", text: "#4a148c" },
-    "Ortodontia": { bg: "rgba(0,131,143,.12)",   border: "#00838f", text: "#006064" },
-    "Restauração":{ bg: "rgba(230,112,0,.11)",   border: "#d4690a", text: "#7c3a00" },
-  };
-  const DEFAULT_COLOR = EVENT_COLORS["Consulta"];
+
 
   // ── Estado ─────────────────────────────────────────────────────────
   let weekOffset  = 0;
@@ -144,13 +134,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const slot = dadosSemana[d][h];
 
         if (slot.occupied) {
-          const c  = EVENT_COLORS[slot.servico] || DEFAULT_COLOR;
           const ev = document.createElement("div");
           ev.className = "tcal-event";
-          ev.style.cssText = `background:${c.bg};border-left-color:${c.border};color:${c.text}`;
+          ev.style.cssText = `background: var(--c1); color: #fff; border-left: none; border-radius: 6px; box-shadow: 0 2px 8px rgba(110, 84, 48, .25);`;
           ev.innerHTML = `
-            <span class="tcal-event-name">${slot.nome}</span>
-            <span class="tcal-event-service">${slot.servico}</span>
+            <span class="tcal-event-name" style="color: #fff;">${slot.nome}</span>
+            <span class="tcal-event-service" style="color: rgba(255, 255, 255, 0.72);">${slot.servico}</span>
           `;
           ev.addEventListener("click", e => {
             e.stopPropagation();
@@ -172,45 +161,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       grid.appendChild(col);
     }
-
-    updateNowLine();
   }
 
-  // ══════════════════════════════════════════════════
-  // DESKTOP — linha do horário atual
-  // ══════════════════════════════════════════════════
-  function updateNowLine() {
-    const grid = document.getElementById("tcalGrid");
-    if (!grid) return;
 
-    const old = document.getElementById("tcalNowLine");
-    if (old) old.remove();
-
-    const now      = new Date();
-    const todayKey = dateKey(now);
-    const monday   = getMonday(weekOffset);
-
-    const isCurrentWeek = Array.from({ length: 7 }, (_, i) => {
-      const d = new Date(monday);
-      d.setDate(monday.getDate() + i);
-      return dateKey(d) === todayKey;
-    }).some(Boolean);
-
-    if (!isCurrentWeek) return;
-
-    const h = now.getHours();
-    const m = now.getMinutes();
-    if (h < HOUR_START || h >= HOUR_START + HOUR_COUNT) return;
-
-    const topPx = (h - HOUR_START) * CELL_H + (m / 60) * CELL_H;
-
-    const indicator = document.createElement("div");
-    indicator.id        = "tcalNowLine";
-    indicator.className = "tcal-now-indicator";
-    indicator.style.top = `${topPx}px`;
-    indicator.innerHTML = `<div class="tcal-now-dot"></div><div class="tcal-now-bar"></div>`;
-    grid.appendChild(indicator);
-  }
 
   // ── Scroll para o horário atual no início ────────────────────────
   function scrollToNow() {
@@ -367,8 +320,4 @@ document.addEventListener("DOMContentLoaded", () => {
   updateHeaders();
   buildGrid();
   renderMobile();
-  scrollToNow();
-
-  // Atualiza a linha do horário atual a cada minuto
-  setInterval(updateNowLine, 60_000);
 });

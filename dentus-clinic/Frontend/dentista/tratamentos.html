@@ -41,6 +41,14 @@
   <!-- ═══ CONTEÚDO ═══ -->
   <main class="app-content">
 
+    <!-- Header Mobile -->
+    <header class="mobile-header d-flex align-items-center mb-4 d-lg-none">
+      <button class="btn-hamburger-mobile" id="btnHamburgerMobile" aria-label="Abrir menu">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <h1 class="mobile-header-title ms-3 mb-0">Tratamentos</h1>
+    </header>
+
     <!-- ── Cards de Métricas ── -->
     <div class="metricas-row">
 
@@ -132,7 +140,8 @@
         </div>
 
         <!-- Tabela -->
-        <div class="table-container">
+        <!-- Tabela (Desktop) -->
+        <div class="table-container d-none d-lg-block">
           <table class="table-custom" id="tabelaTratamentos">
             <thead>
               <tr>
@@ -148,6 +157,11 @@
               <!-- Preenchido pelo JS -->
             </tbody>
           </table>
+        </div>
+
+        <!-- Cards (Mobile) -->
+        <div class="tratamentos-cards-list d-lg-none" id="cardsTratamentos">
+          <!-- Preenchido pelo JS -->
         </div>
 
       </div>
