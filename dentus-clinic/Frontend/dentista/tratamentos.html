@@ -25,7 +25,7 @@
   <link rel="stylesheet" href="../css/components.css" />
 
   <!-- Estilos da página -->
-  <link rel="stylesheet" href="../css/dentista/tratamentos.css" />
+  <link rel="stylesheet" href="../css/dentista/tratamentos.css?v=3" />
 </head>
 
 <body>
@@ -43,6 +43,7 @@
 
     <!-- ═══ CONTEÚDO ═══ -->
     <main class="app-content">
+      <div class="page-container">
 
       <!-- Header Mobile -->
       <header class="mobile-header d-flex align-items-center mb-4 d-lg-none">
@@ -631,31 +632,34 @@ coodihoo</textarea>
             <span class="consulta-badge-atendimento"><i class="fa-solid fa-circle fa-xs"></i> Em Atendimento</span>
           </div>
           <!-- Alerta Clínico -->
-          <div class="alerta-clinico alerta-clinico-compact">
-            <h4 class="alerta-titulo"><i class="fa-solid fa-triangle-exclamation"></i> Alerta Clínico</h4>
+          <details class="alerta-clinico alerta-clinico-compact alerta-details">
+            <summary class="alerta-titulo alerta-summary">
+              <i class="fa-solid fa-triangle-exclamation"></i> Alerta Clínico
+              <span class="alerta-toggle-hint">ver detalhes</span>
+            </summary>
             <div class="alerta-grid">
               <div class="alerta-item">
-                <span class="alerta-label">Allergies</span>
-                <span class="alerta-valor">Penicillin</span>
+                <span class="alerta-label">Alergias</span>
+                <span class="alerta-valor">Penicilina</span>
               </div>
               <div class="alerta-item">
-                <span class="alerta-label">Pre-existing Conditions:</span>
-                <span class="alerta-valor">Hypertension (controlled)</span>
+                <span class="alerta-label">Condições</span>
+                <span class="alerta-valor">Hipertensão (controlada)</span>
               </div>
               <div class="alerta-item">
-                <span class="alerta-label">Medications:</span>
-                <span class="alerta-valor">Lisinopril (daily)</span>
+                <span class="alerta-label">Medicamentos</span>
+                <span class="alerta-valor">Lisinopril (diário)</span>
               </div>
               <div class="alerta-item">
-                <span class="alerta-label">Previous Dental Surgeries:</span>
-                <span class="alerta-valor">Wisdom teeth extraction (2018)</span>
+                <span class="alerta-label">Cirurgias</span>
+                <span class="alerta-valor">Extração siso (2018)</span>
               </div>
               <div class="alerta-item">
-                <span class="alerta-label">Notes:</span>
+                <span class="alerta-label">Notas</span>
                 <span class="alerta-valor">—</span>
               </div>
             </div>
-          </div>
+          </details>
         </div>
 
         <!-- Odontograma da Consulta -->
@@ -766,7 +770,8 @@ coodihoo</textarea>
               </div>
 
               <!-- Condição e Descrição -->
-              <div class="consulta-condicao-col">
+              <div class="consulta-condicao-col consulta-campo-card">
+                <h4 class="consulta-campo-card-titulo"><i class="fa-solid fa-tooth fa-xs"></i> Diagnóstico</h4>
                 <div class="consulta-campo">
                   <label class="consulta-campo-label">Condição</label>
                   <input type="text" class="consulta-campo-input" id="consultaCondicao" value="Cárie Profunda" />
@@ -1245,6 +1250,7 @@ Obturação temporária aplicada.</textarea>
 
       </div>
 
+      </div><!-- /page-container -->
     </main>
 
   </div><!-- /app-layout -->

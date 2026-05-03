@@ -10,6 +10,12 @@
   font-family: 'Inter', sans-serif;
 }
 
+.page-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
 /* ══════════════════════════════════
    CARDS DE MÉTRICAS
    ══════════════════════════════════ */
@@ -201,7 +207,14 @@
   margin-bottom: 0;
   background: #fff;
   border-radius: var(--radius-md) var(--radius-md) 0 0;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.tratamentos-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 .tab-btn {
@@ -622,15 +635,12 @@
 
 @media (max-width: 768px) {
   .metricas-row {
-    flex-direction: column;
+    flex-wrap: wrap;
   }
 
   .metrica-card {
     min-width: 0;
-  }
-
-  .tratamentos-tabs {
-    overflow-x: auto;
+    flex: 1 1 calc(50% - 0.75rem);
   }
 
   .tab-btn {
@@ -925,6 +935,12 @@
    TELA EDITAR PLANO
    ══════════════════════════════════════════════════ */
 
+/* Container da tela de editar plano */
+.editar-plano-view {
+  overflow-x: hidden;
+  width: 100%;
+}
+
 /* Conteúdo principal da lista (escondido quando editar plano aparece) */
 .view-lista {
   display: block;
@@ -948,6 +964,7 @@
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition);
+  margin-bottom: 1rem;
 }
 
 .btn-voltar:hover {
@@ -1566,9 +1583,23 @@
 /* ══════════════════════════════════
    RESPONSIVIDADE — EDITAR PLANO
    ══════════════════════════════════ */
+@media (max-width: 1300px) {
+  .editar-plano-sidebar {
+    width: 420px;
+  }
+
+  .odontograma-section {
+    margin-top: 90px;
+  }
+}
+
 @media (max-width: 1100px) {
   .editar-plano-sidebar {
-    width: 380px;
+    width: 360px;
+  }
+
+  .odontograma-section {
+    margin-top: 60px;
   }
 }
 
@@ -1590,18 +1621,22 @@
 
   .alerta-clinico {
     flex: 1;
-    min-width: 280px;
+    min-width: 260px;
   }
 
   .editar-resumo-card {
     flex: 1;
-    min-width: 280px;
+    min-width: 260px;
+  }
+
+  .btn-voltar {
+    margin-bottom: 1rem;
   }
 }
 
 @media (max-width: 768px) {
   .etapa-card {
-    min-width: 230px;
+    min-width: 220px;
   }
 
   .arcada-grupo {
@@ -1626,6 +1661,46 @@
     max-width: 100%;
     padding-bottom: 0.5rem;
   }
+
+  .odontograma-section {
+    padding: 1rem;
+  }
+
+  .etapas-titulo {
+    font-size: 0.95rem;
+  }
+
+  .editar-resumo-card {
+    padding: 1rem 0.85rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .etapas-scroll {
+    flex-direction: column;
+    overflow-x: visible;
+  }
+
+  .etapa-card {
+    min-width: 0;
+    max-width: none;
+    width: 100%;
+  }
+
+  .datas-calendario-row {
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .editar-plano-sidebar {
+    flex-direction: column;
+  }
+
+  .alerta-clinico,
+  .editar-resumo-card {
+    min-width: 0;
+    width: 100%;
+  }
 }
 
 @media (max-width: 576px) {
@@ -1636,11 +1711,6 @@
   .datas-calendario-row {
     flex-direction: column;
     gap: 1.5rem;
-  }
-
-  .etapa-card {
-    min-width: 200px;
-    max-width: none;
   }
 
   .dente,
@@ -1660,6 +1730,14 @@
     overflow-x: auto;
     max-width: 100%;
     padding-bottom: 0.5rem;
+  }
+
+  .calendario-wrapper {
+    width: 100%;
+  }
+
+  .calendario-table {
+    width: 100%;
   }
 }
 
@@ -2068,47 +2146,56 @@
 /* Header */
 .consulta-header-row {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  padding: 0.65rem 0.9rem;
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
   flex-wrap: wrap;
 }
 
 .consulta-header-left {
   display: flex;
   align-items: center;
-  gap: 1.25rem;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
 .consulta-header-item {
   display: flex;
   flex-direction: column;
+  gap: 0.05rem;
 }
 
 .consulta-header-label {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   color: var(--c3);
-  text-transform: capitalize;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
 }
 
 .consulta-header-nome {
-  font-size: 1.6rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--c1);
   line-height: 1.2;
 }
 
 .consulta-header-servico {
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-weight: 700;
   color: var(--c1);
+  line-height: 1.2;
 }
 
 .consulta-header-divider {
-  width: 2px;
-  height: 40px;
+  width: 1.5px;
+  height: 30px;
   background: var(--c4);
   flex-shrink: 0;
 }
@@ -2116,9 +2203,9 @@
 .consulta-badge-atendimento {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  padding: 0.35rem 0.85rem;
-  font-size: 0.78rem;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.73rem;
   font-weight: 600;
   color: #fff;
   background: #27ae60;
@@ -2127,20 +2214,149 @@
 }
 
 .consulta-badge-atendimento i {
-  font-size: 0.45rem;
+  font-size: 0.4rem;
 }
 
+/* Alerta compact inline na header */
 .alerta-clinico-compact {
-  max-width: 320px;
+  max-width: 380px;
   flex-shrink: 0;
+  padding: 0.6rem 0.9rem;
+}
+
+.alerta-clinico-compact .alerta-titulo {
+  font-size: 0.75rem;
+  margin-bottom: 0.4rem;
+}
+
+.alerta-clinico-compact .alerta-grid {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+}
+
+.alerta-clinico-compact .alerta-item {
+  flex-direction: row;
+  align-items: baseline;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+}
+
+.alerta-clinico-compact .alerta-label::after {
+  content: ':';
+}
+
+/* Em mobile o alerta vira grid de 2 colunas */
+@media (max-width: 640px) {
+  .alerta-clinico-compact {
+    padding: 0.55rem 0.75rem;
+  }
+
+  .alerta-clinico-compact .alerta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.2rem 0.6rem;
+  }
+
+  .alerta-clinico-compact .alerta-item {
+    font-size: 0.65rem;
+    overflow: hidden;
+  }
+
+  .alerta-clinico-compact .alerta-valor {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 110px;
+  }
+}
+
+@media (max-width: 400px) {
+  .alerta-clinico-compact .alerta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .alerta-clinico-compact .alerta-valor {
+    max-width: none;
+  }
+}
+
+/* Details/Summary collapsible alerta */
+.alerta-details > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.alerta-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.alerta-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  user-select: none;
+}
+
+.alerta-summary::after {
+  content: '\f078';
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  font-size: 0.6rem;
+  margin-left: auto;
+  transition: transform var(--transition);
+}
+
+.alerta-details[open] > .alerta-summary::after {
+  transform: rotate(180deg);
+}
+
+.alerta-toggle-hint {
+  font-size: 0.6rem;
+  color: var(--c2);
+  font-weight: 400;
+  margin-left: 0.15rem;
+}
+
+.alerta-details[open] .alerta-toggle-hint {
+  display: none;
+}
+
+/* Consulta campo card */
+.consulta-campo-card {
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: 0.9rem;
+}
+
+.consulta-campo-card-titulo {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--c1);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
 }
 
 /* Layout */
 .consulta-layout {
   display: flex;
-  gap: var(--space-6);
+  gap: var(--space-4);
   align-items: flex-start;
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-3);
+}
+
+@media (max-width: 768px) {
+  .consulta-layout {
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
 }
 
 .consulta-main {
@@ -2149,7 +2365,7 @@
 }
 
 .consulta-sidebar {
-  width: 310px;
+  width: 290px;
   flex-shrink: 0;
 }
 
@@ -2158,20 +2374,20 @@
   background: #fff;
   border: 1px solid var(--c4);
   border-radius: var(--radius-md);
-  padding: 1.25rem 1.5rem;
-  margin-bottom: var(--space-4);
+  padding: 0.9rem 1.1rem;
+  margin-bottom: var(--space-2);
   box-shadow: var(--shadow-sm);
 }
 
 .consulta-odontograma-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1rem;
+  align-items: center;
+  margin-bottom: 0.65rem;
 }
 
 .consulta-odontograma-sub {
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   color: var(--c3);
   margin: 0;
 }
@@ -2180,7 +2396,7 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 500;
   color: var(--c1);
   cursor: pointer;
@@ -2188,8 +2404,8 @@
 }
 
 .consulta-selecionar-todos input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   accent-color: var(--c1);
   cursor: pointer;
 }
@@ -2237,49 +2453,51 @@
 /* ── Checklist + Campos ── */
 .consulta-campos-row {
   display: flex;
-  gap: var(--space-4);
+  gap: var(--space-3);
   align-items: flex-start;
 }
 
+/* consulta-campos-row: direção e gap mobile consolidados abaixo em @768px */
+
 /* Checklist Card */
 .checklist-card {
-  min-width: 260px;
-  max-width: 300px;
+  min-width: 230px;
+  max-width: 270px;
   background: #fffbea;
   border: 1.5px solid #f0d060;
   border-radius: var(--radius-md);
-  padding: 1.15rem;
+  padding: 0.9rem;
   box-shadow: var(--shadow-sm);
 }
 
 .checklist-titulo {
   font-family: var(--font-display);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: var(--c1);
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.6rem;
 }
 
 .checklist-lista {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  margin-bottom: 0.75rem;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .checklist-item {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8rem;
+  gap: 0.45rem;
+  font-size: 0.77rem;
   color: var(--c1);
   cursor: pointer;
-  padding: 0.2rem 0;
+  padding: 0.15rem 0;
 }
 
 .checklist-item input[type="checkbox"] {
-  width: 15px;
-  height: 15px;
+  width: 14px;
+  height: 14px;
   accent-color: var(--c1);
   cursor: pointer;
   flex-shrink: 0;
@@ -2288,6 +2506,8 @@
 .checklist-item input[type="checkbox"]:checked+span,
 .checklist-item:has(input:checked) {
   color: var(--c2);
+  text-decoration: line-through;
+  opacity: 0.7;
 }
 
 .checklist-item {
@@ -2297,7 +2517,7 @@
 .checklist-item-desc {
   width: 100%;
   padding-left: 1.4rem;
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--c3);
   line-height: 1.4;
   margin-top: -0.1rem;
@@ -2310,12 +2530,12 @@
   background: none;
   border: none;
   color: var(--c2);
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   font-weight: 600;
   cursor: pointer;
-  padding: 0.3rem 0;
+  padding: 0.25rem 0;
   transition: color var(--transition);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
 .btn-adicionar-etapa:hover {
@@ -2323,7 +2543,7 @@
 }
 
 .checklist-aviso {
-  font-size: 0.7rem;
+  font-size: 0.67rem;
   color: #b8860b;
   display: flex;
   align-items: center;
@@ -2336,7 +2556,18 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-3);
+}
+
+@media (max-width: 768px) {
+  .consulta-condicao-col {
+    background: #fff;
+    border: 1px solid var(--c4);
+    border-radius: var(--radius-md);
+    padding: 0.9rem;
+    box-shadow: var(--shadow-sm);
+    gap: var(--space-3);
+  }
 }
 
 .consulta-campo {
@@ -2345,20 +2576,22 @@
 }
 
 .consulta-campo-label {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 600;
   color: var(--c2);
-  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.25rem;
 }
 
 .consulta-campo-input {
   width: 100%;
-  padding: 0.55rem 0.75rem;
+  padding: 0.45rem 0.65rem;
   border: 1.5px solid var(--c4);
   border-radius: var(--radius-sm);
   background: #fff;
   color: var(--c1);
-  font-size: 0.85rem;
+  font-size: 0.83rem;
   font-weight: 500;
 }
 
@@ -2370,13 +2603,13 @@
 
 .consulta-campo-textarea {
   width: 100%;
-  min-height: 120px;
-  padding: 0.6rem 0.75rem;
+  min-height: 90px;
+  padding: 0.5rem 0.65rem;
   border: 1.5px solid var(--c4);
   border-radius: var(--radius-sm);
   background: #fff;
   color: var(--c1);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   line-height: 1.5;
   resize: vertical;
 }
@@ -2392,7 +2625,7 @@
   background: #fffbea;
   border: 1.5px solid #f0d060;
   border-radius: var(--radius-md);
-  padding: 1.25rem;
+  padding: 0.9rem 1rem;
   box-shadow: var(--shadow-sm);
   height: 100%;
   display: flex;
@@ -2401,22 +2634,22 @@
 
 .observacoes-titulo {
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   font-weight: 700;
   color: var(--c1);
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.6rem;
 }
 
 .observacoes-textarea {
   flex: 1;
   width: 100%;
-  min-height: 180px;
-  padding: 0.75rem;
+  min-height: 140px;
+  padding: 0.6rem 0.7rem;
   border: 1.5px solid #e8d89c;
   border-radius: var(--radius-sm);
   background: rgba(255, 255, 255, .6);
   color: var(--c1);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   line-height: 1.55;
   resize: vertical;
 }
@@ -2428,11 +2661,12 @@
 }
 
 .observacoes-aviso {
-  font-size: 0.72rem;
-  color: #999;
+  font-size: 0.68rem;
+  color: #b8860b;
   text-align: center;
-  margin: 0.75rem 0 0;
+  margin: 0.5rem 0 0;
   font-style: italic;
+  line-height: 1.4;
 }
 
 /* Footer da Consulta */
@@ -2440,8 +2674,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  padding-top: var(--space-4);
+  gap: var(--space-3);
+  padding-top: var(--space-3);
   border-top: 1px solid var(--c4);
   flex-wrap: wrap;
 }
@@ -2449,13 +2683,13 @@
 .btn-prontuario-footer {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.65rem 1.5rem;
-  font-size: 0.88rem;
+  gap: 0.4rem;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.82rem;
   font-weight: 600;
   color: var(--c1);
   background: #fff;
-  border: 2px solid var(--c1);
+  border: 1.5px solid var(--c1);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition);
@@ -2470,39 +2704,66 @@
   background: #f5e6b8;
   border: 1.5px solid #d4a017;
   border-radius: var(--radius-md);
-  padding: 0.65rem 1.15rem;
-  font-size: 0.78rem;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.74rem;
   font-weight: 600;
   color: #8B6914;
   text-align: center;
-  max-width: 260px;
+  max-width: 240px;
   line-height: 1.35;
 }
 
 .btn-finalizar-consulta {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.7rem 1.8rem;
-  font-size: 0.9rem;
+  gap: 0.4rem;
+  padding: 0.55rem 1.5rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  color: var(--c1);
-  background: #fff;
-  border: 2px solid var(--c1);
+  color: #fff;
+  background: var(--c1);
+  border: 1.5px solid var(--c1);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all var(--transition);
 }
 
 .btn-finalizar-consulta:hover {
-  background: var(--c1);
-  color: #fff;
+  background: #5a4326;
+  border-color: #5a4326;
   box-shadow: var(--shadow-md);
 }
 
 /* ══════════════════════════════════
    RESPONSIVIDADE — CONSULTA
    ══════════════════════════════════ */
+
+/* Adiciona overflow-x: hidden no container da view */
+.consulta-view {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .consulta-sidebar {
+    width: 260px;
+  }
+
+  .alerta-clinico-compact {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .consulta-sidebar {
+    width: 230px;
+  }
+
+  .alerta-clinico-compact {
+    max-width: 260px;
+  }
+}
+
 @media (max-width: 992px) {
   .consulta-layout {
     flex-direction: column;
@@ -2514,16 +2775,24 @@
 
   .consulta-header-row {
     flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
   }
 
   .alerta-clinico-compact {
     max-width: 100%;
+    width: 100%;
+  }
+
+  .observacoes-textarea {
+    min-height: 110px;
   }
 }
 
 @media (max-width: 768px) {
   .consulta-campos-row {
     flex-direction: column;
+    gap: var(--space-2);
   }
 
   .checklist-card {
@@ -2540,6 +2809,17 @@
 
   .consulta-aviso-info {
     max-width: 100%;
+    text-align: center;
+  }
+
+  .btn-prontuario-footer,
+  .btn-finalizar-consulta {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .consulta-odontograma-section {
+    padding: 0.75rem 0.9rem;
   }
 
   .modal-confirmar {
@@ -2554,6 +2834,59 @@
   .modal-foto-placeholder {
     width: 100px;
     height: 100px;
+  }
+}
+
+@media (max-width: 640px) {
+  .consulta-header-left {
+    gap: 0.75rem;
+  }
+
+  .consulta-header-divider {
+    height: 24px;
+  }
+
+  .consulta-odontograma-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .checklist-card {
+    padding: 0.75rem;
+  }
+
+  .observacoes-card {
+    padding: 0.75rem;
+  }
+
+  .observacoes-textarea {
+    min-height: 90px;
+  }
+
+  .consulta-campo-textarea {
+    min-height: 75px;
+  }
+}
+
+@media (max-width: 480px) {
+  .consulta-badge-atendimento {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+  }
+
+  .consulta-header-divider {
+    height: 20px;
+  }
+
+  .consulta-footer {
+    padding-top: var(--space-3);
+  }
+
+  .btn-prontuario-footer,
+  .btn-finalizar-consulta {
+    padding: 0.6rem 1rem;
+    font-size: 0.83rem;
   }
 }
 
@@ -2616,7 +2949,7 @@
 }
 
 .prontuario-nome {
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   font-weight: 700;
   color: var(--c1);
   line-height: 1.2;
@@ -2662,7 +2995,7 @@
 /* Layout */
 .prontuario-layout {
   display: flex;
-  gap: var(--space-6);
+  gap: var(--space-4);
   align-items: flex-start;
 }
 
@@ -3095,9 +3428,9 @@
 /* Layout principal */
 .finalizar-layout {
   display: flex;
-  gap: var(--space-6);
+  gap: var(--space-4);
   align-items: flex-start;
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-4);
 }
 
 .finalizar-main {
@@ -3359,14 +3692,6 @@
     font-size: 0.6rem;
   }
 
-  .consulta-header-nome {
-    font-size: 1.25rem;
-  }
-
-  .consulta-header-servico {
-    font-size: 1.05rem;
-  }
-
   .prontuario-nome {
     font-size: 1.25rem;
   }
@@ -3447,25 +3772,17 @@
 
   /* ── Header da Consulta ── */
   .consulta-header-left {
-    gap: 0.75rem;
-  }
-
-  .consulta-header-nome {
-    font-size: 1.05rem;
-  }
-
-  .consulta-header-servico {
-    font-size: 0.9rem;
+    gap: 0.65rem;
   }
 
   .consulta-header-divider {
-    height: 26px;
+    height: 22px;
   }
 
   .consulta-odontograma-header {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.4rem;
+    gap: 0.35rem;
   }
 
   /* ── Prontuário ── */
@@ -3718,17 +4035,7 @@
    RESPONSIVIDADE COMPLEMENTAR — MÓVEL
    ══════════════════════════════════════════════════ */
 
-/* ── Tabs: ocultar scrollbar visual mantendo o scroll ── */
-@media (max-width: 768px) {
-  .tratamentos-tabs {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-
-  .tratamentos-tabs::-webkit-scrollbar {
-    display: none;
-  }
-}
+/* Tabs: scrollbar já ocultado na definição base */
 
 /* ── Modal overlay: espaço nas bordas para não encostar na tela ── */
 @media (max-width: 600px) {
@@ -3792,13 +4099,7 @@
   }
 }
 
-/* ── app-content: padding menor em telas muito pequenas ── */
-@media (max-width: 480px) {
-  .app-content {
-    padding: 0.75rem !important;
-    padding-top: 4rem !important;
-  }
-}
+/* app-content padding já é controlado pelo layout.css */
 
 /* ── Prontuário info items: quebra de linha em labels longos ── */
 @media (max-width: 480px) {
@@ -3893,5 +4194,88 @@
 
   .prontuario-contato {
     font-size: 0.7rem;
+  }
+}
+
+/* ══════════════════════════════════════════════════
+   FIXES GLOBAIS — RESPONSIVIDADE E CENTRALIZAÇÃO
+   ══════════════════════════════════════════════════ */
+
+/* Overflow-x nas views para prevenir scroll horizontal */
+.prontuario-view,
+.finalizar-consulta-view,
+.editar-plano-view {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+/* Metricas: tablet médio (sidebar visível, content ~500-650px) */
+@media (max-width: 900px) {
+  .metrica-card {
+    min-width: 140px;
+  }
+}
+
+@media (max-width: 480px) {
+  .metrica-card {
+    flex: 1 1 100%;
+  }
+}
+
+/* Prontuário: header compacto */
+@media (max-width: 640px) {
+  .prontuario-paciente-header {
+    gap: 0.75rem;
+  }
+
+  .prontuario-foto-placeholder {
+    width: 52px;
+    height: 52px;
+  }
+
+  .prontuario-contatos {
+    gap: 0.75rem;
+  }
+}
+
+/* Prontuário: sidebar sem min-width em telas estreitas */
+@media (max-width: 576px) {
+  .prontuario-card {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+/* Finalizar: header compacto */
+.finalizar-header-row {
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: var(--space-3);
+}
+
+.finalizar-header-left {
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  .finalizar-header-row {
+    padding: 0.65rem 0.85rem;
+  }
+}
+
+/* Tratamentos-layout: gap menor em tablet */
+@media (max-width: 992px) {
+  .tratamentos-layout {
+    gap: var(--space-4);
+  }
+}
+
+/* Filter-bar: inputs full-width em mobile */
+@media (max-width: 576px) {
+  .filter-field {
+    min-width: 100%;
   }
 }
