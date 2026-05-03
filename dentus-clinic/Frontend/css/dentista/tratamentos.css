@@ -3,7 +3,7 @@
    ═══════════════════════════════════════════════ */
 
 .app-content {
-  background-color: #FAF9F6 !important;
+  background-color: var(--c4) !important;
   min-height: 100vh;
   padding-bottom: 2rem;
   overflow-x: hidden;
@@ -701,7 +701,7 @@
     top: 0.1rem;
     color: #27ae60;
     font-size: 1rem;
-    background: #FAF9F6;
+    background: var(--c4);
     padding: 2px 0;
   }
 
@@ -751,7 +751,7 @@
 
 /* Mobile Header */
 .mobile-header {
-  background-color: #FAF9F6;
+  background-color: var(--c4);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -803,7 +803,7 @@
 }
 
 .paciente-card-mobile:active {
-  background-color: #faf9f6;
+  background-color: var(--c4);
   transform: scale(0.98);
 }
 

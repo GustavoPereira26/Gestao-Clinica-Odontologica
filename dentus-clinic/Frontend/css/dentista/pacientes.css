@@ -1,14 +1,14 @@
 /* pacientes.css */
 
 .app-content {
-  background-color: #FAF9F6 !important; /* Off-white suave */
+  background-color: var(--c4) !important; /* Off-white suave */
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
 }
 
 /* Header Mobile */
 .mobile-header {
-  background-color: #FAF9F6;
+  background-color: var(--c4);
   position: sticky;
   top: 0;
   z-index: 100;
