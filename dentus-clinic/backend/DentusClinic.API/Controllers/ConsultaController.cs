@@ -36,9 +36,12 @@ public class ConsultaController : ControllerBase
 
     [HttpGet("agenda")]
     [Authorize(Roles = "SECRETARIA")]
-    public async Task<IActionResult> ListarAgenda([FromQuery] int dentistaId, [FromQuery] DateOnly data)
+    public async Task<IActionResult> ListarAgenda([FromQuery] int dentistaId, [FromQuery] string data)
     {
-        var consultas = await _consultaService.ListarPorDentistaEDataAsync(dentistaId, data);
+        if (!DateOnly.TryParse(data, out var dataParsed))
+            return BadRequest(ApiResponse<object>.Erro("Data inválida. Use o formato YYYY-MM-DD."));
+
+        var consultas = await _consultaService.ListarPorDentistaEDataAsync(dentistaId, dataParsed);
         return Ok(ApiResponse<object>.Ok(consultas));
     }
 
@@ -52,7 +55,7 @@ public class ConsultaController : ControllerBase
         return Ok(ApiResponse<object>.Ok("Status atualizado com sucesso."));
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     [Authorize(Roles = "DENTISTA, SECRETARIA")]
     public async Task<IActionResult> BuscarPorId(int id)
     {
