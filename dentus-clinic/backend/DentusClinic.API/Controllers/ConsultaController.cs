@@ -34,6 +34,14 @@ public class ConsultaController : ControllerBase
         return Ok(ApiResponse<object>.Ok(consultas));
     }
 
+    [HttpGet("agenda")]
+    [Authorize(Roles = "SECRETARIA")]
+    public async Task<IActionResult> ListarAgenda([FromQuery] int dentistaId, [FromQuery] DateOnly data)
+    {
+        var consultas = await _consultaService.ListarPorDentistaEDataAsync(dentistaId, data);
+        return Ok(ApiResponse<object>.Ok(consultas));
+    }
+
     [HttpPut("{id}/status")]
     [Authorize(Roles = "SECRETARIA")]
     public async Task<IActionResult> AtualizarStatus(int id, [FromBody] AtualizarStatusRequest request)

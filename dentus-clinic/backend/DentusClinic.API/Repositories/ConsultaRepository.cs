@@ -27,6 +27,13 @@ public class ConsultaRepository : IConsultaRepository
             .OrderBy(c => c.HoraConsulta)
             .ToListAsync();
 
+    public async Task<IEnumerable<Consulta>> ListarPorDentistaEDataAsync(int idDentista, DateOnly data)
+        => await _contexto.Consultas
+            .Where(c => c.IdDentista == idDentista && c.DataConsulta == data && c.Status != "Inativa")
+            .Include(c => c.Dentista).Include(c => c.Paciente).Include(c => c.Servico)
+            .OrderBy(c => c.HoraConsulta)
+            .ToListAsync();
+
     public async Task<Consulta?> BuscarPorIdAsync(int id)
         => await _contexto.Consultas.Include(c => c.Dentista).Include(c => c.Paciente).Include(c => c.Servico).FirstOrDefaultAsync(c => c.Id == id);
 

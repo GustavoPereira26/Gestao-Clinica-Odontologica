@@ -7,6 +7,7 @@ public interface IConsultaService
 {
     Task<IEnumerable<ConsultaResponse>> ListarTodosAsync();
     Task<IEnumerable<ConsultaResponse>> ListarHojeAsync();
+    Task<IEnumerable<ConsultaResponse>> ListarPorDentistaEDataAsync(int idDentista, DateOnly data);
     Task<ConsultaResponse?> BuscarPorIdAsync(int id);
     Task<ConsultaResponse> AgendarAsync(ConsultaRequest request);
     Task<ConsultaResponse?> EditarAsync(int id, ConsultaUpdateRequest request);

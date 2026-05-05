@@ -29,6 +29,12 @@ public class ConsultaService : IConsultaService
         return lista.Select(MapearResponse);
     }
 
+    public async Task<IEnumerable<ConsultaResponse>> ListarPorDentistaEDataAsync(int idDentista, DateOnly data)
+    {
+        var lista = await _consultaRepository.ListarPorDentistaEDataAsync(idDentista, data);
+        return lista.Select(MapearResponse);
+    }
+
     public async Task<ConsultaResponse?> BuscarPorIdAsync(int id)
     {
         var consulta = await _consultaRepository.BuscarPorIdAsync(id);

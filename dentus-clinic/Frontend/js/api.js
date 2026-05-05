@@ -155,3 +155,7 @@ async function apiRemoverServico(id) {
 async function apiAtualizarStatusConsulta(id, status) {
     return request(`/consultas/${id}/status`, 'PUT', { status });
 }
+
+async function apiGetAgendaDentista(dentistaId, data) {
+    return request(`/consultas/agenda?dentistaId=${dentistaId}&data=${data}`);
+}

@@ -6,7 +6,8 @@ const SidebarComponent = (() => {
 
   const menusPorPerfil = {
     recepcionista: [
-      { id: 'dashboard',    icon: 'fa-solid fa-house',     label: 'Página Inicial', href: '../recepcionista/dashboard.html' },
+      { id: 'dashboard',    icon: 'fa-solid fa-house',          label: 'Página Inicial', href: '../recepcionista/dashboard.html' },
+      { id: 'agenda',       icon: 'fa-solid fa-calendar-check', label: 'Agenda',         href: '../recepcionista/agenda.html' },
       { id: 'consultas',    icon: 'fa-solid fa-calendar-days',  label: 'Consultas',      href: '../recepcionista/consultas.html' },
       { id: 'pacientes',    icon: 'fa-solid fa-user-injured',   label: 'Pacientes',      href: '../recepcionista/pacientes.html' },
       { id: 'funcionarios', icon: 'fa-solid fa-id-card',        label: 'Funcionários',   href: '../recepcionista/funcionarios.html' },
