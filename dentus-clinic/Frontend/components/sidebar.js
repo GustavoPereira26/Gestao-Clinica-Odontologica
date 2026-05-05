@@ -6,13 +6,13 @@ const SidebarComponent = (() => {
 
   const menusPorPerfil = {
     recepcionista: [
-      { id: 'dashboard',    icon: 'fa-solid fa-chart-line',     label: 'Página Inicial', href: '../recepcionista/dashboard.html' },
+      { id: 'dashboard',    icon: 'fa-solid fa-house',     label: 'Página Inicial', href: '../recepcionista/dashboard.html' },
       { id: 'consultas',    icon: 'fa-solid fa-calendar-days',  label: 'Consultas',      href: '../recepcionista/consultas.html' },
       { id: 'pacientes',    icon: 'fa-solid fa-user-injured',   label: 'Pacientes',      href: '../recepcionista/pacientes.html' },
       { id: 'funcionarios', icon: 'fa-solid fa-id-card',        label: 'Funcionários',   href: '../recepcionista/funcionarios.html' },
     ],
     dentista: [
-      { id: 'dashboard',   icon: 'fa-solid fa-tooth',         label: 'Página Inicial', href: '../dentista/dashboard.html' },
+      { id: 'dashboard',   icon: 'fa-solid fa-tooth',         label: 'Planejar Tratamento', href: '../dentista/dashboard.html' },
       { id: 'tratamentos', icon: 'fa-solid fa-file',         label: 'Tratamentos',    href: '../dentista/tratamentos.html' },
       { id: 'agenda',      icon: 'fa-solid fa-calendar-days', label: 'Agenda',         href: '../dentista/agenda.html' },
       { id: 'pacientes',   icon: 'fa-solid fa-user-injured',  label: 'Meus Pacientes', href: '../dentista/pacientes.html' },

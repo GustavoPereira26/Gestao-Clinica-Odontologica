@@ -75,7 +75,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // --- Lógica de Filtro da Tabela ---
+  const btnHamburgerMobile = document.getElementById("btnHamburgerMobile");
+  if (btnHamburgerMobile) {
+    btnHamburgerMobile.addEventListener("click", () => SidebarComponent.toggleSidebar());
+  }
+
+  // --- Lógica de Filtro dos Cards ---
   const filterInputs = {
     cpf: document.getElementById('filterCpf'),
     nome: document.getElementById('filterNome'),
@@ -84,8 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
     telefone: document.getElementById('filterTelefone')
   };
 
-  const tableBody = document.getElementById('pacientesTableBody');
-  const tableRows = tableBody ? tableBody.querySelectorAll('tr') : [];
+  const cardsList = document.getElementById('pacientesCardsList');
 
   function filterTable() {
     try {
@@ -97,32 +101,27 @@ document.addEventListener("DOMContentLoaded", () => {
         telefone: filterInputs.telefone ? filterInputs.telefone.value.toLowerCase().trim() : ''
       };
 
-      const tbody = document.getElementById('pacientesTableBody');
-      if (!tbody) return;
+      if (!cardsList) return;
       
-      const rows = tbody.querySelectorAll('tr');
+      const cards = cardsList.querySelectorAll('.patient-card');
 
-      rows.forEach(row => {
-        const cells = row.querySelectorAll('td');
-        if (cells.length >= 5) {
-          // cells map: 0:Nome, 1:CPF, 2:Serviço, 3:Telefone, 4:Consulta, 5:Ações
-          const textNome = cells[0].textContent || '';
-          const textCpf = cells[1].textContent || '';
-          const textServico = cells[2].textContent || '';
-          const textTelefone = cells[3].textContent || '';
-          const textConsulta = cells[4].textContent || '';
+      cards.forEach(card => {
+        const textNome = card.dataset.nome ? card.dataset.nome.toLowerCase() : '';
+        const textCpf = card.dataset.cpf ? card.dataset.cpf.toLowerCase() : '';
+        const textServico = card.dataset.servico ? card.dataset.servico.toLowerCase() : '';
+        const textTelefone = card.dataset.telefone ? card.dataset.telefone.toLowerCase() : '';
+        const textConsulta = card.dataset.consulta ? card.dataset.consulta.toLowerCase() : '';
 
-          const matchNome = textNome.toLowerCase().includes(filters.nome);
-          const matchCpf = textCpf.toLowerCase().includes(filters.cpf);
-          const matchServico = textServico.toLowerCase().includes(filters.servico);
-          const matchTelefone = textTelefone.toLowerCase().includes(filters.telefone);
-          const matchConsulta = textConsulta.toLowerCase().includes(filters.consulta);
+        const matchNome = textNome.includes(filters.nome);
+        const matchCpf = textCpf.includes(filters.cpf);
+        const matchServico = textServico.includes(filters.servico);
+        const matchTelefone = textTelefone.includes(filters.telefone);
+        const matchConsulta = textConsulta.includes(filters.consulta);
 
-          if (matchCpf && matchNome && matchServico && matchConsulta && matchTelefone) {
-            row.style.display = '';
-          } else {
-            row.style.display = 'none';
-          }
+        if (matchCpf && matchNome && matchServico && matchConsulta && matchTelefone) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
         }
       });
     } catch (err) {
@@ -147,6 +146,34 @@ document.addEventListener("DOMContentLoaded", () => {
         if (input) input.value = '';
       });
       filterTable(); // Re-render the table with empty filters
+    });
+  }
+
+  // Lógica do Modal "Ver Detalhes"
+  const detalhesModalEl = document.getElementById('detalhesModal');
+  const detalhesModal = detalhesModalEl ? new bootstrap.Modal(detalhesModalEl) : null;
+
+  if (cardsList && detalhesModal) {
+    cardsList.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-detalhes');
+      if (!btn) return;
+      
+      const card = btn.closest('.patient-card');
+      if (!card) return;
+
+      const nome = card.dataset.nome || '';
+      const cpf = card.dataset.cpf || '';
+      const servico = card.dataset.servico || '';
+      const telefone = card.dataset.telefone || '';
+      const consulta = card.dataset.consulta || '';
+
+      document.getElementById('modalNome').textContent = nome;
+      document.getElementById('modalServico').textContent = servico;
+      document.getElementById('modalCpf').textContent = cpf;
+      document.getElementById('modalTelefone').textContent = telefone;
+      document.getElementById('modalConsulta').textContent = consulta;
+
+      detalhesModal.show();
     });
   }
 

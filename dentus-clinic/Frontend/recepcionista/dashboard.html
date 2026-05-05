@@ -14,12 +14,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 
-  <!-- Tokens globais -->
-  <link rel="stylesheet" href="../root.css"/>
-  <!-- Base layout -->
-  <link rel="stylesheet" href="../css/base.css"/>
-  <!-- Sidebar -->
-  <link rel="stylesheet" href="../css/layout.css"/>
+  <link rel="stylesheet" href="../css/variables.css" />
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/recepcionista/dashboard.css" />
   <!-- Estilos da página -->
   <link rel="stylesheet" href="../css/recepcionista/dashboard.css"/>
 </head>
@@ -84,6 +83,19 @@
 
   </main>
 </div><!-- /app-layout -->
+
+<!-- Impotação do VLibras-->
+
+<div vw class="enabled">
+  <div vw-access-button class="active"></div>
+  <div vw-plugin-wrapper>
+    <div class="vw-plugin-top-wrapper"></div>
+  </div>
+</div>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>
+  new window.VLibras.Widget('https://vlibras.gov.br/app');
+</script>
 
 <!-- Bootstrap 5 JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
