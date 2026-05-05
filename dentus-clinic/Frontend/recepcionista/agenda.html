@@ -46,15 +46,18 @@
 
       <!-- Filtros -->
       <section class="agenda-filters">
-        <div class="agenda-filter-field">
+
+        <div class="agenda-filter-field agenda-filter-field--dentista">
           <label class="filter-label" for="selectDentista">Dentista</label>
           <div class="filter-input-wrapper">
             <i class="fa-solid fa-user-doctor filter-input-icon"></i>
             <select class="filter-input filter-select" id="selectDentista">
-              <option value="">Carregando dentistas...</option>
+              <option value="">Selecione um dentista...</option>
             </select>
           </div>
         </div>
+
+        <div class="agenda-filter-separador"></div>
 
         <div class="agenda-filter-field agenda-filter-field--date">
           <label class="filter-label" for="inputData">Data</label>
@@ -63,15 +66,19 @@
           </div>
         </div>
 
-        <div class="agenda-filter-field agenda-filter-field--nav">
-          <button class="btn-nav-dia" id="btnDiaAnterior" title="Dia anterior">
+        <div class="agenda-nav-group">
+          <button class="btn-nav-dia btn-nav-prev" id="btnDiaAnterior" title="Dia anterior">
             <i class="fa-solid fa-chevron-left"></i>
           </button>
-          <button class="btn-nav-dia" id="btnHoje" title="Hoje">Hoje</button>
-          <button class="btn-nav-dia" id="btnProximoDia" title="Próximo dia">
+          <button class="btn-nav-dia btn-nav-hoje" id="btnHoje" title="Ir para hoje">
+            <i class="fa-solid fa-calendar-day"></i>
+            Hoje
+          </button>
+          <button class="btn-nav-dia btn-nav-next" id="btnProximoDia" title="Próximo dia">
             <i class="fa-solid fa-chevron-right"></i>
           </button>
         </div>
+
       </section>
 
       <!-- Legenda -->
