@@ -6,20 +6,20 @@ const SidebarComponent = (() => {
 
   const menusPorPerfil = {
     recepcionista: [
-      { id: 'dashboard',    icon: 'fa-solid fa-house',     label: 'Página Inicial', href: '../recepcionista/dashboard.html' },
-      { id: 'consultas',    icon: 'fa-solid fa-calendar-days',  label: 'Consultas',      href: '../recepcionista/consultas.html' },
-      { id: 'pacientes',    icon: 'fa-solid fa-user-injured',   label: 'Pacientes',      href: '../recepcionista/pacientes.html' },
-      { id: 'funcionarios', icon: 'fa-solid fa-id-card',        label: 'Funcionários',   href: '../recepcionista/funcionarios.html' },
+      { id: 'dashboard', icon: 'fa-solid fa-house', label: 'Página Inicial', href: '../recepcionista/dashboard.html' },
+      { id: 'consultas', icon: 'fa-solid fa-calendar-days', label: 'Consultas', href: '../recepcionista/consultas.html' },
+      { id: 'pacientes', icon: 'fa-solid fa-user-injured', label: 'Pacientes', href: '../recepcionista/pacientes.html' },
+      { id: 'funcionarios', icon: 'fa-solid fa-id-card', label: 'Funcionários', href: '../recepcionista/funcionarios.html' },
     ],
     dentista: [
-      { id: 'dashboard',   icon: 'fa-solid fa-tooth',         label: 'Planejar Tratamento', href: '../dentista/dashboard.html' },
-      { id: 'tratamentos', icon: 'fa-solid fa-file',         label: 'Tratamentos',    href: '../dentista/tratamentos.html' },
-      { id: 'agenda',      icon: 'fa-solid fa-calendar-days', label: 'Agenda',         href: '../dentista/agenda.html' },
-      { id: 'pacientes',   icon: 'fa-solid fa-user-injured',  label: 'Meus Pacientes', href: '../dentista/pacientes.html' },
+      { id: 'dashboard', icon: 'fa-solid fa-tooth', label: 'Planejar Tratamento', href: '../dentista/dashboard.html' },
+      { id: 'tratamentos', icon: 'fa-solid fa-file', label: 'Tratamentos', href: '../dentista/tratamentos.html' },
+      { id: 'agenda', icon: 'fa-solid fa-calendar-days', label: 'Agenda', href: '../dentista/agenda.html' },
+      { id: 'pacientes', icon: 'fa-solid fa-user-injured', label: 'Meus Pacientes', href: '../dentista/pacientes.html' },
     ],
     admin: [
-      { id: 'pacientes',    icon: 'fa-solid fa-user-injured', label: 'Pacientes',     href: '../admin/pacientes.html' },
-      { id: 'funcionarios', icon: 'fa-solid fa-id-card',      label: 'Funcionários',  href: '../admin/funcionarios.html' }
+      { id: 'pacientes', icon: 'fa-solid fa-user-injured', label: 'Pacientes', href: '../admin/pacientes.html' },
+      { id: 'funcionarios', icon: 'fa-solid fa-id-card', label: 'Funcionários', href: '../admin/funcionarios.html' }
     ]
   };
 
@@ -29,9 +29,9 @@ const SidebarComponent = (() => {
 
     const menus = menusPorPerfil[perfil] || [];
 
-    const nomeSessao  = nome  || sessionStorage.getItem('nome')  || 'Usuário';
+    const nomeSessao = nome || sessionStorage.getItem('nome') || 'Usuário';
     const cargoSessao = cargo || sessionStorage.getItem('perfil') || perfil;
-    const cargoLabel  = cargoSessao.charAt(0).toUpperCase() + cargoSessao.slice(1);
+    const cargoLabel = cargoSessao.charAt(0).toUpperCase() + cargoSessao.slice(1);
 
     const menuHTML = menus.map(item => `
       <li class="sidebar-nav-item">
@@ -103,13 +103,18 @@ const SidebarComponent = (() => {
     document.getElementById('sidebarOverlay').addEventListener('click', () => {
       toggleSidebar(false);
     });
+
+    // Inicializar componente de configurações (se carregado)
+    if (window.SettingsComponent) {
+      SettingsComponent.init();
+    }
   }
 
   function toggleSidebar(force) {
-    const sidebar  = document.getElementById('sidebarEl');
-    const overlay  = document.getElementById('sidebarOverlay');
-    const isOpen   = sidebar.classList.contains('open');
-    const open     = force !== undefined ? force : !isOpen;
+    const sidebar = document.getElementById('sidebarEl');
+    const overlay = document.getElementById('sidebarOverlay');
+    const isOpen = sidebar.classList.contains('open');
+    const open = force !== undefined ? force : !isOpen;
 
     sidebar.classList.toggle('open', open);
     overlay.classList.toggle('active', open);
