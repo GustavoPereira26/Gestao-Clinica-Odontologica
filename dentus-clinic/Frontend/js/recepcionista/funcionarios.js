@@ -79,20 +79,21 @@ const FuncionariosPage = (() => {
     let termoBusca  = '';
 
     async function carregarFuncionarios() {
+        const grid = document.getElementById('gridFuncionarios');
         try {
             const [resFuncionarios, resDentistas] = await Promise.all([
                 apiGetFuncionarios(),
                 apiGetDentistas()
             ]);
 
-            const funcionarios = (resFuncionarios.dados || []).map(f => ({
+            const funcionarios = (resFuncionarios?.dados || []).map(f => ({
                 id:    f.id,
                 nome:  f.nome,
-                cargo: f.cargo,
-                tipo:  f.cargo.toLowerCase()
+                cargo: f.cargo || '—',
+                tipo:  (f.cargo || '').toLowerCase()
             }));
 
-            const dentistas = (resDentistas.dados || []).map(d => ({
+            const dentistas = (resDentistas?.dados || []).map(d => ({
                 id:    d.id,
                 nome:  d.nome,
                 cargo: 'Dentista',
@@ -102,7 +103,12 @@ const FuncionariosPage = (() => {
             FUNCIONARIOS = [...funcionarios, ...dentistas];
             atualizar();
         } catch (erro) {
-            console.error('Erro ao carregar funcionários:', erro.message);
+            console.error('Erro ao carregar funcionários:', erro);
+            if (grid) grid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p>Erro ao carregar: ${erro.message}</p>
+                </div>`;
         }
     }
 
