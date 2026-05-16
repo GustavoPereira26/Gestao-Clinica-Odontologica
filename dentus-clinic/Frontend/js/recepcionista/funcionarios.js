@@ -86,12 +86,16 @@ const FuncionariosPage = (() => {
                 apiGetDentistas()
             ]);
 
-            const funcionarios = (resFuncionarios?.dados || []).map(f => ({
-                id:    f.id,
-                nome:  f.nome,
-                cargo: f.cargo || '—',
-                tipo:  (f.cargo || '').toLowerCase()
-            }));
+            const tipoMap = { administrador: 'ti', recepcionista: 'secretaria', secretaria: 'secretaria', ti: 'ti' };
+            const funcionarios = (resFuncionarios?.dados || []).map(f => {
+                const cargoKey = (f.cargo || '').toLowerCase();
+                return {
+                    id:    f.id,
+                    nome:  f.nome,
+                    cargo: f.cargo || '—',
+                    tipo:  tipoMap[cargoKey] ?? cargoKey
+                };
+            });
 
             const dentistas = (resDentistas?.dados || []).map(d => ({
                 id:    d.id,

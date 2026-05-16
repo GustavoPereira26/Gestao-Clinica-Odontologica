@@ -86,7 +86,7 @@
             </div>
 
             <div class="filter-field" id="filterFieldData">
-                <label class="filter-label" for="filtroData">Data Cadastro</label>
+                <label class="filter-label" for="filtroData">Data de Nascimento</label>
                 <div class="filter-input-wrapper">
                     <input
                             type="date"
@@ -117,9 +117,10 @@
                         </th>
                         <th class="th-cpf">CPF</th>
                         <th class="th-celular">Celular</th>
+                        <th class="th-email">E-mail</th>
                         <th class="th-data">
                             <button class="th-sort" data-col="data" id="sortData">
-                                Data Cadastro <i class="fa-solid fa-sort"></i>
+                                Data de Nascimento <i class="fa-solid fa-sort"></i>
                             </button>
                         </th>
                         <th class="th-acoes">Ações</th>
@@ -182,7 +183,7 @@
 
                 <div class="mb-3">
                     <label class="form-label fw-semibold">E-mail <span class="text-danger">*</span></label>
-                    <input type="email" class="form-control" id="cadEmail" placeholder="email@exemplo.com" />
+                    <input type="" class="form-control" id="cadEmail" placeholder="email@exemplo.com" />
                 </div>
 
                 <div class="mb-3">
@@ -203,22 +204,34 @@
     </div>
 </div>
 
-<!-- ═══ MODAL DE CONFIRMAÇÃO (delete mock) ═══ -->
-<div class="modal-overlay hidden" id="modalOverlay">
-    <div class="modal-box" id="modalBox">
-        <div class="modal-icon">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-        </div>
-        <h3 class="modal-title">Excluir paciente?</h3>
-        <p class="modal-text" id="modalText">Deseja realmente remover este paciente?</p>
-        <div class="modal-actions">
-            <button class="modal-btn modal-btn-cancel" id="modalBtnCancelar">Cancelar</button>
-            <button class="modal-btn modal-btn-confirm" id="modalBtnConfirmar">
-                <i class="fa-solid fa-trash me-1"></i> Excluir
-            </button>
+<!-- Modal Editar Paciente -->
+<div class="modal fade" id="modalEditarPaciente" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fs-6"><i class="fa-solid fa-pen me-2"></i>Editar Paciente</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body px-4 pb-2">
+                <div id="alertaEditar" class="alert alert-danger d-none mb-3"></div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Celular</label>
+                    <input type="text" class="form-control" id="editTelefone" placeholder="(00) 00000-0000" maxlength="15" />
+                </div>
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">E-mail</label>
+                    <input type="email" class="form-control" id="editEmail" placeholder="email@exemplo.com" />
+                </div>
+            </div>
+            <div class="modal-footer border-0 pt-0 gap-2">
+                <button type="button" class="btn px-4 text-dark bg-white border" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn px-4 text-white" onclick="PacientesPage.confirmarEdicao()" style="background-color:#0d6efd;">Salvar</button>
+            </div>
         </div>
     </div>
 </div>
+
 
 <!-- Impotação do VLibras-->
 

@@ -97,7 +97,7 @@ async function apiEditarPaciente(id, dados) {
 }
 
 async function apiInativarPaciente(id) {
-    return request(`/pacientes/${id}/inativar`, 'PATCH');
+    return request(`/pacientes/${id}`, 'DELETE');
 }
 
 // ── Funcionários ──

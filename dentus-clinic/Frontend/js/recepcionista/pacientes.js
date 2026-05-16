@@ -69,8 +69,13 @@ const TabelaPacientes = {
         <td class="td-nome">${p.nome}</td>
         <td class="td-cpf">${mascaraCPF(p.cpf)}</td>
         <td class="td-celular">${p.celular || '—'}</td>
+        <td class="td-email">${p.email || '—'}</td>
         <td class="td-data">${p.dataCadastro ? formatarData(p.dataCadastro) : '—'}</td>
-        <td class="td-acoes">—</td>
+        <td class="td-acoes">
+          <button class="btn-edit" onclick="PacientesPage.abrirModalEditar(${p.id})" title="Editar">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+        </td>
       </tr>
     `).join('');
     }
@@ -121,6 +126,7 @@ const CardMobilePaciente = {
 const PacientesPage = (() => {
     let sortCol = null;
     let sortAsc = true;
+    let pacienteAtualId = null;
 
     async function carregarPacientes() {
         try {
@@ -130,6 +136,8 @@ const PacientesPage = (() => {
                 nome:         p.nome,
                 cpf:          p.cpf,
                 celular:      p.telefone || '',
+                email:        p.email || '',
+                endereco:     p.endereco || '',
                 dataCadastro: p.dataNascimento || ''
             }));
             atualizar();
@@ -212,6 +220,85 @@ const PacientesPage = (() => {
         document.getElementById('alertaCadastro').classList.add('d-none');
     }
 
+    function abrirModalEditar(id) {
+        const p = PACIENTES.find(x => x.id === id);
+        if (!p) return;
+        pacienteAtualId = id;
+
+        document.getElementById('editTelefone').value = p.celular;
+        document.getElementById('editEmail').value    = p.email;
+        document.getElementById('alertaEditar').classList.add('d-none');
+
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditarPaciente')).show();
+    }
+
+    async function confirmarEdicao() {
+        if (pacienteAtualId === null) return;
+        const alerta = document.getElementById('alertaEditar');
+        alerta.classList.add('d-none');
+
+        const telefone  = document.getElementById('editTelefone').value.replace(/\D/g, '') || undefined;
+        const emailRaw  = document.getElementById('editEmail').value.trim();
+
+        if (emailRaw && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailRaw)) {
+            alerta.textContent = 'Informe um e-mail válido.';
+            alerta.classList.remove('d-none');
+            return;
+        }
+
+        const email = emailRaw || undefined;
+
+        try {
+            await apiEditarPaciente(pacienteAtualId, { telefone, email });
+
+            const p = PACIENTES.find(x => x.id === pacienteAtualId);
+            if (p) {
+                if (telefone) p.celular = telefone;
+                if (email)    p.email   = email;
+            }
+
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('modalEditarPaciente')).hide();
+            atualizar();
+        } catch (erro) {
+            alerta.textContent = erro.message;
+            alerta.classList.remove('d-none');
+        }
+    }
+
+    function abrirModalInativar(id) {
+        const p = PACIENTES.find(x => x.id === id);
+        if (!p) return;
+        pacienteAtualId = id;
+
+        document.getElementById('nomeInativar').textContent = p.nome;
+        document.getElementById('alertaInativar').classList.add('d-none');
+        document.getElementById('btnConfirmarInativar').disabled = false;
+
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('modalInativarPaciente')).show();
+    }
+
+    async function confirmarInativar() {
+        if (pacienteAtualId === null) return;
+        const btn    = document.getElementById('btnConfirmarInativar');
+        const alerta = document.getElementById('alertaInativar');
+        btn.disabled = true;
+        alerta.classList.add('d-none');
+
+        try {
+            await apiInativarPaciente(pacienteAtualId);
+
+            PACIENTES = PACIENTES.filter(x => x.id !== pacienteAtualId);
+            pacienteAtualId = null;
+
+            bootstrap.Modal.getOrCreateInstance(document.getElementById('modalInativarPaciente')).hide();
+            atualizar();
+        } catch (erro) {
+            alerta.textContent = erro.message || 'Erro ao inativar paciente.';
+            alerta.classList.remove('d-none');
+            btn.disabled = false;
+        }
+    }
+
     /**
      * Inicialização
      */
@@ -289,17 +376,17 @@ const PacientesPage = (() => {
             });
         }
 
-        const cadTelEl = document.getElementById('cadTelefone');
-        if (cadTelEl) {
-            cadTelEl.addEventListener('input', () => {
-                let v = cadTelEl.value.replace(/\D/g, '').slice(0, 11);
+        [document.getElementById('cadTelefone'), document.getElementById('editTelefone')].forEach(el => {
+            if (!el) return;
+            el.addEventListener('input', () => {
+                let v = el.value.replace(/\D/g, '').slice(0, 11);
                 if (v.length > 10)     v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
                 else if (v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
                 else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
                 else if (v.length > 0) v = `(${v}`;
-                cadTelEl.value = v;
+                el.value = v;
             });
-        }
+        });
 
         // 7. Ordenação por coluna
         document.querySelectorAll('.th-sort').forEach(btn => {
@@ -327,7 +414,7 @@ const PacientesPage = (() => {
         carregarPacientes();
     }
 
-    return { init, confirmarCadastro, resetarModalCadastro };
+    return { init, confirmarCadastro, resetarModalCadastro, abrirModalEditar, confirmarEdicao, abrirModalInativar, confirmarInativar };
 })();
 
 

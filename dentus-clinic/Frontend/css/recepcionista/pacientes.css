@@ -201,8 +201,9 @@
 .th-nome  { text-align: left; min-width: 190px; }
 .th-cpf   { text-align: left; min-width: 140px; }
 .th-celular { text-align: left; min-width: 140px; }
+.th-email { text-align: left; min-width: 180px; }
 .th-data  { text-align: left; min-width: 130px; }
-.th-acoes { text-align: center; width: 70px; }
+.th-acoes { text-align: center; width: 90px; }
 
 .th-sort {
     background: none;
@@ -256,15 +257,23 @@
 }
 
 .td-celular { color: var(--c2); }
+.td-email   { color: var(--c2); font-size: 0.8rem; }
 
 .td-data {
     color: var(--c2);
     font-size: 0.8rem;
 }
 
-.td-acoes { text-align: center; }
+.td-acoes {
+    text-align: center;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+}
 
-/* Botão de delete */
+/* Botões de ação da tabela */
+.btn-edit,
 .btn-delete {
     display: inline-flex;
     align-items: center;
@@ -275,9 +284,16 @@
     border-radius: var(--radius-md);
     background: #fff;
     color: var(--c3);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     cursor: pointer;
     transition: all var(--transition);
+}
+
+.btn-edit:hover {
+    border-color: #0d6efd;
+    background: #eef3ff;
+    color: #0d6efd;
+    transform: scale(1.08);
 }
 
 .btn-delete:hover {
@@ -287,6 +303,7 @@
     transform: scale(1.08);
 }
 
+.btn-edit:active,
 .btn-delete:active { transform: scale(0.95); }
 
 /* ── Estado vazio ── */
