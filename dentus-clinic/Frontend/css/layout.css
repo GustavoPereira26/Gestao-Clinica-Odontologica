@@ -167,6 +167,69 @@
     font-size: 1.2rem;
 }
 
+/*Configurações - Botão de modo escuro*/
+
+/* ── Configurações - Estilo do Switch ── */
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    text-align: left;
+}
+
+.settings-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-4);
+    background: #fff;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition);
+}
+
+.settings-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.settings-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-label {
+    font-weight: 600;
+    color: var(--c1);
+    font-size: 0.95rem;
+}
+
+.settings-desc {
+    font-size: 0.75rem;
+    color: #888;
+}
+
+/* Customização do Switch Bootstrap para as cores do projeto */
+.form-switch .form-check-input {
+    width: 2.5em;
+    height: 1.25em;
+    cursor: pointer;
+    background-color: var(--c4);
+    border-color: var(--c4);
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.form-switch .form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(110, 84, 48, 0.15);
+    border-color: var(--c3);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%28110, 84, 48, 0.25%29'/%3e%3c/svg%3e");
+}
+
+.form-switch .form-check-input:checked {
+    background-color: var(--c2);
+    border-color: var(--c2);
+}
+
 /* Tablet Layout */
 @media (max-width: 992px) {
     .app-content {
