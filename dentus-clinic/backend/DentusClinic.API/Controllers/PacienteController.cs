@@ -8,7 +8,7 @@ namespace DentusClinic.API.Controllers;
 
 [ApiController]
 [Route("api/pacientes")]
-[Authorize(Roles = "RECEPCIONISTA")]
+[Authorize]
 public class PacienteController : ControllerBase
 {
     private readonly IPacienteService _pacienteService;
@@ -36,7 +36,7 @@ public class PacienteController : ControllerBase
     }
 
     [HttpPost("cadastrar")]
-    [Authorize(Roles = "RECEPCIONISTA")]
+    [Authorize(Roles = "SECRETARIA")]
     public async Task<IActionResult> Cadastrar([FromBody] PacienteRequest request)
     {
         try
@@ -51,7 +51,8 @@ public class PacienteController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
+    [Authorize(Roles = "SECRETARIA,ADMINISTRADOR")]
     public async Task<IActionResult> Editar(int id, [FromBody] PacienteEditarRequest request)
     {
         try
@@ -69,7 +70,7 @@ public class PacienteController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADMINISTRADOR")]
+    [Authorize(Roles = "SECRETARIA,ADMINISTRADOR")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _pacienteService.RemoverAsync(id);
