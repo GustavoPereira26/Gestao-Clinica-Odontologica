@@ -1,5 +1,5 @@
 using DentusClinic.API.DTOs.Request;
-using DentusClinic.API.Services.Interfaces;
+using DentusClinic.API.Interfaces;
 using DentusClinic.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ namespace DentusClinic.API.Controllers;
 
 [ApiController]
 [Route("api/pacientes")]
-[Authorize]
+[Authorize(Roles = "RECEPCIONISTA")]
 public class PacienteController : ControllerBase
 {
     private readonly IPacienteService _pacienteService;
@@ -19,7 +19,6 @@ public class PacienteController : ControllerBase
     }
 
     [HttpGet]
-    [Authorize(Roles = "SECRETARIA,ADMINISTRADOR")]
     public async Task<IActionResult> ListarTodos()
     {
         var pacientes = await _pacienteService.ListarTodosAsync();
@@ -27,7 +26,6 @@ public class PacienteController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [Authorize(Roles = "SECRETARIA")]
     public async Task<IActionResult> BuscarPorId(int id)
     {
         var paciente = await _pacienteService.BuscarPorIdAsync(id);
@@ -38,33 +36,46 @@ public class PacienteController : ControllerBase
     }
 
     [HttpPost("cadastrar")]
-    [Authorize(Roles = "SECRETARIA")]
+    [Authorize(Roles = "RECEPCIONISTA")]
     public async Task<IActionResult> Cadastrar([FromBody] PacienteRequest request)
     {
-        var paciente = await _pacienteService.CadastrarAsync(request);
-        return CreatedAtAction(nameof(BuscarPorId), new { id = paciente.Id },
-            ApiResponse<object>.Ok(paciente, "Paciente cadastrado com sucesso."));
+        try
+        {
+            var paciente = await _pacienteService.CadastrarAsync(request);
+            return CreatedAtAction(nameof(BuscarPorId), new { id = paciente.Id },
+                ApiResponse<object>.Ok(paciente, "Paciente cadastrado com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponse<object>.Erro(ex.Message));
+        }
     }
 
-    [HttpPatch("{id}")]
-    [Authorize(Roles = "SECRETARIA")]
-    public async Task<IActionResult> Editar(int id, [FromBody] PacienteUpdateRequest request)
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Editar(int id, [FromBody] PacienteEditarRequest request)
     {
-        var paciente = await _pacienteService.EditarAsync(id, request);
-        if (paciente is null)
-            return NotFound(ApiResponse<object>.Erro("Paciente não encontrado."));
+        try
+        {
+            var paciente = await _pacienteService.EditarAsync(id, request);
+            if (paciente is null)
+                return NotFound(ApiResponse<object>.Erro("Paciente não encontrado."));
 
-        return Ok(ApiResponse<object>.Ok(paciente, "Paciente atualizado com sucesso."));
+            return Ok(ApiResponse<object>.Ok(paciente, "Paciente atualizado com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponse<object>.Erro(ex.Message));
+        }
     }
 
-    [HttpPatch("{id}/inativar")]
+    [HttpDelete("{id}")]
     [Authorize(Roles = "ADMINISTRADOR")]
-    public async Task<IActionResult> Inativar(int id)
+    public async Task<IActionResult> Remover(int id)
     {
-        var inativado = await _pacienteService.InativarAsync(id);
-        if (!inativado)
+        var removido = await _pacienteService.RemoverAsync(id);
+        if (!removido)
             return NotFound(ApiResponse<object>.Erro("Paciente não encontrado."));
 
-        return Ok(ApiResponse<object>.Ok("Paciente inativado com sucesso."));
+        return Ok(ApiResponse<object>.Ok("Paciente removido com sucesso."));
     }
 }

@@ -1,100 +1,118 @@
+using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Request;
 using DentusClinic.API.DTOs.Response;
 using DentusClinic.API.Enums;
+using DentusClinic.API.Interfaces;
 using DentusClinic.API.Models;
-using DentusClinic.API.Repositories.Interfaces;
-using DentusClinic.API.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DentusClinic.API.Services;
 
-public class DentistaService : IDentistaService
-{
-    private readonly IDentistaRepository _dentistaRepository;
-    private readonly ILoginRepository _loginRepository;
+public class DentistaService : IDentistaService {
+    private readonly AppDbContext _context;
 
-    public DentistaService(IDentistaRepository dentistaRepository, ILoginRepository loginRepository)
-    {
-        _dentistaRepository = dentistaRepository;
-        _loginRepository = loginRepository;
+    public DentistaService(AppDbContext context) {
+        _context = context;
     }
 
     public async Task<IEnumerable<DentistaResponse>> ListarTodosAsync()
     {
-        var lista = await _dentistaRepository.ListarTodosAsync();
+        var lista = await _context.Dentistas
+            .Include(d => d.Especialidade)
+            .Include(d => d.Login)
+            .ToListAsync();
         return lista.Select(MapearResponse);
     }
 
-    public async Task<DentistaResponse?> BuscarPorIdAsync(int id)
+    public async Task<DentistaResponse?> BuscarPorIdAsync(int id)  // ← long
     {
-        var dentista = await _dentistaRepository.BuscarPorIdAsync(id);
+        var dentista = await _context.Dentistas
+            .Include(d => d.Especialidade)
+            .Include(d => d.Login)
+            .FirstOrDefaultAsync(d => d.Id == id);
         return dentista is null ? null : MapearResponse(dentista);
     }
 
-    public async Task<DentistaResponse> CadastrarAsync(DentistaRequest request)
-    {
-        if (await _dentistaRepository.ExisteCpfAsync(request.Cpf))
+    public async Task<DentistaResponse> CadastrarAsync(DentistaRequest request) {
+        if (await _context.Dentistas.AnyAsync(d => d.Cpf == request.Cpf))
             throw new InvalidOperationException("CPF já cadastrado no sistema.");
 
-        if (await _dentistaRepository.ExisteCroAsync(request.Cro))
+        if (await _context.Dentistas.AnyAsync(d => d.Cro == request.Cro))
             throw new InvalidOperationException("CRO já cadastrado no sistema.");
 
-        if (await _loginRepository.ExisteEmailAsync(request.Email))
+        if (await _context.Logins.AnyAsync(l => l.Email == request.Email))
             throw new InvalidOperationException("E-mail já cadastrado no sistema.");
 
-        var login = new Login
-        {
+        var login = new Login {
             Email = request.Email,
             Senha = BCrypt.Net.BCrypt.HashPassword(request.Senha),
-            TipoAcesso = TiposAcessoEnum.DENTISTA
+            TipoAcesso = TiposAcessoEnum.DENTISTA  // ← Enum
         };
-        await _loginRepository.AdicionarAsync(login);
+        _context.Logins.Add(login);
+        await _context.SaveChangesAsync();
 
-        var dentista = new Dentista
-        {
+        var dentista = new Dentista {
             Nome = request.Nome,
             Cpf = request.Cpf,
             Cro = request.Cro,
             Telefone = request.Telefone ?? string.Empty,
             IdEspecialidade = request.IdEspecialidade,
-            IdAcesso = (int)login.Id
+            IdAcesso = (int)login.Id  // ← cast de long para int
         };
-        await _dentistaRepository.AdicionarAsync(dentista);
+        _context.Dentistas.Add(dentista);
+        await _context.SaveChangesAsync();
 
-        var dentistaSalvo = await _dentistaRepository.BuscarPorIdAsync(dentista.Id);
-        return MapearResponse(dentistaSalvo!);
+        await _context.Entry(dentista).Reference(d => d.Especialidade).LoadAsync();
+        dentista.Login = login;
+        return MapearResponse(dentista);
     }
 
-    public async Task<DentistaResponse?> EditarAsync(int id, DentistaUpdateRequest request)
+    public async Task<DentistaResponse?> EditarAsync(int id, DentistaRequest request)  // ← long
     {
-        var dentista = await _dentistaRepository.BuscarPorIdAsync(id);
+        var dentista = await _context.Dentistas
+            .Include(d => d.Especialidade)
+            .Include(d => d.Login)
+            .FirstOrDefaultAsync(d => d.Id == id);
         if (dentista is null) return null;
 
-        if (request.Nome is not null) dentista.Nome = request.Nome;
-        if (request.Telefone is not null) dentista.Telefone = request.Telefone;
-        if (request.IdEspecialidade is not null) dentista.IdEspecialidade = request.IdEspecialidade.Value;
-        if (request.Email is not null) dentista.Login.Email = request.Email;
+        if (await _context.Dentistas.AnyAsync(d => d.Cpf == request.Cpf && d.Id != id))
+            throw new InvalidOperationException("CPF já cadastrado no sistema.");
+
+        if (await _context.Dentistas.AnyAsync(d => d.Cro == request.Cro && d.Id != id))
+            throw new InvalidOperationException("CRO já cadastrado no sistema.");
+
+        if (await _context.Logins.AnyAsync(l => l.Email == request.Email && l.Id != dentista.IdAcesso))
+            throw new InvalidOperationException("E-mail já cadastrado no sistema.");
+
+        dentista.Nome = request.Nome;
+        dentista.Cpf = request.Cpf;
+        dentista.Cro = request.Cro;
+        dentista.Telefone = request.Telefone ?? string.Empty;
+        dentista.IdEspecialidade = request.IdEspecialidade;
+        dentista.Login.Email = request.Email;
+
         if (!string.IsNullOrWhiteSpace(request.Senha))
             dentista.Login.Senha = BCrypt.Net.BCrypt.HashPassword(request.Senha);
 
-        await _dentistaRepository.AtualizarAsync(dentista);
-
-        var dentistaAtualizado = await _dentistaRepository.BuscarPorIdAsync(id);
-        return MapearResponse(dentistaAtualizado!);
+        await _context.SaveChangesAsync();
+        await _context.Entry(dentista).Reference(d => d.Especialidade).LoadAsync();
+        return MapearResponse(dentista);
     }
 
-    public async Task<bool> RemoverAsync(int id)
+    public async Task<bool> RemoverAsync(int id)  // ← long
     {
-        var dentista = await _dentistaRepository.BuscarPorIdAsync(id);
+        var dentista = await _context.Dentistas
+            .Include(d => d.Login)
+            .FirstOrDefaultAsync(d => d.Id == id);
         if (dentista is null) return false;
 
-        var login = dentista.Login;
-        await _dentistaRepository.RemoverAsync(dentista);
-        await _loginRepository.RemoverAsync(login);
+        _context.Dentistas.Remove(dentista);
+        _context.Logins.Remove(dentista.Login);
+        await _context.SaveChangesAsync();
         return true;
     }
 
-    private static DentistaResponse MapearResponse(Dentista d) => new()
-    {
+    private static DentistaResponse MapearResponse(Dentista d) => new() {
         Id = d.Id,
         Nome = d.Nome,
         Cpf = d.Cpf,

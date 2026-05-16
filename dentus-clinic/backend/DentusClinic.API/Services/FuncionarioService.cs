@@ -1,106 +1,122 @@
+using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Request;
 using DentusClinic.API.DTOs.Response;
 using DentusClinic.API.Enums;
+using DentusClinic.API.Interfaces;
 using DentusClinic.API.Models;
-using DentusClinic.API.Repositories.Interfaces;
-using DentusClinic.API.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DentusClinic.API.Services;
 
-public class FuncionarioService : IFuncionarioService
-{
-    private readonly IFuncionarioRepository _funcionarioRepository;
-    private readonly ILoginRepository _loginRepository;
+public class FuncionarioService : IFuncionarioService {
+    private readonly AppDbContext _context;
 
-    public FuncionarioService(IFuncionarioRepository funcionarioRepository, ILoginRepository loginRepository)
-    {
-        _funcionarioRepository = funcionarioRepository;
-        _loginRepository = loginRepository;
+    public FuncionarioService(AppDbContext context) {
+        _context = context;
     }
 
     public async Task<IEnumerable<FuncionarioResponse>> ListarTodosAsync()
     {
-        var lista = await _funcionarioRepository.ListarTodosAsync();
+        var lista = await _context.Funcionarios
+            .Include(f => f.Login)
+            .ToListAsync();
         return lista.Select(MapearResponse);
     }
 
-    public async Task<FuncionarioResponse?> BuscarPorIdAsync(int id)
+    public async Task<FuncionarioResponse?> BuscarPorIdAsync(int id)  // ← long
     {
-        var funcionario = await _funcionarioRepository.BuscarPorIdAsync(id);
+        var funcionario = await _context.Funcionarios
+            .Include(f => f.Login)
+            .FirstOrDefaultAsync(f => f.Id == id);
         return funcionario is null ? null : MapearResponse(funcionario);
     }
 
-    public async Task<FuncionarioResponse> CadastrarAsync(FuncionarioRequest request)
-    {
-        if (await _funcionarioRepository.ExisteCpfAsync(request.Cpf))
+    public async Task<FuncionarioResponse> CadastrarAsync(FuncionarioRequest request) {
+        if (await _context.Funcionarios.AnyAsync(f => f.Cpf == request.Cpf))
             throw new InvalidOperationException("CPF já cadastrado no sistema.");
 
-        if (await _loginRepository.ExisteEmailAsync(request.Email))
+        if (await _context.Logins.AnyAsync(l => l.Email == request.Email))
             throw new InvalidOperationException("E-mail já cadastrado no sistema.");
 
+        // Converte string do Cargo para Enum
         if (!Enum.TryParse<TiposAcessoEnum>(request.Cargo, ignoreCase: true, out var tipoAcesso))
             throw new InvalidOperationException("Cargo inválido.");
 
-        var login = new Login
-        {
+        var login = new Login {
             Email = request.Email,
             Senha = BCrypt.Net.BCrypt.HashPassword(request.Senha),
-            TipoAcesso = tipoAcesso
+            TipoAcesso = tipoAcesso  // ← Enum
         };
-        await _loginRepository.AdicionarAsync(login);
+        _context.Logins.Add(login);
+        await _context.SaveChangesAsync();
 
-        var funcionario = new Funcionario
-        {
+        var funcionario = new Funcionario {
             Nome = request.Nome,
             Cpf = request.Cpf,
             DataNascimento = request.DataNascimento,
             Telefone = request.Telefone ?? string.Empty,
             Cargo = request.Cargo,
-            IdAcesso = (int)login.Id!
+            IdAcesso = (int)login.Id!  // ← cast de long para int
         };
-        await _funcionarioRepository.AdicionarAsync(funcionario);
+        _context.Funcionarios.Add(funcionario);
+        await _context.SaveChangesAsync();
 
         funcionario.Login = login;
         return MapearResponse(funcionario);
     }
 
-    public async Task<FuncionarioResponse?> EditarAsync(int id, FuncionarioUpdateRequest request)
+    public async Task<FuncionarioResponse?> EditarAsync(int id, FuncionarioEditarRequest request)
     {
-        var funcionario = await _funcionarioRepository.BuscarPorIdAsync(id);
+        var funcionario = await _context.Funcionarios
+            .Include(f => f.Login)
+            .FirstOrDefaultAsync(f => f.Id == id);
         if (funcionario is null) return null;
 
-        if (request.Cargo is not null)
+        if (request.Nome != null)
+            funcionario.Nome = request.Nome;
+
+        if (request.DataNascimento != null)
+            funcionario.DataNascimento = request.DataNascimento.Value;
+
+        if (request.Telefone != null)
+            funcionario.Telefone = request.Telefone;
+
+        if (request.Cargo != null)
         {
             if (!Enum.TryParse<TiposAcessoEnum>(request.Cargo, ignoreCase: true, out var tipoAcesso))
-                throw new InvalidOperationException("Cargo inválido.");
-            funcionario.Cargo = request.Cargo;
+                throw new InvalidOperationException("Cargo inválido. Valores aceitos: RECEPCIONISTA, ADMINISTRADOR.");
+            funcionario.Cargo = request.Cargo.ToUpper();
             funcionario.Login.TipoAcesso = tipoAcesso;
         }
 
-        if (request.Nome is not null) funcionario.Nome = request.Nome;
-        if (request.DataNascimento is not null) funcionario.DataNascimento = request.DataNascimento.Value;
-        if (request.Telefone is not null) funcionario.Telefone = request.Telefone;
-        if (request.Email is not null) funcionario.Login.Email = request.Email;
+        if (request.Email != null)
+        {
+            if (await _context.Logins.AnyAsync(l => l.Email == request.Email && l.Id != funcionario.IdAcesso))
+                throw new InvalidOperationException("E-mail já cadastrado no sistema.");
+            funcionario.Login.Email = request.Email;
+        }
+
         if (!string.IsNullOrWhiteSpace(request.Senha))
             funcionario.Login.Senha = BCrypt.Net.BCrypt.HashPassword(request.Senha);
 
-        await _funcionarioRepository.AtualizarAsync(funcionario);
+        await _context.SaveChangesAsync();
         return MapearResponse(funcionario);
     }
 
-    public async Task<bool> RemoverAsync(int id)
+    public async Task<bool> RemoverAsync(int id)  // ← long
     {
-        var funcionario = await _funcionarioRepository.BuscarPorIdAsync(id);
+        var funcionario = await _context.Funcionarios
+            .Include(f => f.Login)
+            .FirstOrDefaultAsync(f => f.Id == id);
         if (funcionario is null) return false;
 
-        var login = funcionario.Login;
-        await _funcionarioRepository.RemoverAsync(funcionario);
-        await _loginRepository.RemoverAsync(login);
+        _context.Funcionarios.Remove(funcionario);
+        _context.Logins.Remove(funcionario.Login);
+        await _context.SaveChangesAsync();
         return true;
     }
 
-    private static FuncionarioResponse MapearResponse(Funcionario f) => new()
-    {
+    private static FuncionarioResponse MapearResponse(Funcionario f) => new() {
         Id = f.Id,
         Nome = f.Nome,
         Cpf = f.Cpf,

@@ -78,8 +78,8 @@ public class AppDbContext : DbContext
             e.HasKey(x => x.Id);
             e.Property(x => x.Nome).IsRequired().HasMaxLength(150);
             e.Property(x => x.Cpf).IsRequired().HasMaxLength(14);
-            e.Property(x => x.Email).IsRequired().HasMaxLength(150);
             e.HasIndex(x => x.Cpf).IsUnique();
+            e.Property(x => x.Email).IsRequired().HasMaxLength(150);
             e.HasIndex(x => x.Email).IsUnique();
         });
 
@@ -96,11 +96,6 @@ public class AppDbContext : DbContext
              .WithMany(x => x.Consultas)
              .HasForeignKey(x => x.IdPaciente)
              .OnDelete(DeleteBehavior.Restrict);
-            e.HasOne(x => x.Servico)
-             .WithMany()
-             .HasForeignKey(x => x.IdServico)
-             .IsRequired(false)
-             .OnDelete(DeleteBehavior.SetNull);
         });
 
         // Atendimento
@@ -128,11 +123,6 @@ public class AppDbContext : DbContext
         {
             e.HasKey(x => x.Id);
             e.Property(x => x.Nome).IsRequired().HasMaxLength(100);
-            e.HasOne(x => x.Especialidade)
-             .WithMany()
-             .HasForeignKey(x => x.IdEspecialidade)
-             .IsRequired(false)
-             .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Planos

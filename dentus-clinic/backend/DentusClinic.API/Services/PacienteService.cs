@@ -1,41 +1,39 @@
+using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Request;
 using DentusClinic.API.DTOs.Response;
+using DentusClinic.API.Interfaces;
 using DentusClinic.API.Models;
-using DentusClinic.API.Repositories.Interfaces;
-using DentusClinic.API.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DentusClinic.API.Services;
 
 public class PacienteService : IPacienteService
 {
-    private readonly IPacienteRepository _pacienteRepository;
-    private readonly IProntuarioRepository _prontuarioRepository;
+    private readonly AppDbContext _context;
 
-    public PacienteService(IPacienteRepository pacienteRepository, IProntuarioRepository prontuarioRepository)
+    public PacienteService(AppDbContext context)
     {
-        _pacienteRepository = pacienteRepository;
-        _prontuarioRepository = prontuarioRepository;
+        _context = context;
     }
 
     public async Task<IEnumerable<PacienteResponse>> ListarTodosAsync()
     {
-        var lista = await _pacienteRepository.ListarTodosAsync();
+        var lista = await _context.Pacientes.ToListAsync();
         return lista.Select(MapearResponse);
     }
 
     public async Task<PacienteResponse?> BuscarPorIdAsync(int id)
     {
-        var paciente = await _pacienteRepository.BuscarPorIdAsync(id);
+        var paciente = await _context.Pacientes.FindAsync(id);
         return paciente is null ? null : MapearResponse(paciente);
     }
 
     public async Task<PacienteResponse> CadastrarAsync(PacienteRequest request)
     {
-        if (await _pacienteRepository.ExisteCpfAsync(request.Cpf))
+        if (await _context.Pacientes.AnyAsync(p => p.Cpf == request.Cpf))
             throw new InvalidOperationException("CPF já cadastrado no sistema.");
-
-        if (await _pacienteRepository.ExisteEmailAsync(request.Email))
-            throw new InvalidOperationException("E-mail já cadastrado no sistema.");
+        if (await _context.Pacientes.AnyAsync(p => p.Email == request.Email))
+            throw new InvalidOperationException("Email já cadastrado no sistema.");
 
         var paciente = new Paciente
         {
@@ -47,7 +45,8 @@ public class PacienteService : IPacienteService
             Endereco = request.Endereco
         };
 
-        await _pacienteRepository.AdicionarAsync(paciente);
+        _context.Pacientes.Add(paciente);
+        await _context.SaveChangesAsync();
 
         // Prontuário criado automaticamente ao cadastrar paciente
         var prontuario = new Prontuario
@@ -55,35 +54,47 @@ public class PacienteService : IPacienteService
             IdPaciente = paciente.Id,
             DataAbertura = DateOnly.FromDateTime(DateTime.Today)
         };
-        await _prontuarioRepository.AdicionarAsync(prontuario);
+        _context.Prontuarios.Add(prontuario);
+        await _context.SaveChangesAsync();
 
         return MapearResponse(paciente);
     }
 
-    public async Task<PacienteResponse?> EditarAsync(int id, PacienteUpdateRequest request)
+    public async Task<PacienteResponse?> EditarAsync(int id, PacienteEditarRequest request)
     {
-        var paciente = await _pacienteRepository.BuscarPorIdAsync(id);
+        var paciente = await _context.Pacientes.FindAsync(id);
         if (paciente is null) return null;
 
-        if (request.Email is not null && await _pacienteRepository.ExisteEmailAsync(request.Email, id))
-            throw new InvalidOperationException("E-mail já cadastrado no sistema.");
+        if (request.Email != null)
+        {
+            if (await _context.Pacientes.AnyAsync(p => p.Email == request.Email && p.Id != id))
+                throw new InvalidOperationException("E-mail já cadastrado no sistema.");
+            paciente.Email = request.Email;
+        }
 
-        if (request.Nome is not null) paciente.Nome = request.Nome;
-        if (request.Telefone is not null) paciente.Telefone = request.Telefone;
-        if (request.Email is not null) paciente.Email = request.Email;
-        if (request.DataNascimento is not null) paciente.DataNascimento = request.DataNascimento.Value;
-        if (request.Endereco is not null) paciente.Endereco = request.Endereco;
+        if (request.Nome != null)
+            paciente.Nome = request.Nome;
 
-        await _pacienteRepository.AtualizarAsync(paciente);
+        if (request.Telefone != null)
+            paciente.Telefone = request.Telefone;
+
+        if (request.DataNascimento != null)
+            paciente.DataNascimento = request.DataNascimento.Value;
+
+        if (request.Endereco != null)
+            paciente.Endereco = request.Endereco;
+
+        await _context.SaveChangesAsync();
         return MapearResponse(paciente);
     }
 
-    public async Task<bool> InativarAsync(int id)
+    public async Task<bool> RemoverAsync(int id)
     {
-        var paciente = await _pacienteRepository.BuscarPorIdAsync(id);
+        var paciente = await _context.Pacientes.FindAsync(id);
         if (paciente is null) return false;
 
-        await _pacienteRepository.InativarAsync(paciente);
+        _context.Pacientes.Remove(paciente);
+        await _context.SaveChangesAsync();
         return true;
     }
 
@@ -95,7 +106,6 @@ public class PacienteService : IPacienteService
         Telefone = p.Telefone,
         Email = p.Email,
         DataNascimento = p.DataNascimento,
-        Endereco = p.Endereco,
-        Ativo = p.Ativo
+        Endereco = p.Endereco
     };
 }

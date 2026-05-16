@@ -38,9 +38,16 @@ public class AtendimentoController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Registrar([FromBody] AtendimentoRequest request)
     {
-        var atendimento = await _atendimentoService.RegistrarAsync(request);
-        return CreatedAtAction(nameof(BuscarPorId), new { id = atendimento.Id },
-            ApiResponse<object>.Ok(atendimento, "Atendimento registrado com sucesso."));
+        try
+        {
+            var atendimento = await _atendimentoService.RegistrarAsync(request);
+            return CreatedAtAction(nameof(BuscarPorId), new { id = atendimento.Id },
+                ApiResponse<object>.Ok(atendimento, "Atendimento registrado com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponse<object>.Erro(ex.Message));
+        }
     }
 
     [HttpPut("{id}")]

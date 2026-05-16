@@ -1,5 +1,5 @@
 using DentusClinic.API.DTOs.Request;
-using DentusClinic.API.Services.Interfaces;
+using DentusClinic.API.Interfaces;
 using DentusClinic.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ namespace DentusClinic.API.Controllers;
 
 [ApiController]
 [Route("api/funcionarios")]
-[Authorize(Roles = "ADMINISTRADOR")]
+[Authorize]
 public class FuncionarioController : ControllerBase
 {
     private readonly IFuncionarioService _funcionarioService;
@@ -35,25 +35,39 @@ public class FuncionarioController : ControllerBase
         return Ok(ApiResponse<object>.Ok(funcionario));
     }
 
-    [HttpPost]
+    [HttpPost("cadastrar")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Cadastrar([FromBody] FuncionarioRequest request)
     {
-        var funcionario = await _funcionarioService.CadastrarAsync(request);
-        return CreatedAtAction(nameof(BuscarPorId), new { id = funcionario.Id },
-            ApiResponse<object>.Ok(funcionario, "Funcionário cadastrado com sucesso."));
+        try {
+            var resultado = await _funcionarioService.CadastrarAsync(request);
+            return Ok("Funcionário cadastrado com sucesso");
+        }
+        catch (InvalidOperationException ex) {
+            return BadRequest(new { mensagem = ex.Message });
+        }
     }
 
-    [HttpPatch("{id}")]
-    public async Task<IActionResult> Editar(int id, [FromBody] FuncionarioUpdateRequest request)
+    [HttpPut("{id}")]
+    [Authorize(Roles = "ADMINISTRADOR")]
+    public async Task<IActionResult> Editar(int id, [FromBody] FuncionarioEditarRequest request)
     {
-        var funcionario = await _funcionarioService.EditarAsync(id, request);
-        if (funcionario is null)
-            return NotFound(ApiResponse<object>.Erro("Funcionário não encontrado."));
+        try
+        {
+            var funcionario = await _funcionarioService.EditarAsync(id, request);
+            if (funcionario is null)
+                return NotFound(ApiResponse<object>.Erro("Funcionário não encontrado."));
 
-        return Ok(ApiResponse<object>.Ok(funcionario, "Funcionário atualizado com sucesso."));
+            return Ok(ApiResponse<object>.Ok(funcionario, "Funcionário atualizado com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { mensagem = ex.Message });
+        }
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _funcionarioService.RemoverAsync(id);
