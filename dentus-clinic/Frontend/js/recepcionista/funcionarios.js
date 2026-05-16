@@ -150,6 +150,8 @@ const FuncionariosPage = (() => {
      * Inicializa a página
      */
     function init() {
+        verificarAutenticacao();
+
         // 1. Renderiza a sidebar
         SidebarComponent.render('sidebarContainer', {
             perfil: 'recepcionista',
