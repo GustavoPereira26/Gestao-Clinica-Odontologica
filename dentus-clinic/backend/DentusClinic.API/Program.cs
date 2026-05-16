@@ -6,6 +6,7 @@ using DentusClinic.API.Models;
 using DentusClinic.API.Repositories;
 using DentusClinic.API.Repositories.Interfaces;
 using DentusClinic.API.Services;
+using DentusClinic.API.Interfaces;
 using DentusClinic.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;

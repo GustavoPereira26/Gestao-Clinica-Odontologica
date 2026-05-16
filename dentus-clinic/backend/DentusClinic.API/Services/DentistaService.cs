@@ -2,7 +2,7 @@ using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Request;
 using DentusClinic.API.DTOs.Response;
 using DentusClinic.API.Enums;
-using DentusClinic.API.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 using DentusClinic.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -67,7 +67,7 @@ public class DentistaService : IDentistaService {
         return MapearResponse(dentista);
     }
 
-    public async Task<DentistaResponse?> EditarAsync(int id, DentistaRequest request)  // ← long
+    public async Task<DentistaResponse?> EditarAsync(int id, DentistaUpdateRequest request)
     {
         var dentista = await _context.Dentistas
             .Include(d => d.Especialidade)
@@ -75,21 +75,21 @@ public class DentistaService : IDentistaService {
             .FirstOrDefaultAsync(d => d.Id == id);
         if (dentista is null) return null;
 
-        if (await _context.Dentistas.AnyAsync(d => d.Cpf == request.Cpf && d.Id != id))
-            throw new InvalidOperationException("CPF já cadastrado no sistema.");
+        if (request.Nome != null)
+            dentista.Nome = request.Nome;
 
-        if (await _context.Dentistas.AnyAsync(d => d.Cro == request.Cro && d.Id != id))
-            throw new InvalidOperationException("CRO já cadastrado no sistema.");
+        if (request.Telefone != null)
+            dentista.Telefone = request.Telefone;
 
-        if (await _context.Logins.AnyAsync(l => l.Email == request.Email && l.Id != dentista.IdAcesso))
-            throw new InvalidOperationException("E-mail já cadastrado no sistema.");
+        if (request.IdEspecialidade.HasValue)
+            dentista.IdEspecialidade = request.IdEspecialidade.Value;
 
-        dentista.Nome = request.Nome;
-        dentista.Cpf = request.Cpf;
-        dentista.Cro = request.Cro;
-        dentista.Telefone = request.Telefone ?? string.Empty;
-        dentista.IdEspecialidade = request.IdEspecialidade;
-        dentista.Login.Email = request.Email;
+        if (request.Email != null)
+        {
+            if (await _context.Logins.AnyAsync(l => l.Email == request.Email && l.Id != dentista.IdAcesso))
+                throw new InvalidOperationException("E-mail já cadastrado no sistema.");
+            dentista.Login.Email = request.Email;
+        }
 
         if (!string.IsNullOrWhiteSpace(request.Senha))
             dentista.Login.Senha = BCrypt.Net.BCrypt.HashPassword(request.Senha);

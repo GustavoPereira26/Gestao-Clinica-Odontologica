@@ -96,6 +96,10 @@ public class AppDbContext : DbContext
              .WithMany(x => x.Consultas)
              .HasForeignKey(x => x.IdPaciente)
              .OnDelete(DeleteBehavior.Restrict);
+            e.HasOne(x => x.Servico)
+             .WithMany()
+             .HasForeignKey(x => x.IdServico)
+             .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Atendimento
@@ -123,6 +127,10 @@ public class AppDbContext : DbContext
         {
             e.HasKey(x => x.Id);
             e.Property(x => x.Nome).IsRequired().HasMaxLength(100);
+            e.HasOne(x => x.Especialidade)
+             .WithMany()
+             .HasForeignKey(x => x.IdEspecialidade)
+             .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Planos

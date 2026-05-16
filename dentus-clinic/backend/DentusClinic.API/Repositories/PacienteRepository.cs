@@ -15,7 +15,7 @@ public class PacienteRepository : IPacienteRepository
     }
 
     public async Task<IEnumerable<Paciente>> ListarTodosAsync()
-        => await _contexto.Pacientes.Where(p => p.Ativo).ToListAsync();
+        => await _contexto.Pacientes.ToListAsync();
 
     public async Task<Paciente?> BuscarPorIdAsync(int id)
         => await _contexto.Pacientes.FindAsync(id);
@@ -37,7 +37,7 @@ public class PacienteRepository : IPacienteRepository
 
     public async Task InativarAsync(Paciente paciente)
     {
-        paciente.Ativo = false;
+        _contexto.Pacientes.Remove(paciente);
         await _contexto.SaveChangesAsync();
     }
 }
