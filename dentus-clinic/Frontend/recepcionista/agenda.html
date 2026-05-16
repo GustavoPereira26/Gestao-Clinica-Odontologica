@@ -67,16 +67,26 @@
         </div>
 
         <div class="agenda-nav-group">
-          <button class="btn-nav-dia btn-nav-prev" id="btnDiaAnterior" title="Dia anterior">
+          <button type="button" class="btn-nav-dia btn-nav-prev" id="btnDiaAnterior" title="Dia anterior">
             <i class="fa-solid fa-chevron-left"></i>
           </button>
-          <button class="btn-nav-dia btn-nav-hoje" id="btnHoje" title="Ir para hoje">
+          <button type="button" class="btn-nav-dia btn-nav-hoje" id="btnHoje" title="Ir para hoje">
             <i class="fa-solid fa-calendar-day"></i>
             Hoje
           </button>
-          <button class="btn-nav-dia btn-nav-next" id="btnProximoDia" title="Próximo dia">
+          <button type="button" class="btn-nav-dia btn-nav-next" id="btnProximoDia" title="Próximo dia">
             <i class="fa-solid fa-chevron-right"></i>
           </button>
+        </div>
+
+        <!-- Busca por paciente (linha completa) -->
+        <div class="agenda-search-row">
+          <div class="filter-input-wrapper">
+            <i class="fa-solid fa-magnifying-glass filter-input-icon"></i>
+            <input type="text" class="filter-input" id="buscaPaciente"
+                   placeholder="Buscar consulta por nome do paciente..." autocomplete="off" />
+            <div id="buscaResultados" class="agenda-busca-resultados"></div>
+          </div>
         </div>
 
       </section>
@@ -121,7 +131,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title fs-6"><i class="fa-solid fa-calendar-plus me-2"></i>Agendar Consulta</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="AgendaPage.resetarModal()"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="AgendaPage.resetarModalAgendar()"></button>
         </div>
         <div class="modal-body px-4 pb-2">
           <div id="alertaAgendarSlot" class="alert alert-danger d-none mb-3"></div>
@@ -169,8 +179,157 @@
           </div>
         </div>
         <div class="modal-footer border-0 pt-0 gap-2">
-          <button type="button" class="btn px-4 text-dark bg-white border" data-bs-dismiss="modal" onclick="AgendaPage.resetarModal()">Cancelar</button>
+          <button type="button" class="btn px-4 text-dark bg-white border" data-bs-dismiss="modal" onclick="AgendaPage.resetarModalAgendar()">Cancelar</button>
           <button type="button" class="btn px-4 text-white" id="btnConfirmarAgendarSlot" onclick="AgendaPage.confirmarAgendamento()" style="background-color:#0d6efd; border-color:#0d6efd;">Agendar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Detalhe / Editar / Cancelar -->
+  <div class="modal fade" id="modalDetalhe" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-6"><i class="fa-solid fa-calendar-check me-2"></i>Detalhes da Consulta</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="AgendaPage.resetarModalDetalhe()"></button>
+        </div>
+        <div class="modal-body px-4 pb-4">
+
+          <!-- ── VIEW: Info ── -->
+          <div id="viewInfo">
+            <div class="detalhe-grid">
+              <div class="detalhe-item">
+                <span class="detalhe-label"><i class="fa-solid fa-user fa-fw"></i> Paciente</span>
+                <span class="detalhe-valor" id="dtlPaciente">—</span>
+              </div>
+              <div class="detalhe-item">
+                <span class="detalhe-label"><i class="fa-solid fa-user-doctor fa-fw"></i> Dentista</span>
+                <span class="detalhe-valor" id="dtlDentista">—</span>
+              </div>
+              <div class="detalhe-item">
+                <span class="detalhe-label"><i class="fa-solid fa-calendar fa-fw"></i> Data</span>
+                <span class="detalhe-valor" id="dtlData">—</span>
+              </div>
+              <div class="detalhe-item">
+                <span class="detalhe-label"><i class="fa-solid fa-clock fa-fw"></i> Horário</span>
+                <span class="detalhe-valor" id="dtlHora">—</span>
+              </div>
+              <div class="detalhe-item">
+                <span class="detalhe-label"><i class="fa-solid fa-tooth fa-fw"></i> Serviço</span>
+                <span class="detalhe-valor" id="dtlServico">—</span>
+              </div>
+              <div class="detalhe-item">
+                <span class="detalhe-label"><i class="fa-solid fa-circle-info fa-fw"></i> Status</span>
+                <span class="detalhe-valor" id="dtlStatus">—</span>
+              </div>
+            </div>
+            <div class="mt-2 d-none" id="dtlRetorno">
+              <span class="badge-retorno"><i class="fa-solid fa-rotate-left me-1"></i>Retorno</span>
+            </div>
+            <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top">
+              <button type="button" class="btn px-3 text-dark bg-white border"
+                      data-bs-dismiss="modal" onclick="AgendaPage.resetarModalDetalhe()">
+                Fechar
+              </button>
+              <button type="button" class="btn px-3" id="btnCancelarConsulta"
+                      style="background:#fdf0ee; color:#c0392b; border:1.5px solid #fca5a5;"
+                      onclick="AgendaPage.mostrarViewCancelar()">
+                <i class="fa-solid fa-ban me-1"></i>Cancelar Consulta
+              </button>
+              <button type="button" class="btn px-3 text-white" id="btnEditarConsulta"
+                      style="background-color:#0d6efd; border-color:#0d6efd;"
+                      onclick="AgendaPage.mostrarViewEditar()">
+                <i class="fa-solid fa-pen me-1"></i>Editar
+              </button>
+            </div>
+          </div>
+
+          <!-- ── VIEW: Cancelar ── -->
+          <div id="viewCancelar" class="d-none">
+            <div class="alert py-2 mb-3"
+                 style="background:#fff3e0; border:1px solid #ffd180; color:#e65100; font-size:0.88rem;">
+              <i class="fa-solid fa-triangle-exclamation me-1"></i>
+              Tem certeza que deseja cancelar esta consulta? Esta ação não pode ser desfeita.
+            </div>
+            <div id="alertaCancelar" class="alert alert-danger py-2 d-none" style="font-size:0.82rem;"></div>
+            <div class="d-flex gap-2 justify-content-end mt-3 pt-3 border-top">
+              <button type="button" class="btn px-3 text-dark bg-white border" onclick="AgendaPage.voltarInfo()">
+                <i class="fa-solid fa-arrow-left me-1"></i>Voltar
+              </button>
+              <button type="button" class="btn px-3 text-white" id="btnConfirmarCancelar"
+                      style="background-color:#c0392b; border-color:#c0392b;"
+                      onclick="AgendaPage.confirmarCancelar()">
+                <i class="fa-solid fa-ban me-1"></i>Sim, Cancelar
+              </button>
+            </div>
+          </div>
+
+          <!-- ── VIEW: Editar ── -->
+          <div id="viewEditar" class="d-none">
+            <div id="alertaEditarDetalhe" class="alert alert-danger py-2 d-none mb-3" style="font-size:0.82rem;"></div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">
+                Paciente <span class="text-danger">*</span>
+              </label>
+              <div class="position-relative">
+                <input type="text" class="form-control" id="editPacienteSearch"
+                       placeholder="Nome do paciente..." autocomplete="off" />
+                <input type="hidden" id="editPacienteId" />
+                <div id="editPacienteSugestoes"
+                     class="list-group position-absolute w-100 shadow"
+                     style="z-index:1060; max-height:180px; overflow-y:auto; display:none; border-radius:0 0 6px 6px;"></div>
+              </div>
+            </div>
+
+            <div class="row g-2 mb-3">
+              <div class="col-md-6">
+                <label class="form-label fw-semibold" style="font-size:0.85rem;">
+                  Dentista <span class="text-danger">*</span>
+                </label>
+                <select class="form-select" id="editDentista"></select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold" style="font-size:0.85rem;">
+                  Data <span class="text-danger">*</span>
+                </label>
+                <input type="date" class="form-control" id="editData" />
+              </div>
+              <div class="col-md-3">
+                <label class="form-label fw-semibold" style="font-size:0.85rem;">
+                  Horário <span class="text-danger">*</span>
+                </label>
+                <input type="time" class="form-control" id="editHora" step="1800" />
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">Serviço</label>
+              <select class="form-select" id="editServico"></select>
+            </div>
+
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="editRetorno" />
+                <label class="form-check-label" for="editRetorno" style="font-size:0.88rem;">
+                  É uma consulta de retorno?
+                </label>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2 justify-content-end pt-3 border-top">
+              <button type="button" class="btn px-3 text-dark bg-white border" onclick="AgendaPage.voltarInfo()">
+                <i class="fa-solid fa-arrow-left me-1"></i>Voltar
+              </button>
+              <button type="button" class="btn px-3 text-white" id="btnSalvarEdicao"
+                      style="background-color:#0d6efd; border-color:#0d6efd;"
+                      onclick="AgendaPage.confirmarEdicao()">
+                <i class="fa-solid fa-floppy-disk me-1"></i>Salvar
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
