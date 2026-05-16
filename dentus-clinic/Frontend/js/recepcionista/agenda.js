@@ -1,3 +1,4 @@
+
 /**
  * agenda.js — Agenda visual por dentista (Recepcionista)
  * Centraliza agendamento, edição, cancelamento e busca por paciente.
