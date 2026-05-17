@@ -182,19 +182,19 @@
               <!-- Info do paciente -->
               <div class="resumo-paciente-info">
                 <span class="resumo-label-small">Nome</span>
-                <span class="resumo-nome" id="resumoNome">Ana Costa</span>
+                <span class="resumo-nome" id="resumoNome">—</span>
                 <span class="resumo-label-small">serviço</span>
-                <span class="resumo-servico" id="resumoServico">Clareamento</span>
+                <span class="resumo-servico" id="resumoServico">—</span>
               </div>
 
               <!-- Barra de progresso -->
               <div class="resumo-progresso-wrapper">
                 <div class="resumo-progresso-header">
                   <span class="resumo-label-small">Progresso</span>
-                  <span class="resumo-etapas" id="resumoEtapas">1 de 3 Etapas</span>
+                  <span class="resumo-etapas" id="resumoEtapas">—</span>
                 </div>
                 <div class="resumo-progresso-bar">
-                  <div class="resumo-progresso-fill" id="resumoProgressoFill" style="width: 33%"></div>
+                  <div class="resumo-progresso-fill" id="resumoProgressoFill" style="width: 0%"></div>
                 </div>
               </div>
 
@@ -202,11 +202,11 @@
               <div class="resumo-etapas-info">
                 <div class="resumo-etapa-item">
                   <span class="resumo-label-small">Última etapa Feita</span>
-                  <span class="resumo-etapa-nome" id="resumoUltimaEtapa">Limpeza</span>
+                  <span class="resumo-etapa-nome" id="resumoUltimaEtapa">—</span>
                 </div>
                 <div class="resumo-etapa-item text-end">
                   <span class="resumo-label-small">Próxima Etapa</span>
-                  <span class="resumo-etapa-nome" id="resumoProximaEtapa">Clareamento</span>
+                  <span class="resumo-etapa-nome" id="resumoProximaEtapa">—</span>
                 </div>
               </div>
 
@@ -214,9 +214,6 @@
               <div class="resumo-acoes">
                 <button class="btn-resumo-editar" id="btnEditarPlano">
                   <i class="fa-solid fa-pen"></i> Editar Plano
-                </button>
-                <button class="btn-resumo-iniciar" id="btnIniciarConsulta">
-                  Iniciar Consulta
                 </button>
                 <button class="btn-resumo-prontuario" id="btnResumoProntuario">
                   <i class="fa-regular fa-eye"></i> Prontuário
@@ -413,23 +410,19 @@ coodihoo</textarea>
                 <h4 class="alerta-titulo"><i class="fa-solid fa-triangle-exclamation"></i> Alerta Clínico</h4>
                 <div class="alerta-grid">
                   <div class="alerta-item">
-                    <span class="alerta-label">Allergies</span>
-                    <span class="alerta-valor">Penicillin</span>
+                    <span class="alerta-label">Alergias</span>
+                    <span class="alerta-valor">—</span>
                   </div>
                   <div class="alerta-item">
-                    <span class="alerta-label">Pre-existing Conditions:</span>
-                    <span class="alerta-valor">Hypertension (controlled)</span>
+                    <span class="alerta-label">Condições:</span>
+                    <span class="alerta-valor">—</span>
                   </div>
                   <div class="alerta-item">
-                    <span class="alerta-label">Medications:</span>
-                    <span class="alerta-valor">Lisinopril (daily)</span>
+                    <span class="alerta-label">Medicamentos:</span>
+                    <span class="alerta-valor">—</span>
                   </div>
                   <div class="alerta-item">
-                    <span class="alerta-label">Previous Dental Surgeries:</span>
-                    <span class="alerta-valor">Wisdom teeth extraction (2018)</span>
-                  </div>
-                  <div class="alerta-item">
-                    <span class="alerta-label">Notes:</span>
+                    <span class="alerta-label">Cirurgias Anteriores:</span>
                     <span class="alerta-valor">—</span>
                   </div>
                 </div>
@@ -448,7 +441,7 @@ coodihoo</textarea>
                 <!-- Info do paciente -->
                 <div class="resumo-paciente-info">
                   <span class="resumo-label-small">Nome</span>
-                  <span class="resumo-nome" id="editarResumoNome">Ana Costa</span>
+                  <span class="resumo-nome" id="editarResumoNome">—</span>
                   <span class="resumo-label-small">serviço</span>
                   <span class="resumo-servico" id="editarResumoServico">Clareamento</span>
                 </div>
@@ -457,7 +450,7 @@ coodihoo</textarea>
                 <div class="resumo-progresso-wrapper">
                   <div class="resumo-progresso-header">
                     <span class="resumo-label-small">Progresso</span>
-                    <span class="resumo-etapas" id="editarResumoEtapas">1 de 3 Etapas</span>
+                    <span class="resumo-etapas" id="editarResumoEtapas">—</span>
                   </div>
                   <div class="resumo-progresso-bar">
                     <div class="resumo-progresso-fill" id="editarResumoProgressoFill" style="width: 33%"></div>
@@ -468,7 +461,7 @@ coodihoo</textarea>
                 <div class="resumo-etapas-info">
                   <div class="resumo-etapa-item">
                     <span class="resumo-label-small">Última etapa Feita</span>
-                    <span class="resumo-etapa-nome" id="editarUltimaEtapa">Limpeza</span>
+                    <span class="resumo-etapa-nome" id="editarUltimaEtapa">—</span>
                   </div>
                   <div class="resumo-etapa-item text-end">
                     <span class="resumo-label-small">Próxima Etapa</span>
@@ -531,88 +524,6 @@ coodihoo</textarea>
         </div>
 
         <!-- ══════════════════════════════════════════════════
-         MODAL ADICIONAR ETAPA NO CHECKLIST
-         ══════════════════════════════════════════════════ -->
-        <div class="modal-overlay" id="modalNovaEtapaOverlay" style="display:none;">
-          <div class="mae-card">
-
-            <div class="mae-header">
-              <div class="mae-header-icon"><i class="fa-solid fa-list-check"></i></div>
-              <div>
-                <h2 class="mae-titulo">Nova Etapa</h2>
-                <p class="mae-subtitulo">Adicionar ao checklist da consulta</p>
-              </div>
-              <button class="mae-fechar" id="btnMaeFechar"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-
-            <div class="mae-body">
-
-              <div class="mae-campo">
-                <label class="mae-label" for="inputMaeNome">Nome da etapa <span class="mae-obrigatorio">*</span></label>
-                <input type="text" id="inputMaeNome" class="mae-input" placeholder="Ex: Aplicação do anestésico..."
-                  maxlength="80" autocomplete="off" />
-                <span class="mae-contador" id="maeContador">0 / 80</span>
-              </div>
-
-              <div class="mae-campo">
-                <label class="mae-label" for="inputMaeDescricao">Descrição <span
-                    class="mae-opcional">(opcional)</span></label>
-                <textarea id="inputMaeDescricao" class="mae-textarea"
-                  placeholder="Observações ou detalhes sobre a etapa..." rows="3" maxlength="200"></textarea>
-              </div>
-
-              <label class="mae-check-row">
-                <input type="checkbox" id="chkMaeConcluida" class="mae-checkbox" />
-                <span class="mae-check-label">Marcar como já concluída</span>
-              </label>
-
-            </div>
-
-            <div class="mae-acoes">
-              <button class="mae-btn-cancelar" id="btnMaeCancelar">Cancelar</button>
-              <button class="mae-btn-confirmar" id="btnMaeConfirmar">
-                <i class="fa-solid fa-plus"></i> Adicionar Etapa
-              </button>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- ══════════════════════════════════════════════════
-         MODAL CONFIRMAR INICIAR CONSULTA
-         ══════════════════════════════════════════════════ -->
-        <div class="modal-overlay" id="modalIniciarOverlay" style="display:none;">
-          <div class="modal-confirmar">
-            <h2 class="modal-confirmar-titulo">Deseja Iniciar a Consulta deste Paciente?</h2>
-            <div class="modal-confirmar-body">
-              <!-- Foto placeholder -->
-              <div class="modal-foto-placeholder">
-                <div class="foto-x"></div>
-              </div>
-              <!-- Info -->
-              <div class="modal-confirmar-info">
-                <div class="modal-info-item">
-                  <span class="modal-info-label">Nome</span>
-                  <span class="modal-info-valor" id="modalNome">Ana Costa</span>
-                </div>
-                <div class="modal-info-item">
-                  <span class="modal-info-label">Serviço</span>
-                  <span class="modal-info-valor" id="modalServico">Clareamento</span>
-                </div>
-                <div class="modal-info-item">
-                  <span class="modal-info-label">Aguardando a</span>
-                  <span class="modal-info-valor modal-info-destaque" id="modalTempo">15 Minutos</span>
-                </div>
-              </div>
-            </div>
-            <div class="modal-confirmar-acoes">
-              <button class="btn-modal-iniciar" id="btnModalIniciar">Iniciar</button>
-              <button class="btn-modal-cancelar" id="btnModalCancelar">Cancelar</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- ══════════════════════════════════════════════════
          TELA CONSULTA EM ANDAMENTO (oculta por padrão)
          ══════════════════════════════════════════════════ -->
         <div class="consulta-view" id="consultaView" style="display:none;">
@@ -627,7 +538,7 @@ coodihoo</textarea>
               <div class="consulta-header-divider"></div>
               <div class="consulta-header-item">
                 <span class="consulta-header-label">Serviço</span>
-                <span class="consulta-header-servico" id="consultaServico">Limpeza</span>
+                <span class="consulta-header-servico" id="consultaServico">—</span>
               </div>
               <span class="consulta-badge-atendimento"><i class="fa-solid fa-circle fa-xs"></i> Em Atendimento</span>
             </div>
@@ -640,22 +551,18 @@ coodihoo</textarea>
               <div class="alerta-grid">
                 <div class="alerta-item">
                   <span class="alerta-label">Alergias</span>
-                  <span class="alerta-valor">Penicilina</span>
+                  <span class="alerta-valor">—</span>
                 </div>
                 <div class="alerta-item">
                   <span class="alerta-label">Condições</span>
-                  <span class="alerta-valor">Hipertensão (controlada)</span>
+                  <span class="alerta-valor">—</span>
                 </div>
                 <div class="alerta-item">
                   <span class="alerta-label">Medicamentos</span>
-                  <span class="alerta-valor">Lisinopril (diário)</span>
+                  <span class="alerta-valor">—</span>
                 </div>
                 <div class="alerta-item">
                   <span class="alerta-label">Cirurgias</span>
-                  <span class="alerta-valor">Extração siso (2018)</span>
-                </div>
-                <div class="alerta-item">
-                  <span class="alerta-label">Notas</span>
                   <span class="alerta-valor">—</span>
                 </div>
               </div>
@@ -736,51 +643,19 @@ coodihoo</textarea>
                 </div>
               </div>
 
-              <!-- Checklist + Condição + Descrição -->
+              <!-- Condição + Descrição -->
               <div class="consulta-campos-row">
-
-                <!-- Checklist -->
-                <div class="checklist-card">
-                  <h4 class="checklist-titulo">Checklist da Consulta</h4>
-                  <div class="checklist-lista" id="checklistLista">
-                    <label class="checklist-item">
-                      <input type="checkbox" /> Organização do equipamento
-                    </label>
-                    <label class="checklist-item">
-                      <input type="checkbox" checked /> Limpeza de Cavidades
-                    </label>
-                    <label class="checklist-item">
-                      <input type="checkbox" checked /> Limpeza Geral
-                    </label>
-                    <label class="checklist-item">
-                      <input type="checkbox" checked /> Anestesia Dente 46
-                    </label>
-                    <label class="checklist-item">
-                      <input type="checkbox" /> remoção da Carie Dente 46
-                    </label>
-                    <label class="checklist-item">
-                      <input type="checkbox" /> Adicionar massa Dente 46
-                    </label>
-                  </div>
-                  <button class="btn-adicionar-etapa" id="btnAdicionarEtapa">
-                    <i class="fa-solid fa-plus"></i> Adicionar etapa
-                  </button>
-                  <p class="checklist-aviso"><i class="fa-solid fa-triangle-exclamation fa-xs"></i> Checklist não é
-                    salvo
-                    pelo sistema</p>
-                </div>
 
                 <!-- Condição e Descrição -->
                 <div class="consulta-condicao-col consulta-campo-card">
                   <h4 class="consulta-campo-card-titulo"><i class="fa-solid fa-tooth fa-xs"></i> Diagnóstico</h4>
                   <div class="consulta-campo">
                     <label class="consulta-campo-label">Condição</label>
-                    <input type="text" class="consulta-campo-input" id="consultaCondicao" value="Cárie Profunda" />
+                    <input type="text" class="consulta-campo-input" id="consultaCondicao" placeholder="Ex: Cárie profunda..." />
                   </div>
                   <div class="consulta-campo">
                     <label class="consulta-campo-label">Descrição do Tratamento</label>
-                    <textarea class="consulta-campo-textarea" id="consultaDescricao">Tratamento endodôntico necessário.
-Obturação temporária aplicada.</textarea>
+                    <textarea class="consulta-campo-textarea" id="consultaDescricao" placeholder="Descreva o tratamento realizado..."></textarea>
                   </div>
                 </div>
 
@@ -793,7 +668,7 @@ Obturação temporária aplicada.</textarea>
               <div class="observacoes-card">
                 <h4 class="observacoes-titulo">Observações Clínicas</h4>
                 <textarea class="observacoes-textarea" id="observacoesClinicas"
-                  placeholder="Digite observações clínicas...">Após Avaliação foi identificado carie no dente 46, com consentimento do paciente, foi feito a limpeza junto do serviço de remoção de carie</textarea>
+                  placeholder="Digite observações clínicas..."></textarea>
                 <p class="observacoes-aviso">essas informações serão adicionadas ao prontuário ao encerrar a consulta
                 </p>
               </div>
@@ -830,14 +705,12 @@ Obturação temporária aplicada.</textarea>
               </div>
               <div class="prontuario-paciente-dados">
                 <span class="prontuario-label">Paciente</span>
-                <span class="prontuario-nome" id="prontuarioNome">maria Souza</span>
-                <span class="prontuario-cpf" id="prontuarioCPF">CPF: 234.567.890-11</span>
+                <span class="prontuario-nome" id="prontuarioNome">—</span>
+                <span class="prontuario-cpf" id="prontuarioCPF">CPF: —</span>
               </div>
               <div class="prontuario-contatos">
-                <span class="prontuario-contato"><i class="fa-solid fa-phone"></i> <span id="prontuarioTel">(11)
-                    91234-5678</span></span>
-                <span class="prontuario-contato"><i class="fa-solid fa-envelope"></i> <span
-                    id="prontuarioEmail">maria.souza@email.com</span></span>
+                <span class="prontuario-contato"><i class="fa-solid fa-phone"></i> <span id="prontuarioTel">—</span></span>
+                <span class="prontuario-contato"><i class="fa-solid fa-envelope"></i> <span id="prontuarioEmail">—</span></span>
               </div>
             </div>
           </div>
@@ -853,14 +726,14 @@ Obturação temporária aplicada.</textarea>
                 <div class="prontuario-plano-header">
                   <h3 class="prontuario-plano-titulo">Plano Selecionado</h3>
                   <div class="prontuario-plano-info-right">
-                    <span class="prontuario-plano-servico" id="prontuarioPlanoServico">Extração do Siso</span>
-                    <span class="prontuario-plano-data" id="prontuarioPlanoData">2023-09-01</span>
+                    <span class="prontuario-plano-servico" id="prontuarioPlanoServico">—</span>
+                    <span class="prontuario-plano-data" id="prontuarioPlanoData">—</span>
                   </div>
                 </div>
 
                 <!-- Odontograma do Prontuário -->
-                <div class="prontuario-odontograma">
-                  <h4 class="prontuario-sub-titulo">Odontograma</h4>
+                <div class="prontuario-odontograma" id="prontuarioOdontograma">
+                  <h4 class="prontuario-sub-titulo">Odontograma <small id="odontogramaHint" class="d-none" style="font-size:0.72rem;font-weight:400;color:#6366f1;margin-left:0.4rem;">— clique para selecionar/desmarcar</small></h4>
                   <div class="odontograma-chart">
                     <!-- Arcada Superior -->
                     <div class="arcada-row">
@@ -923,20 +796,20 @@ Obturação temporária aplicada.</textarea>
                   <div class="prontuario-detalhes-esq">
                     <div class="prontuario-campo">
                       <label class="prontuario-campo-label">Condição</label>
-                      <div class="prontuario-campo-valor" id="prontuarioCondicao">Siso em má formação</div>
+                      <div class="prontuario-campo-valor" id="prontuarioCondicao">—</div>
+                      <input type="text" class="form-control d-none" id="editCondicao" style="font-size:0.88rem;" placeholder="Ex: Cárie profunda..." />
                     </div>
                     <div class="prontuario-campo">
                       <label class="prontuario-campo-label">Descrição do Tratamento</label>
-                      <div class="prontuario-campo-textarea" id="prontuarioDescricao">Tratamento de remoção do dente do
-                        Siso numero 48</div>
+                      <div class="prontuario-campo-textarea" id="prontuarioDescricao">—</div>
+                      <textarea class="form-control d-none" id="editDescricao" rows="4" style="font-size:0.88rem;" placeholder="Descreva o tratamento..."></textarea>
                     </div>
                   </div>
                   <div class="prontuario-detalhes-dir">
                     <div class="prontuario-obs-card">
                       <h4 class="prontuario-obs-titulo">Observações Clínicas</h4>
-                      <div class="prontuario-obs-texto" id="prontuarioObsTexto">dente do siso 48 removido com sucesso,
-                        sem
-                        problemas ou sequelas, necessário retorno para acompanhamento da cicatrização.</div>
+                      <div class="prontuario-obs-texto" id="prontuarioObsTexto">—</div>
+                      <textarea class="form-control d-none" id="editObsTexto" rows="5" style="font-size:0.88rem;" placeholder="Observações clínicas..."></textarea>
                     </div>
                   </div>
                 </div>
@@ -944,7 +817,26 @@ Obturação temporária aplicada.</textarea>
                 <!-- Dentista Responsável -->
                 <div class="prontuario-dentista">
                   <span class="prontuario-dentista-label">Dentista Responsável:</span>
-                  <span class="prontuario-dentista-nome" id="prontuarioDentista">Pedro Santos</span>
+                  <span class="prontuario-dentista-nome" id="prontuarioDentista">—</span>
+                </div>
+
+                <!-- Ações do registro -->
+                <div class="prontuario-editar-acao" id="prontuarioEditarAcao" style="display:none;margin-top:1rem;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+                  <button class="btn btn-sm px-3" id="btnEditarRegistroProntuario"
+                          style="background:#eef2ff;color:#3730a3;border:1.5px solid #c7d2fe;border-radius:8px;font-size:0.82rem;">
+                    <i class="fa-solid fa-pen-to-square me-1"></i>Editar este registro
+                  </button>
+                  <div id="prontuarioAcoesEditar" style="display:none;gap:0.5rem;">
+                    <button class="btn btn-sm px-3" id="btnCancelarEdicaoInline"
+                            style="background:#f3f4f6;color:#374151;border:1px solid #d1d5db;border-radius:8px;font-size:0.82rem;">
+                      <i class="fa-solid fa-xmark me-1"></i>Cancelar
+                    </button>
+                    <button class="btn btn-sm px-3 text-white" id="btnSalvarEdicaoInline"
+                            style="background-color:#0d6efd;border-color:#0d6efd;border-radius:8px;font-size:0.82rem;">
+                      <i class="fa-solid fa-floppy-disk me-1"></i>Salvar e Atualizar Data
+                    </button>
+                  </div>
+                  <div id="erroSalvarRegistro" style="display:none;color:#dc2626;font-size:0.8rem;margin-top:0.4rem;width:100%;"></div>
                 </div>
 
               </div>
@@ -966,17 +858,8 @@ Obturação temporária aplicada.</textarea>
                         <th>Procedimento</th>
                       </tr>
                     </thead>
-                    <tbody>
-                      <tr>
-                        <td>2023-10-26</td>
-                        <td>10:00</td>
-                        <td>Limpeza</td>
-                      </tr>
-                      <tr>
-                        <td>2023-11-15</td>
-                        <td>14:30</td>
-                        <td>Restauração</td>
-                      </tr>
+                    <tbody id="tbodyConsultasAgendadas">
+                      <!-- Preenchido pelo JS -->
                     </tbody>
                   </table>
                 </div>
@@ -995,16 +878,7 @@ Obturação temporária aplicada.</textarea>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr class="plano-row selected" data-plano="0">
-                        <td>2023-09-01</td>
-                        <td>Extração do Siso</td>
-                        <td>Dra. Ana Costa</td>
-                      </tr>
-                      <tr class="plano-row" data-plano="1">
-                        <td>2023-08-10</td>
-                        <td>Tratamento de Canal</td>
-                        <td>Dr. Carlos Mendes</td>
-                      </tr>
+                      <!-- Preenchido pelo JS -->
                     </tbody>
                   </table>
                 </div>
@@ -1018,21 +892,16 @@ Obturação temporária aplicada.</textarea>
                 </div>
                 <div class="prontuario-info-grid">
                   <div class="prontuario-info-item">
-                    <span class="prontuario-info-label">Última Atualização:</span>
-                    <span class="prontuario-info-valor" id="prontuarioUltimaAtualizacao">2023-10-20</span>
+                    <span class="prontuario-info-label">Última atualização:</span>
+                    <span class="prontuario-info-valor" id="prontuarioUltimaAtualizacao">—</span>
                   </div>
                   <div class="prontuario-info-item">
-                    <span class="prontuario-info-label">Alergias:</span>
-                    <span class="prontuario-info-valor" id="prontuarioAlergias">Penicilina</span>
+                    <span class="prontuario-info-label">E-mail:</span>
+                    <span class="prontuario-info-valor" id="prontuarioInfoEmail">—</span>
                   </div>
                   <div class="prontuario-info-item">
-                    <span class="prontuario-info-label">Condições Médicas:</span>
-                    <span class="prontuario-info-valor" id="prontuarioCondicoesMed">Hipertensão</span>
-                  </div>
-                  <div class="prontuario-info-item">
-                    <span class="prontuario-info-label">Observações:</span>
-                    <span class="prontuario-info-valor" id="prontuarioObservacoes">Sensibilidade a frio nos dentes
-                      anteriores.</span>
+                    <span class="prontuario-info-label">Endereço:</span>
+                    <span class="prontuario-info-valor" id="prontuarioInfoEndereco">—</span>
                   </div>
                 </div>
               </div>
@@ -1209,19 +1078,19 @@ Obturação temporária aplicada.</textarea>
                 <div class="alerta-grid">
                   <div class="alerta-item">
                     <span class="alerta-label">Alergias:</span>
-                    <span class="alerta-valor">Penicilina</span>
+                    <span class="alerta-valor">—</span>
                   </div>
                   <div class="alerta-item">
                     <span class="alerta-label">Condições:</span>
-                    <span class="alerta-valor">Hipertensão (controlada)</span>
+                    <span class="alerta-valor">—</span>
                   </div>
                   <div class="alerta-item">
                     <span class="alerta-label">Medicamentos:</span>
-                    <span class="alerta-valor">Lisinopril (diário)</span>
+                    <span class="alerta-valor">—</span>
                   </div>
                   <div class="alerta-item">
                     <span class="alerta-label">Cirurgias Anteriores:</span>
-                    <span class="alerta-valor">Extração de siso (2018)</span>
+                    <span class="alerta-valor">—</span>
                   </div>
                 </div>
               </div>
@@ -1244,6 +1113,24 @@ Obturação temporária aplicada.</textarea>
             </button>
           </div>
 
+          <!-- Escolha: atualizar vs criar novo (oculta por padrão) -->
+          <div id="finalizarEscolha" style="display:none;padding:1rem 1.5rem;background:#f0f4ff;border-top:1px solid #c7d2fe;flex-wrap:wrap;align-items:center;gap:0.75rem;">
+            <span style="flex:1;min-width:200px;font-size:0.88rem;color:#374151;">
+              <i class="fa-solid fa-file-circle-question me-1" style="color:#6366f1;"></i>
+              Este paciente já possui registros no prontuário. O que deseja fazer?
+            </span>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+              <button class="btn btn-sm px-3" id="btnAtualizarPlano"
+                      style="background:#eef2ff;color:#3730a3;border:1.5px solid #c7d2fe;border-radius:8px;font-size:0.82rem;">
+                <i class="fa-solid fa-pen-to-square me-1"></i>Atualizar último registro
+              </button>
+              <button class="btn btn-sm px-3" id="btnCriarNovoPlano"
+                      style="background:#f0fdf4;color:#166534;border:1.5px solid #bbf7d0;border-radius:8px;font-size:0.82rem;">
+                <i class="fa-solid fa-plus me-1"></i>Criar novo registro
+              </button>
+            </div>
+          </div>
+
         </div>
 
       </div><!-- /page-container -->
@@ -1264,6 +1151,102 @@ Obturação temporária aplicada.</textarea>
     new window.VLibras.Widget('https://vlibras.gov.br/app');
   </script>
 
+  <!-- Modal: Editar Registro do Prontuário -->
+  <div class="modal fade" id="modalEditarRegistro" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-6"><i class="fa-solid fa-pen-to-square me-2"></i>Editar Registro do Prontuário</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4 pb-4">
+          <div id="alertaEditarRegistro" class="alert alert-danger d-none mb-3" style="font-size:0.82rem;"></div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">Condição</label>
+              <input type="text" class="form-control" id="editRegCondicao" placeholder="Ex: Cárie profunda..." />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">Serviço</label>
+              <select class="form-select" id="editRegServico"><option value="">Nenhum</option></select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">Descrição do Tratamento</label>
+              <textarea class="form-control" id="editRegDescricao" rows="3" placeholder="Descreva o tratamento realizado..."></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">Observações Clínicas</label>
+              <textarea class="form-control" id="editRegObservacao" rows="3" placeholder="Observações clínicas..."></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold d-block mb-2" style="font-size:0.85rem;">Dentes Tratados</label>
+              <div class="odontograma-chart" id="editRegOdontograma" style="gap:2px;">
+                <!-- Arcada Superior -->
+                <div class="arcada-row">
+                  <div class="arcada-grupo">
+                    <div class="dente-consulta saudavel dente-modal" data-num="18">18</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="17">17</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="16">16</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="15">15</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="14">14</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="13">13</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="12">12</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="11">11</div>
+                  </div>
+                  <div class="arcada-gap"></div>
+                  <div class="arcada-grupo">
+                    <div class="dente-consulta saudavel dente-modal" data-num="21">21</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="22">22</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="23">23</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="24">24</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="25">25</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="26">26</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="27">27</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="28">28</div>
+                  </div>
+                </div>
+                <!-- Arcada Inferior -->
+                <div class="arcada-row">
+                  <div class="arcada-grupo">
+                    <div class="dente-consulta saudavel dente-modal" data-num="48">48</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="47">47</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="46">46</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="45">45</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="44">44</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="43">43</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="42">42</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="41">41</div>
+                  </div>
+                  <div class="arcada-gap"></div>
+                  <div class="arcada-grupo">
+                    <div class="dente-consulta saudavel dente-modal" data-num="31">31</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="32">32</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="33">33</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="34">34</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="35">35</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="36">36</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="37">37</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="38">38</div>
+                  </div>
+                </div>
+              </div>
+              <div class="odontograma-legenda mt-1" style="justify-content:flex-start;">
+                <span class="legenda-item"><span class="legenda-cor tratamento-bg"></span> Em Tratamento</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn px-4 text-dark bg-white border" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn px-4 text-white" id="btnSalvarEditarRegistro"
+                  style="background-color:#0d6efd;border-color:#0d6efd;">
+            <i class="fa-solid fa-floppy-disk me-1"></i>Salvar e Atualizar Data
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -1277,7 +1260,7 @@ Obturação temporária aplicada.</textarea>
   <script src="../js/auth.js"></script>
 
   <!-- Lógica da página -->
-  <script src="../js/dentista/tratamentos.js"></script>
+  <script src="../js/dentista/tratamentos.js?v=23"></script>
 
 </body>
 

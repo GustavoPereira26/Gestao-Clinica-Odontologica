@@ -4,6 +4,12 @@
  */
 window.SettingsComponent = (() => {
 
+  // Aplica dark mode na tag <html> (existe antes do body)
+  function applyDarkMode(on) {
+    document.documentElement.classList.toggle('dark-mode', on);
+    localStorage.setItem('darkMode', on ? 'true' : 'false');
+  }
+
   /**
    * Inicializa o componente, usando delegação de eventos global.
    */
@@ -80,7 +86,17 @@ window.SettingsComponent = (() => {
         </div>
       `;
       document.body.appendChild(modalEl);
+
+      // Listener do toggle — registrado uma única vez na criação
+      const sw = modalEl.querySelector('#darkModeSwitch');
+      if (sw) {
+        sw.addEventListener('change', () => applyDarkMode(sw.checked));
+      }
     }
+
+    // Sincroniza o toggle com o estado atual antes de abrir
+    const sw = modalEl.querySelector('#darkModeSwitch');
+    if (sw) sw.checked = document.documentElement.classList.contains('dark-mode');
 
     // Inicializa e abre o modal usando Bootstrap 5
     const modal = bootstrap.Modal.getOrCreateInstance(modalEl);

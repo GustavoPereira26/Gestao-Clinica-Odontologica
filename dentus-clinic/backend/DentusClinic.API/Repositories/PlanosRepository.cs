@@ -17,6 +17,12 @@ public class PlanosRepository : IPlanosRepository
     public async Task<IEnumerable<Planos>> ListarTodosAsync()
         => await _contexto.Planos.Include(p => p.Servico).ToListAsync();
 
+    public async Task<IEnumerable<Planos>> ListarPorProntuarioAsync(int idProntuario)
+        => await _contexto.Planos
+            .Where(p => p.IdProntuario == idProntuario)
+            .Include(p => p.Servico)
+            .ToListAsync();
+
     public async Task<Planos?> BuscarPorIdAsync(int id)
         => await _contexto.Planos.Include(p => p.Servico).FirstOrDefaultAsync(p => p.Id == id);
 
@@ -27,7 +33,10 @@ public class PlanosRepository : IPlanosRepository
     }
 
     public async Task AtualizarAsync(Planos plano)
-        => await _contexto.SaveChangesAsync();
+    {
+        _contexto.Planos.Update(plano);
+        await _contexto.SaveChangesAsync();
+    }
 
     public async Task RemoverAsync(Planos plano)
     {

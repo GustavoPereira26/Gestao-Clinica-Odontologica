@@ -6,96 +6,158 @@ document.addEventListener("DOMContentLoaded", () => {
     ativo: "tratamentos"
   });
 
-  // ── Hamburguer (mobile) ──
   const btnHamburger = document.getElementById("btnHamburger");
-  if (btnHamburger) {
-    btnHamburger.addEventListener("click", () => SidebarComponent.toggleSidebar());
+  if (btnHamburger) btnHamburger.addEventListener("click", () => SidebarComponent.toggleSidebar());
+
+  // ══════════════════════════════════
+  //  ESTADO GLOBAL
+  // ══════════════════════════════════
+  const dentistaId  = parseInt(sessionStorage.getItem('id'));
+  const dentistaNome = sessionStorage.getItem('nome') || '—';
+
+  let todasConsultas  = [];  // all consultations from API
+  let consultasDent   = [];  // filtered by dentistaId
+  let pacientesMap    = {};  // idPaciente → PacienteResponse
+  let todosRows       = [];  // rows for current tab
+  let tabAtual        = 'fila';
+  let selectedIndex   = 0;
+  let currentTratamento = null;  // selected row object
+  let currentConsulta   = null;  // selected consulta object
+
+  // Captured just before finalization view opens (inputs still visible)
+  let pendingObservacoes = { condicao: null, descricao: null, observacao: null };
+
+  // State for finalization choice flow
+  let _prontuarioParaFinalizar = null;
+  let _planoMaisRecente        = null;
+
+  // Currently displayed plano in prontuário view (for edit)
+  let currentPlano     = null;
+  let currentProntuario = null;
+
+  // ── Helpers ──────────────────────────────────────────────────────────
+  function formatarData(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = String(iso).split('-');
+    return `${d}/${m}/${y}`;
   }
-  const btnHamburgerMobile = document.getElementById("btnHamburgerMobile");
-  if (btnHamburgerMobile) {
-    btnHamburgerMobile.addEventListener("click", () => SidebarComponent.toggleSidebar());
+
+  function formatarCPF(cpf) {
+    const d = (cpf || '').replace(/\D/g, '');
+    if (d.length !== 11) return cpf || '—';
+    return `${d.slice(0,3)}.${d.slice(3,6)}.${d.slice(6,9)}-${d.slice(9)}`;
+  }
+
+  function formatarTelefone(tel) {
+    const d = (tel || '').replace(/\D/g, '');
+    if (d.length === 11) return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+    if (d.length === 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+    return tel || '—';
+  }
+
+  function resolverDataPlano(plano, prontuario) {
+    if (plano?.dataAtualizacao && plano.dataAtualizacao !== '0001-01-01')
+      return formatarData(plano.dataAtualizacao);
+    const d = plano?.dataCriacao;
+    if (d && d !== '0001-01-01') return formatarData(d);
+    if (prontuario?.dataAbertura) return formatarData(prontuario.dataAbertura);
+    return '—';
+  }
+
+  // Map consulta → row object with compatibility fields
+  function consultaToRow(c) {
+    return {
+      _consulta:   c,
+      consultaId:  c.id,
+      idPaciente:  c.idPaciente,
+      paciente:    c.nomePaciente || '—',
+      servico:     c.nomeServico  || '—',
+      status:      c.status       || '—',
+      progresso:   0,
+      proximaSessao: formatarData(c.dataConsulta),
+      etapasFeitas:  0,
+      etapasTotal:   0,
+      ultimaEtapa:   '—',
+      proximaEtapa:  '—'
+    };
   }
 
   // ══════════════════════════════════
-  //  DADOS DE EXEMPLO
+  //  CARGA DE DADOS
   // ══════════════════════════════════
-  const tratamentos = [
-    {
-      paciente: "João Silva",
-      servico: "Limpeza",
-      status: "Aguardando a 12 min",
-      progresso: 75,
-      proximaSessao: "10/04/2026",
-      etapasFeitas: 3,
-      etapasTotal: 4,
-      ultimaEtapa: "Raspagem",
-      proximaEtapa: "Polimento"
-    },
-    {
-      paciente: "Ana Costa",
-      servico: "Clareamento",
-      status: "aguardando a 20 min",
-      progresso: 30,
-      proximaSessao: "10/04/2026",
-      etapasFeitas: 1,
-      etapasTotal: 3,
-      ultimaEtapa: "Limpeza",
-      proximaEtapa: "Clareamento"
-    },
-    {
-      paciente: "Pedro Santos",
-      servico: "Extração",
-      status: "Aguardando a 30 min",
-      progresso: 0,
-      proximaSessao: "20/04/2026",
-      etapasFeitas: 0,
-      etapasTotal: 2,
-      ultimaEtapa: "—",
-      proximaEtapa: "Avaliação"
-    },
-    {
-      paciente: "Carlos Oliveira",
-      servico: "Implante",
-      status: "aguardando a 40 min",
-      progresso: 25,
-      proximaSessao: "27/04/2026",
-      etapasFeitas: 1,
-      etapasTotal: 4,
-      ultimaEtapa: "Exame",
-      proximaEtapa: "Cirurgia"
-    },
-    {
-      paciente: "Maria Souza",
-      servico: "Restauração",
-      status: "aguardando a 50 min",
-      progresso: 50,
-      proximaSessao: "31/05/2026",
-      etapasFeitas: 2,
-      etapasTotal: 4,
-      ultimaEtapa: "Moldagem",
-      proximaEtapa: "Aplicação"
+  async function carregarDados() {
+    try {
+      const [resConsultas, resPacientes] = await Promise.all([
+        apiGetConsultas(),
+        apiGetPacientes()
+      ]);
+
+      todasConsultas = resConsultas?.dados || [];
+      const todosPacientes = resPacientes?.dados || [];
+
+      todosPacientes.forEach(p => { pacientesMap[p.id] = p; });
+      consultasDent = todasConsultas.filter(c => c.idDentista === dentistaId);
+
+      atualizarMetricas();
+      atualizarTabela();
+    } catch (err) {
+      console.error('Erro ao carregar tratamentos:', err.message);
     }
-  ];
+  }
+
+  function atualizarMetricas() {
+    document.getElementById('metricaAndamento').textContent =
+      consultasDent.filter(c => c.status === 'Em Consulta').length;
+    document.getElementById('metricaRetorno').textContent =
+      consultasDent.filter(c => c.retorno === true).length;
+    document.getElementById('metricaConcluidos').textContent =
+      consultasDent.filter(c => c.status === 'Encerrada').length;
+  }
+
+  function getConsultasTab() {
+    if (tabAtual === 'fila')       return consultasDent.filter(c => c.status === 'Agendada' || c.status === 'Aguardando');
+    if (tabAtual === 'andamento')  return consultasDent.filter(c => c.status === 'Em Consulta');
+    if (tabAtual === 'concluidos') return consultasDent.filter(c => c.status === 'Encerrada');
+    return consultasDent;
+  }
+
+  function atualizarTabela() {
+    const consultas = getConsultasTab();
+    todosRows = consultas.map(consultaToRow);
+    selectedIndex = 0;
+    currentConsulta  = consultas[0] || null;
+    currentTratamento = todosRows[0] || null;
+    renderTabela(todosRows);
+    if (todosRows.length > 0) atualizarResumo(todosRows[0]);
+  }
 
   // ══════════════════════════════════
   //  ELEMENTOS DA VIEW LISTA
   // ══════════════════════════════════
-  const metricasRow = document.querySelector(".metricas-row");
-  const filterBar = document.querySelector(".filter-bar");
+  const metricasRow       = document.querySelector(".metricas-row");
+  const filterBar         = document.querySelector(".filter-bar");
   const tratamentosLayout = document.querySelector(".tratamentos-layout");
-  const editarPlanoView = document.getElementById("editarPlanoView");
+  const editarPlanoView   = document.getElementById("editarPlanoView");
 
   // ══════════════════════════════════
   //  RENDERIZAR TABELA
   // ══════════════════════════════════
-  const tbody = document.getElementById("tbodyTratamentos");
+  const tbody         = document.getElementById("tbodyTratamentos");
   const cardsContainer = document.getElementById("cardsTratamentos");
-  let selectedIndex = 1;
-  let currentTratamento = tratamentos[selectedIndex];
 
   function renderTabela(dados) {
     tbody.innerHTML = "";
     if (cardsContainer) cardsContainer.innerHTML = "";
+
+    if (!dados.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" style="text-align:center;padding:2rem;color:var(--c3);">
+            Nenhuma consulta encontrada
+          </td>
+        </tr>`;
+      return;
+    }
 
     dados.forEach((t, i) => {
       // -- Desktop Row --
@@ -120,6 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
       tr.addEventListener("click", () => {
         selectedIndex = i;
         currentTratamento = t;
+        currentConsulta = t._consulta || null;
         renderTabela(dados);
         atualizarResumo(t);
       });
@@ -130,11 +193,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (cardsContainer) {
         const card = document.createElement("div");
         card.className = "paciente-card-mobile";
-        
         card.innerHTML = `
           <div class="pcm-header">
             <h3 class="pcm-nome">${t.paciente}</h3>
-            <i class="fa-solid fa-hands-asl-interpreting pcm-icon-acessibilidade"></i>
           </div>
           <div class="pcm-body">
             <div class="pcm-item">
@@ -157,20 +218,16 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
           </div>
         `;
-
-        card.addEventListener("click", (e) => {
-          if (e.target.closest('.btn-prontuario-mobile')) return;
+        card.addEventListener("click", () => {
           selectedIndex = i;
           currentTratamento = t;
+          currentConsulta = t._consulta || null;
           atualizarResumo(t);
-          
-          // Smooth scroll para o resumo no mobile
           const resumoEl = document.getElementById("painelResumo");
           if (resumoEl && window.innerWidth <= 992) {
             resumoEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
         });
-
         cardsContainer.appendChild(card);
       }
     });
@@ -180,52 +237,50 @@ document.addEventListener("DOMContentLoaded", () => {
   //  ATUALIZAR PAINEL RESUMO
   // ══════════════════════════════════
   function atualizarResumo(t) {
-    document.getElementById("resumoNome").textContent = t.paciente;
+    document.getElementById("resumoNome").textContent    = t.paciente;
     document.getElementById("resumoServico").textContent = t.servico;
-    document.getElementById("resumoEtapas").textContent = `${t.etapasFeitas} de ${t.etapasTotal} Etapas`;
+    document.getElementById("resumoEtapas").textContent  =
+      `${t.etapasFeitas} de ${t.etapasTotal} Etapas`;
 
-    const pct = t.etapasTotal > 0 ? Math.round((t.etapasFeitas / t.etapasTotal) * 100) : 0;
+    const pct = t.etapasTotal > 0
+      ? Math.round((t.etapasFeitas / t.etapasTotal) * 100)
+      : 0;
     document.getElementById("resumoProgressoFill").style.width = pct + "%";
-
-    document.getElementById("resumoUltimaEtapa").textContent = t.ultimaEtapa;
-    document.getElementById("resumoProximaEtapa").textContent = t.proximaEtapa;
+    document.getElementById("resumoUltimaEtapa").textContent   = t.ultimaEtapa;
+    document.getElementById("resumoProximaEtapa").textContent  = t.proximaEtapa;
   }
-
-  // Render inicial
-  renderTabela(tratamentos);
-  atualizarResumo(tratamentos[selectedIndex]);
 
   // ══════════════════════════════════
   //  FILTROS
   // ══════════════════════════════════
   const filtroPaciente = document.getElementById("filtroPaciente");
-  const filtroServico = document.getElementById("filtroServico");
-  const filtroStatus = document.getElementById("filtroStatus");
-  const filtroSessao = document.getElementById("filtroSessao");
+  const filtroServico  = document.getElementById("filtroServico");
+  const filtroStatus   = document.getElementById("filtroStatus");
+  const filtroSessao   = document.getElementById("filtroSessao");
 
   function aplicarFiltros() {
     const paciente = filtroPaciente.value.toLowerCase().trim();
-    const servico = filtroServico.value.toLowerCase().trim();
-    const status = filtroStatus.value.toLowerCase().trim();
-    const sessao = filtroSessao.value;
+    const servico  = filtroServico.value.toLowerCase().trim();
+    const status   = filtroStatus.value.toLowerCase().trim();
+    const sessao   = filtroSessao.value;
 
-    let filtrados = tratamentos.filter(t => {
+    const filtrados = todosRows.filter(t => {
       if (paciente && !t.paciente.toLowerCase().includes(paciente)) return false;
-      if (servico && !t.servico.toLowerCase().includes(servico)) return false;
-      if (status && !t.status.toLowerCase().includes(status)) return false;
+      if (servico  && !t.servico.toLowerCase().includes(servico))   return false;
+      if (status   && !t.status.toLowerCase().includes(status))     return false;
       if (sessao) {
         const partes = t.proximaSessao.split("/");
-        const dataISO = `${partes[2]}-${partes[1]}-${partes[0]}`;
-        if (dataISO !== sessao) return false;
+        if (partes.length === 3) {
+          const dataISO = `${partes[2]}-${partes[1]}-${partes[0]}`;
+          if (dataISO !== sessao) return false;
+        }
       }
       return true;
     });
 
     selectedIndex = 0;
     renderTabela(filtrados);
-    if (filtrados.length > 0) {
-      atualizarResumo(filtrados[0]);
-    }
+    if (filtrados.length > 0) atualizarResumo(filtrados[0]);
   }
 
   [filtroPaciente, filtroServico, filtroStatus, filtroSessao].forEach(input => {
@@ -234,22 +289,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("btnLimparFiltros").addEventListener("click", () => {
     filtroPaciente.value = "";
-    filtroServico.value = "";
-    filtroStatus.value = "";
-    filtroSessao.value = "";
-    selectedIndex = 1;
-    renderTabela(tratamentos);
-    atualizarResumo(tratamentos[selectedIndex]);
+    filtroServico.value  = "";
+    filtroStatus.value   = "";
+    filtroSessao.value   = "";
+    selectedIndex = 0;
+    renderTabela(todosRows);
+    if (todosRows.length > 0) atualizarResumo(todosRows[0]);
   });
 
   // ══════════════════════════════════
   //  ABAS
   // ══════════════════════════════════
   const tabBtns = document.querySelectorAll(".tab-btn");
+
   tabBtns.forEach(btn => {
     btn.addEventListener("click", () => {
       tabBtns.forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+      tabAtual = btn.dataset.tab || 'fila';
+      atualizarTabela();
     });
   });
 
@@ -257,18 +315,20 @@ document.addEventListener("DOMContentLoaded", () => {
   //  EDITAR PLANO — ABRIR / FECHAR
   // ══════════════════════════════════════════════════════
   function mostrarEditarPlano() {
-    metricasRow.style.display = "none";
-    filterBar.style.display = "none";
+    metricasRow.style.display    = "none";
+    filterBar.style.display      = "none";
     tratamentosLayout.style.display = "none";
 
-    const t = currentTratamento;
-    document.getElementById("editarResumoNome").textContent = t.paciente;
-    document.getElementById("editarResumoServico").textContent = t.servico;
-    document.getElementById("editarResumoEtapas").textContent = `${t.etapasFeitas} de ${t.etapasTotal} Etapas`;
-    const pct = t.etapasTotal > 0 ? Math.round((t.etapasFeitas / t.etapasTotal) * 100) : 0;
+    const t = currentTratamento || {};
+    document.getElementById("editarResumoNome").textContent    = t.paciente    || '—';
+    document.getElementById("editarResumoServico").textContent = t.servico     || '—';
+    document.getElementById("editarResumoEtapas").textContent  =
+      `${t.etapasFeitas || 0} de ${t.etapasTotal || 0} Etapas`;
+    const pct = t.etapasTotal > 0
+      ? Math.round((t.etapasFeitas / t.etapasTotal) * 100) : 0;
     document.getElementById("editarResumoProgressoFill").style.width = pct + "%";
-    document.getElementById("editarUltimaEtapa").textContent = t.ultimaEtapa;
-    document.getElementById("editarProximaEtapa").textContent = t.proximaEtapa;
+    document.getElementById("editarUltimaEtapa").textContent   = t.ultimaEtapa  || '—';
+    document.getElementById("editarProximaEtapa").textContent  = t.proximaEtapa || '—';
 
     editarPlanoView.style.display = "block";
     renderCalendario(calAno, calMes);
@@ -277,8 +337,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function voltarParaLista() {
     editarPlanoView.style.display = "none";
-    metricasRow.style.display = "";
-    filterBar.style.display = "";
+    metricasRow.style.display     = "";
+    filterBar.style.display       = "";
     tratamentosLayout.style.display = "";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -298,12 +358,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // ── Tornar campos das etapas editáveis ──────────────
   document.querySelectorAll("#etapasScroll .etapa-input, #etapasScroll .etapa-textarea").forEach(el => {
     el.removeAttribute("readonly");
   });
 
-  // ── Botão de edição foca o campo correspondente ─────
   document.querySelectorAll(".etapa-edit-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -315,7 +373,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // ══════════════════════════════════════════════════════
-  //  ETAPAS — DRAG AND DROP (reordenação horizontal)
+  //  ETAPAS — DRAG AND DROP
   // ══════════════════════════════════════════════════════
   function initEtapasDragDrop() {
     const container = document.getElementById("etapasScroll");
@@ -327,11 +385,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function getAfterElement(clientX) {
       const cards = [...container.querySelectorAll(".etapa-card:not(.dragging)")];
       return cards.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
+        const box    = child.getBoundingClientRect();
         const offset = clientX - box.left - box.width / 2;
-        if (offset < 0 && offset > closest.offset) {
-          return { offset, element: child };
-        }
+        if (offset < 0 && offset > closest.offset) return { offset, element: child };
         return closest;
       }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
@@ -356,7 +412,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const card = e.target.closest(".etapa-card");
       if (!card) return;
       card.classList.remove("dragging");
-      if (placeholder && placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
+      if (placeholder?.parentNode) placeholder.parentNode.removeChild(placeholder);
       placeholder = null;
       draggedCard = null;
       renumerarEtapas();
@@ -370,22 +426,19 @@ document.addEventListener("DOMContentLoaded", () => {
         placeholder.className = "etapa-placeholder";
       }
       const afterElement = getAfterElement(e.clientX);
-      if (afterElement == null) {
-        container.appendChild(placeholder);
-      } else {
-        container.insertBefore(placeholder, afterElement);
-      }
+      if (afterElement == null) container.appendChild(placeholder);
+      else container.insertBefore(placeholder, afterElement);
     });
 
     container.addEventListener("dragleave", (e) => {
       if (e.relatedTarget && container.contains(e.relatedTarget)) return;
-      if (placeholder && placeholder.parentNode) placeholder.parentNode.removeChild(placeholder);
+      if (placeholder?.parentNode) placeholder.parentNode.removeChild(placeholder);
       placeholder = null;
     });
 
     container.addEventListener("drop", (e) => {
       e.preventDefault();
-      if (!draggedCard || !placeholder || !placeholder.parentNode) return;
+      if (!draggedCard || !placeholder?.parentNode) return;
       placeholder.parentNode.insertBefore(draggedCard, placeholder);
       placeholder.parentNode.removeChild(placeholder);
       placeholder = null;
@@ -401,7 +454,7 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".dente").forEach(dente => {
     dente.addEventListener("click", () => {
       const currentState = estados.find(s => dente.classList.contains(s)) || "saudavel";
-      const nextIndex = (estados.indexOf(currentState) + 1) % estados.length;
+      const nextIndex    = (estados.indexOf(currentState) + 1) % estados.length;
       estados.forEach(s => dente.classList.remove(s));
       dente.classList.add(estados[nextIndex]);
     });
@@ -411,34 +464,27 @@ document.addEventListener("DOMContentLoaded", () => {
   //  CALENDÁRIO
   // ══════════════════════════════════
   const mesesNome = [
-    "JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO",
-    "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"
+    "JANEIRO","FEVEREIRO","MARÇO","ABRIL","MAIO","JUNHO",
+    "JULHO","AGOSTO","SETEMBRO","OUTUBRO","NOVEMBRO","DEZEMBRO"
   ];
 
-  let calMes = 3; // Abril (0-indexed)
-  let calAno = 2026;
+  let calMes = new Date().getMonth();
+  let calAno = new Date().getFullYear();
   let calDiaSelecionado = null;
 
-  const consultaDatas = {
-    "2026-2": [20],
-    "2026-3": [5, 27, 28]
-  };
-
   function renderCalendario(ano, mes, diaSelecionado = null) {
-    const calBody = document.getElementById("calBody");
+    const calBody  = document.getElementById("calBody");
     const calMesAno = document.getElementById("calMesAno");
+    if (!calBody || !calMesAno) return;
 
     calMesAno.textContent = `${mesesNome[mes]} ${ano}`;
 
     const primeiroDia = new Date(ano, mes, 1).getDay();
-    const totalDias = new Date(ano, mes + 1, 0).getDate();
-    const hoje = new Date();
-
-    const chave = `${ano}-${mes}`;
-    const diasConsulta = consultaDatas[chave] || [];
+    const totalDias   = new Date(ano, mes + 1, 0).getDate();
+    const hoje        = new Date();
 
     let html = "";
-    let dia = 1;
+    let dia  = 1;
     const rows = Math.ceil((primeiroDia + totalDias) / 7);
 
     for (let r = 0; r < rows; r++) {
@@ -452,8 +498,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (hoje.getFullYear() === ano && hoje.getMonth() === mes && hoje.getDate() === dia) {
             classes.push("today");
           }
-          if (diasConsulta.includes(dia)) classes.push("consulta");
-          if (diaSelecionado === dia)     classes.push("selecionado");
+          if (diaSelecionado === dia) classes.push("selecionado");
           html += `<td class="${classes.join(" ")}">${dia}</td>`;
           dia++;
         }
@@ -464,36 +509,33 @@ document.addEventListener("DOMContentLoaded", () => {
     calBody.innerHTML = html;
   }
 
-  document.getElementById("calPrev").addEventListener("click", () => {
+  document.getElementById("calPrev")?.addEventListener("click", () => {
     calMes--;
     if (calMes < 0) { calMes = 11; calAno--; }
     calDiaSelecionado = null;
     renderCalendario(calAno, calMes);
   });
 
-  document.getElementById("calNext").addEventListener("click", () => {
+  document.getElementById("calNext")?.addEventListener("click", () => {
     calMes++;
     if (calMes > 11) { calMes = 0; calAno++; }
     calDiaSelecionado = null;
     renderCalendario(calAno, calMes);
   });
 
-  // ── Clicar em data da lista → navegar no calendário ──
-  document.getElementById("datasLista").addEventListener("click", (e) => {
+  document.getElementById("datasLista")?.addEventListener("click", (e) => {
     const item = e.target.closest(".data-item");
     if (!item) return;
 
-    // Remover ativo de todos e marcar o clicado
     document.querySelectorAll("#datasLista .data-item").forEach(i => i.classList.remove("ativo"));
     item.classList.add("ativo");
 
-    // Parsear "DD/MM/AAAA"
     const texto = item.querySelector("span")?.textContent?.trim();
     if (!texto) return;
     const partes = texto.split("/");
     if (partes.length !== 3) return;
     const dia = parseInt(partes[0], 10);
-    const mes = parseInt(partes[1], 10) - 1; // 0-indexed
+    const mes = parseInt(partes[1], 10) - 1;
     const ano = parseInt(partes[2], 10);
 
     calDiaSelecionado = dia;
@@ -502,62 +544,12 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCalendario(calAno, calMes, calDiaSelecionado);
   });
 
-  // Render inicial do calendário
   renderCalendario(calAno, calMes);
 
-  // ══════════════════════════════════════════════════════
-  //  MODAL INICIAR CONSULTA
-  // ══════════════════════════════════════════════════════
-  const modalOverlay = document.getElementById("modalIniciarOverlay");
   const consultaView = document.getElementById("consultaView");
 
-  document.getElementById("btnIniciarConsulta").addEventListener("click", () => {
-    const t = currentTratamento;
-    document.getElementById("modalNome").textContent = t.paciente;
-    document.getElementById("modalServico").textContent = t.servico;
-
-    // Extrair minutos do status
-    const match = t.status.match(/(\d+)/);
-    const minutos = match ? match[1] + " Minutos" : "—";
-    document.getElementById("modalTempo").textContent = minutos;
-
-    modalOverlay.style.display = "flex";
-  });
-
-  document.getElementById("btnModalCancelar").addEventListener("click", () => {
-    modalOverlay.style.display = "none";
-  });
-
-  // Fechar ao clicar fora
-  modalOverlay.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) {
-      modalOverlay.style.display = "none";
-    }
-  });
-
-  // Confirmar iniciar → abrir tela de consulta
-  document.getElementById("btnModalIniciar").addEventListener("click", () => {
-    modalOverlay.style.display = "none";
-
-    const t = currentTratamento;
-
-    // Esconder tudo
-    metricasRow.style.display = "none";
-    filterBar.style.display = "none";
-    tratamentosLayout.style.display = "none";
-    editarPlanoView.style.display = "none";
-
-    // Preencher dados na tela de consulta
-    document.getElementById("consultaNomePaciente").textContent = t.paciente;
-    document.getElementById("consultaServico").textContent = t.servico;
-
-    // Mostrar tela de consulta
-    consultaView.style.display = "block";
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-
   // ══════════════════════════════════════════════════════
-  //  CONSULTA — ODONTOGRAMA (toggle dentes)
+  //  CONSULTA — ODONTOGRAMA
   // ══════════════════════════════════════════════════════
   document.querySelectorAll(".dente-consulta").forEach(dente => {
     dente.addEventListener("click", () => {
@@ -568,130 +560,56 @@ document.addEventListener("DOMContentLoaded", () => {
         dente.classList.remove("saudavel");
         dente.classList.add("tratamento");
       }
-      // Atualizar checkbox "Selecionar Todos"
-      const todos = document.querySelectorAll(".dente-consulta");
+      const todos       = document.querySelectorAll(".dente-consulta");
       const selecionados = document.querySelectorAll(".dente-consulta.tratamento");
       document.getElementById("chkSelecionarTodos").checked = selecionados.length === todos.length;
     });
   });
 
-  // Selecionar Todos
   document.getElementById("chkSelecionarTodos").addEventListener("change", (e) => {
-    const todos = document.querySelectorAll(".dente-consulta");
-    todos.forEach(d => {
+    document.querySelectorAll(".dente-consulta").forEach(d => {
       d.classList.remove("saudavel", "tratamento");
       d.classList.add(e.target.checked ? "tratamento" : "saudavel");
     });
   });
 
   // ══════════════════════════════════════════════════════
-  //  MODAL ADICIONAR ETAPA NO CHECKLIST
-  // ══════════════════════════════════════════════════════
-  const maeOverlay    = document.getElementById("modalNovaEtapaOverlay");
-  const maeInputNome  = document.getElementById("inputMaeNome");
-  const maeInputDesc  = document.getElementById("inputMaeDescricao");
-  const maeChkConc    = document.getElementById("chkMaeConcluida");
-  const maeContador   = document.getElementById("maeContador");
-
-  function abrirMae() {
-    maeInputNome.value  = "";
-    maeInputDesc.value  = "";
-    maeChkConc.checked  = false;
-    maeInputNome.classList.remove("erro");
-    maeContador.textContent = "0 / 80";
-    maeOverlay.style.display = "flex";
-    setTimeout(() => maeInputNome.focus(), 80);
-  }
-
-  function fecharMae() {
-    maeOverlay.style.display = "none";
-  }
-
-  function confirmarMae() {
-    const nome = maeInputNome.value.trim();
-    if (!nome) {
-      maeInputNome.classList.add("erro");
-      maeInputNome.focus();
-      return;
-    }
-
-    const lista = document.getElementById("checklistLista");
-    const novaEtapa = document.createElement("label");
-    novaEtapa.className = "checklist-item";
-
-    const chk = document.createElement("input");
-    chk.type = "checkbox";
-    if (maeChkConc.checked) chk.checked = true;
-
-    novaEtapa.appendChild(chk);
-    novaEtapa.appendChild(document.createTextNode(" " + nome));
-
-    if (maeInputDesc.value.trim()) {
-      const desc = document.createElement("span");
-      desc.className = "checklist-item-desc";
-      desc.textContent = maeInputDesc.value.trim();
-      novaEtapa.appendChild(desc);
-    }
-
-    lista.appendChild(novaEtapa);
-    fecharMae();
-  }
-
-  document.getElementById("btnAdicionarEtapa").addEventListener("click", abrirMae);
-  document.getElementById("btnMaeFechar").addEventListener("click", fecharMae);
-  document.getElementById("btnMaeCancelar").addEventListener("click", fecharMae);
-  document.getElementById("btnMaeConfirmar").addEventListener("click", confirmarMae);
-
-  // Fechar ao clicar fora do card
-  maeOverlay.addEventListener("click", (e) => {
-    if (e.target === maeOverlay) fecharMae();
-  });
-
-  // Confirmar com Enter no campo nome
-  maeInputNome.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") { e.preventDefault(); confirmarMae(); }
-    if (e.key === "Escape") fecharMae();
-  });
-
-  // Remover estado de erro ao digitar
-  maeInputNome.addEventListener("input", () => {
-    maeInputNome.classList.remove("erro");
-    maeContador.textContent = `${maeInputNome.value.length} / 80`;
-  });
-
-  // ══════════════════════════════════════════════════════
-  //  CONSULTA — FINALIZAR (abrir tela de finalização)
-  // ══════════════════════════════════════════════════════
-  document.getElementById("btnFinalizarConsulta").addEventListener("click", abrirFinalizarConsulta);
-
-  // ══════════════════════════════════════════════════════
-  //  TELA FINALIZAR CONSULTA
+  //  FINALIZAR CONSULTA
   // ══════════════════════════════════════════════════════
   const finalizarConsultaView = document.getElementById("finalizarConsultaView");
 
+  document.getElementById("btnFinalizarConsulta").addEventListener("click", abrirFinalizarConsulta);
+
   function abrirFinalizarConsulta() {
-    const t = currentTratamento;
+    console.log('[FinalizarView] abrindo | currentConsulta:', currentConsulta);
+    const t = currentTratamento || {};
 
-    // Preencher header e sidebar
-    document.getElementById("finalizarNomePaciente").textContent = t.paciente;
-    document.getElementById("finalizarServico").textContent = t.servico;
-    document.getElementById("finalizarResumoNome").textContent = t.paciente;
-    document.getElementById("finalizarResumoServico").textContent = t.servico;
-    document.getElementById("finalizarResumoEtapas").textContent = `${t.etapasFeitas} de ${t.etapasTotal} Etapas`;
-    const pct = t.etapasTotal > 0 ? Math.round((t.etapasFeitas / t.etapasTotal) * 100) : 0;
+    document.getElementById("finalizarNomePaciente").textContent = t.paciente || '—';
+    document.getElementById("finalizarServico").textContent      = t.servico  || '—';
+    document.getElementById("finalizarResumoNome").textContent   = t.paciente || '—';
+    document.getElementById("finalizarResumoServico").textContent = t.servico || '—';
+    document.getElementById("finalizarResumoEtapas").textContent  =
+      `${t.etapasFeitas || 0} de ${t.etapasTotal || 0} Etapas`;
+    const pct = t.etapasTotal > 0
+      ? Math.round((t.etapasFeitas / t.etapasTotal) * 100) : 0;
     document.getElementById("finalizarResumoProgressoFill").style.width = pct + "%";
-    document.getElementById("finalizarResumoUltimaEtapa").textContent = t.ultimaEtapa;
-    document.getElementById("finalizarResumoProximaEtapa").textContent = t.proximaEtapa;
+    document.getElementById("finalizarResumoUltimaEtapa").textContent   = t.ultimaEtapa  || '—';
+    document.getElementById("finalizarResumoProximaEtapa").textContent  = t.proximaEtapa || '—';
 
-    // Copiar dados da consulta
-    document.getElementById("finalizarCondicao").textContent =
-      document.getElementById("consultaCondicao").value || "—";
-    document.getElementById("finalizarDescricao").textContent =
-      document.getElementById("consultaDescricao").value || "—";
-    document.getElementById("finalizarObservacoes").textContent =
-      document.getElementById("observacoesClinicas").value || "—";
+    const dentesSelecionados = [...document.querySelectorAll(".dente-consulta.tratamento")]
+      .map(d => d.dataset.num).filter(Boolean);
 
-    // Espelhar odontograma da consulta (snapshot somente leitura)
+    pendingObservacoes = {
+      condicao:  document.getElementById("consultaCondicao")?.value?.trim()  || null,
+      descricao: document.getElementById("consultaDescricao")?.value?.trim() || null,
+      observacao: document.getElementById("observacoesClinicas")?.value?.trim() || null,
+      dente: dentesSelecionados.length ? dentesSelecionados.join(',') : null,
+    };
+
+    document.getElementById("finalizarCondicao").textContent    = pendingObservacoes.condicao   || "—";
+    document.getElementById("finalizarDescricao").textContent   = pendingObservacoes.descricao  || "—";
+    document.getElementById("finalizarObservacoes").textContent = pendingObservacoes.observacao || "—";
+
     document.querySelectorAll(".dente-consulta").forEach(src => {
       const dest = document.querySelector(`.dente-finalizar[data-num="${src.dataset.num}"]`);
       if (!dest) return;
@@ -699,188 +617,580 @@ document.addEventListener("DOMContentLoaded", () => {
       dest.classList.add(src.classList.contains("tratamento") ? "tratado-consulta" : "saudavel");
     });
 
+    _resetarEscolha();
     esconderTudo();
     finalizarConsultaView.style.display = "block";
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  // Voltar à consulta
   document.getElementById("btnCancelarFinalizar").addEventListener("click", () => {
+    _resetarEscolha();
     finalizarConsultaView.style.display = "none";
     consultaView.style.display = "block";
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
-  // Confirmar finalização
-  document.getElementById("btnConfirmarFinalizar").addEventListener("click", () => {
+  // ── Helpers de finalização ──────────────────────────────────────────
+  function _resetarEscolha() {
+    document.getElementById("finalizarEscolha").style.display  = "none";
+    document.getElementById("btnConfirmarFinalizar").style.display = "";
+    _prontuarioParaFinalizar = null;
+    _planoMaisRecente        = null;
+  }
+
+  async function _concluirFinalizacao() {
+    const idPaciente = currentConsulta?.idPaciente;
+
+    // Mark consultation as "Encerrada"
+    if (currentConsulta?.id) {
+      try {
+        await apiAtualizarStatusConsulta(currentConsulta.id, 'Encerrada');
+      } catch (err) {
+        console.warn('Não foi possível encerrar consulta:', err.message);
+      }
+    }
+
     finalizarConsultaView.style.display = "none";
-    mostrarLista();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    _resetarEscolha();
+
+    tabAtual = 'concluidos';
+    tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === 'concluidos'));
+
+    await carregarDados();
+
+    if (idPaciente) {
+      const consultaEnc = todasConsultas.find(
+        c => c.idPaciente === idPaciente && c.status === 'Encerrada'
+      );
+      if (consultaEnc) {
+        currentTratamento = consultaToRow(consultaEnc);
+        currentConsulta   = consultaEnc;
+        atualizarResumo(currentTratamento);
+      }
+      await abrirProntuario("lista");
+    } else {
+      mostrarLista();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }
+
+  // ── Confirmar Finalização: verificar se já existem registros ────────
+  document.getElementById("btnConfirmarFinalizar").addEventListener("click", async () => {
+    const idPaciente = currentConsulta?.idPaciente;
+    const idServico  = currentConsulta?.idServico || null;
+    if (!idPaciente) {
+      // No patient linked — just close without creating a plano
+      await _concluirFinalizacao();
+      return;
+    }
+
+    const btn = document.getElementById("btnConfirmarFinalizar");
+    btn.disabled = true;
+
+    try {
+      const resPront = await apiObterOuCriarProntuario(idPaciente);
+      _prontuarioParaFinalizar = resPront?.dados || null;
+
+      if (_prontuarioParaFinalizar?.id) {
+        const resPlanos = await apiGetPlanosPorProntuario(_prontuarioParaFinalizar.id);
+        const existentes = (resPlanos?.dados || []).sort((a, b) => b.id - a.id);
+
+        if (existentes.length > 0) {
+          _planoMaisRecente = existentes[0];
+          // Show choice UI
+          btn.style.display = "none";
+          const escolha = document.getElementById("finalizarEscolha");
+          escolha.style.display = "flex";
+          btn.disabled = false;
+          return;
+        }
+      }
+
+      // No existing planos → create new directly
+      const { condicao, descricao, observacao, dente } = pendingObservacoes;
+      if (_prontuarioParaFinalizar?.id) {
+        await apiCadastrarPlano({
+          idProntuario: _prontuarioParaFinalizar.id,
+          idServico,
+          condicao,
+          descricao,
+          observacao,
+          dente,
+          status: 'Concluido'
+        });
+      }
+      await _concluirFinalizacao();
+    } catch (err) {
+      console.error('[Finalizar] Erro:', err.message);
+      await _concluirFinalizacao();
+    }
+
+    btn.disabled = false;
+  });
+
+  // ── Atualizar último registro ────────────────────────────────────────
+  document.getElementById("btnAtualizarPlano").addEventListener("click", async () => {
+    const idServico = currentConsulta?.idServico || null;
+    const { condicao, descricao, observacao, dente } = pendingObservacoes;
+    const plano = _planoMaisRecente;
+
+    if (plano) {
+      try {
+        await apiEditarPlano(plano.id, {
+          idProntuario: plano.idProntuario,
+          idServico:    idServico ?? plano.idServico ?? null,
+          condicao:     condicao  || plano.condicao  || null,
+          descricao:    descricao || plano.descricao || null,
+          observacao:   observacao|| plano.observacao|| null,
+          dente:        dente     || plano.dente     || null,
+          status: 'Concluido'
+        });
+      } catch (err) {
+        console.error('[Finalizar] Erro ao atualizar plano:', err.message);
+      }
+    }
+
+    await _concluirFinalizacao();
+  });
+
+  // ── Criar novo registro ──────────────────────────────────────────────
+  document.getElementById("btnCriarNovoPlano").addEventListener("click", async () => {
+    const idServico = currentConsulta?.idServico || null;
+    const { condicao, descricao, observacao, dente } = pendingObservacoes;
+
+    if (_prontuarioParaFinalizar?.id) {
+      try {
+        await apiCadastrarPlano({
+          idProntuario: _prontuarioParaFinalizar.id,
+          idServico,
+          condicao,
+          descricao,
+          observacao,
+          dente,
+          status: 'Concluido'
+        });
+      } catch (err) {
+        console.error('[Finalizar] Erro ao criar plano:', err.message);
+      }
+    }
+
+    await _concluirFinalizacao();
   });
 
   // ══════════════════════════════════════════════════════
   //  PRONTUÁRIO — NAVEGAÇÃO
   // ══════════════════════════════════════════════════════
   const prontuarioView = document.getElementById("prontuarioView");
-  let prontuarioOrigin = "lista"; // de onde veio: "lista" ou "consulta"
+  let prontuarioOrigin = "lista";
 
-  // Função auxiliar: esconder todas as views
   function esconderTudo() {
-    metricasRow.style.display = "none";
-    filterBar.style.display = "none";
+    metricasRow.style.display       = "none";
+    filterBar.style.display         = "none";
     tratamentosLayout.style.display = "none";
-    editarPlanoView.style.display = "none";
-    consultaView.style.display = "none";
-    prontuarioView.style.display = "none";
+    editarPlanoView.style.display   = "none";
+    consultaView.style.display      = "none";
+    prontuarioView.style.display    = "none";
     finalizarConsultaView.style.display = "none";
   }
 
   function mostrarLista() {
-    metricasRow.style.display = "";
-    filterBar.style.display = "";
+    metricasRow.style.display       = "";
+    filterBar.style.display         = "";
     tratamentosLayout.style.display = "";
   }
 
-  // Abrir Prontuário — preencher dados do paciente selecionado
-  function abrirProntuario(origem) {
+  function setEl(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  }
+
+  async function abrirProntuario(origem) {
     prontuarioOrigin = origem;
     esconderTudo();
 
-    const t = currentTratamento;
-    document.getElementById("prontuarioNome").textContent = t.paciente;
+    const t       = currentTratamento || {};
+    const idPac   = t.idPaciente;
+    const paciente = idPac ? (pacientesMap[idPac] || {}) : {};
 
+    console.log('[Prontuário] abrindo | idPac:', idPac, '| t:', t);
+
+    // Fill header synchronously from in-memory data
+    setEl("prontuarioNome",  t.paciente || '—');
+    setEl("prontuarioCPF",   `CPF: ${formatarCPF(paciente.cpf)}`);
+    setEl("prontuarioTel",   formatarTelefone(paciente.telefone));
+    setEl("prontuarioEmail", paciente.email || '—');
+    setEl("prontuarioInfoEmail",    paciente.email    || '—');
+    setEl("prontuarioInfoEndereco", paciente.endereco || '—');
+
+    // Show view immediately with header populated
     prontuarioView.style.display = "block";
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    if (!idPac) {
+      renderConsultasAgendadas([]);
+      renderPlanosRealizados([], null);
+      return;
+    }
+
+    // Load prontuário + planos from API
+    try {
+      const { prontuario, planos } = await buscarProntuarioEPlanos(idPac);
+
+      setEl("prontuarioUltimaAtualizacao", prontuario
+        ? formatarData(prontuario.dataUltimaAtualizacao ?? prontuario.dataAbertura)
+        : '—');
+
+      const consultasPaciente = todasConsultas.filter(c =>
+        c.idPaciente === idPac &&
+        c.status !== 'Cancelada' &&
+        c.status !== 'Inativa'
+      );
+      renderConsultasAgendadas(consultasPaciente);
+      renderPlanosRealizados(planos, prontuario);
+    } catch (err) {
+      console.error('Erro ao carregar dados do prontuário:', err);
+    }
   }
 
-  // Botão "olho" na tabela (Prontuário) E Botão Prontuário Mobile
+  // Returns { prontuario, planos } — always fetches fresh from API.
+  async function buscarProntuarioEPlanos(idPaciente) {
+    let prontuario = null;
+    let planos     = [];
+
+    try {
+      const res = await apiGetProntuarioPorPaciente(idPaciente);
+      prontuario = res?.dados || null;
+      console.log('[Prontuário] prontuário encontrado:', prontuario);
+    } catch (err) {
+      console.log('[Prontuário] nenhum prontuário para paciente', idPaciente, '—', err.message);
+      return { prontuario: null, planos: [] };
+    }
+
+    if (prontuario?.id) {
+      try {
+        const resPlanos = await apiGetPlanosPorProntuario(prontuario.id);
+        planos = resPlanos?.dados || [];
+        console.log('[Prontuário] planos do prontuário', prontuario.id, ':', planos);
+      } catch (err) {
+        console.error('[Prontuário] erro ao buscar planos:', err.message);
+      }
+    }
+
+    return { prontuario, planos };
+  }
+
+  function renderConsultasAgendadas(consultas) {
+    const tbody = document.getElementById('tbodyConsultasAgendadas');
+    if (!tbody) return;
+
+    const hoje    = new Date().toISOString().split('T')[0];
+    const proximas = consultas
+      .filter(c => String(c.dataConsulta) >= hoje)
+      .sort((a, b) => `${a.dataConsulta}T${a.horaConsulta}`.localeCompare(`${b.dataConsulta}T${b.horaConsulta}`));
+
+    if (!proximas.length) {
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--c3);padding:1rem">Nenhuma consulta agendada</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = proximas.map(c => `
+      <tr>
+        <td>${formatarData(c.dataConsulta)}</td>
+        <td>${(c.horaConsulta || '').slice(0, 5)}</td>
+        <td>${c.nomeServico || '—'}</td>
+      </tr>
+    `).join('');
+  }
+
+  function renderPlanosRealizados(planos, prontuario) {
+    const tbodyEl = document.querySelector('#tabelaPlanosRealizados tbody');
+    if (!tbodyEl) return;
+
+    currentProntuario = prontuario;
+
+    if (!planos.length) {
+      tbodyEl.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--c3);padding:1rem">Nenhum plano encontrado</td></tr>`;
+      setEl('prontuarioPlanoServico', '—');
+      setEl('prontuarioPlanoData',    '—');
+      setEl('prontuarioCondicao',     '—');
+      setEl('prontuarioDescricao',    '—');
+      setEl('prontuarioObsTexto',     '—');
+      setEl('prontuarioDentista',     '—');
+      const editAcao = document.getElementById('prontuarioEditarAcao');
+      if (editAcao) editAcao.style.display = 'none';
+      return;
+    }
+
+    tbodyEl.innerHTML = planos.map((p, i) => `
+      <tr class="plano-row${i === 0 ? ' selected' : ''}" data-idx="${i}">
+        <td>${resolverDataPlano(p, prontuario)}</td>
+        <td>${p.nomeServico || '—'}</td>
+        <td>${dentistaNome}</td>
+      </tr>
+    `).join('');
+
+    // Show first plano details
+    mostrarDetalhePlano(planos[0], prontuario);
+
+    // Click listeners
+    tbodyEl.querySelectorAll('.plano-row').forEach(row => {
+      row.addEventListener('click', () => {
+        tbodyEl.querySelectorAll('.plano-row').forEach(r => r.classList.remove('selected'));
+        row.classList.add('selected');
+        const idx = parseInt(row.dataset.idx);
+        mostrarDetalhePlano(planos[idx], prontuario);
+      });
+    });
+  }
+
+  function mostrarDetalhePlano(plano, prontuario) {
+    _fecharEdicaoInline();
+    currentPlano      = plano;
+    currentProntuario = prontuario;
+
+    setEl('prontuarioPlanoServico', plano.nomeServico || '—');
+    setEl('prontuarioPlanoData',    resolverDataPlano(plano, prontuario));
+    setEl('prontuarioCondicao',     plano.condicao   || '—');
+    setEl('prontuarioDescricao',    plano.descricao  || '—');
+    setEl('prontuarioObsTexto',     plano.observacao || '—');
+    setEl('prontuarioDentista',     dentistaNome);
+
+    const editAcao = document.getElementById('prontuarioEditarAcao');
+    if (editAcao) editAcao.style.display = 'flex';
+
+    // Reset all teeth
+    document.querySelectorAll('.dente-prontuario').forEach(d => {
+      d.classList.remove('tratado-consulta');
+      d.classList.add('saudavel');
+    });
+
+    // Highlight selected teeth
+    if (plano.dente) {
+      if (plano.dente === 'todos') {
+        document.querySelectorAll('.dente-prontuario').forEach(d => {
+          d.classList.remove('saudavel');
+          d.classList.add('tratado-consulta');
+        });
+      } else {
+        plano.dente.split(',').forEach(num => {
+          const el = document.querySelector(`.dente-prontuario[data-num="${num.trim()}"]`);
+          if (el) {
+            el.classList.remove('saudavel');
+            el.classList.add('tratado-consulta');
+          }
+        });
+      }
+    }
+  }
+
+  // Botões que abrem prontuário
   document.addEventListener("click", (e) => {
     const btn = e.target.closest(".btn-prontuario") || e.target.closest(".btn-prontuario-mobile");
     if (!btn) return;
-    
-    // Only handle clicks within tratamentos view lists
-    if (!document.getElementById("tbodyTratamentos").contains(btn) && 
-        !document.getElementById("cardsTratamentos").contains(btn)) {
-      return;
-    }
-    
+    if (!document.getElementById("tbodyTratamentos").contains(btn) &&
+        !document.getElementById("cardsTratamentos")?.contains(btn)) return;
     e.stopPropagation();
-
     const idx = parseInt(btn.dataset.idx, 10);
-    if (!isNaN(idx) && idx >= 0 && idx < tratamentos.length) {
-      currentTratamento = tratamentos[idx];
+    if (!isNaN(idx) && idx >= 0 && idx < todosRows.length) {
+      currentTratamento = todosRows[idx];
+      currentConsulta   = currentTratamento._consulta || null;
     }
-
     abrirProntuario("lista");
   });
 
-  // Botão "Prontuário" no rodapé da consulta
-  document.getElementById("btnProntuarioConsulta").addEventListener("click", () => {
-    abrirProntuario("consulta");
-  });
+  document.getElementById("btnProntuarioConsulta")?.addEventListener("click", () => abrirProntuario("consulta"));
+  document.getElementById("btnResumoProntuario")?.addEventListener("click",   () => abrirProntuario("lista"));
 
-  // Botão "Prontuário" no Resumo do Tratamento
-  document.getElementById("btnResumoProntuario").addEventListener("click", () => {
-    abrirProntuario("lista");
-  });
-
-  // Voltar do Prontuário
   document.getElementById("btnVoltarProntuario").addEventListener("click", () => {
+    _fecharEdicaoInline();
     prontuarioView.style.display = "none";
-
-    if (prontuarioOrigin === "consulta") {
-      consultaView.style.display = "block";
-    } else {
-      mostrarLista();
-    }
+    if (prontuarioOrigin === "consulta") consultaView.style.display = "block";
+    else mostrarLista();
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
   // ══════════════════════════════════════════════════════
-  //  PRONTUÁRIO — SELEÇÃO DE PLANOS REALIZADOS
+  //  EDITAR REGISTRO DO PRONTUÁRIO — inline (sem modal)
   // ══════════════════════════════════════════════════════
-  const planosData = [
-    {
-      data: "2023-09-01",
-      servico: "Extração do Siso",
-      dentista: "Pedro Santos",
-      condicao: "Siso em má formação",
-      descricao: "Tratamento de remoção do dente do Siso numero 48",
-      observacoes: "dente do siso 48 removido com sucesso, sem problemas ou sequelas, necessário retorno para acompanhamento da cicatrização.",
-      dentesTratados: ["48"]
-    },
-    {
-      data: "2023-08-10",
-      servico: "Tratamento de Canal",
-      dentista: "Dr. Carlos Mendes",
-      condicao: "Cárie profunda com comprometimento pulpar",
-      descricao: "Tratamento endodôntico do dente 36 com obturação definitiva",
-      observacoes: "Canal tratado com sucesso, paciente relatou melhora imediata da dor. Retorno em 30 dias para avaliação.",
-      dentesTratados: ["36"]
-    }
-  ];
+  let _editModeAtivo = false;
 
-  document.querySelectorAll(".plano-row").forEach(row => {
-    row.addEventListener("click", () => {
-      // Desselecionar todos
-      document.querySelectorAll(".plano-row").forEach(r => r.classList.remove("selected"));
-      row.classList.add("selected");
+  function _abrirEdicaoInline() {
+    if (!currentPlano) return;
+    _editModeAtivo = true;
 
-      const idx = parseInt(row.dataset.plano);
-      const plano = planosData[idx];
-      if (!plano) return;
+    // Populate fields
+    document.getElementById("editCondicao").value  = currentPlano.condicao   || "";
+    document.getElementById("editDescricao").value = currentPlano.descricao  || "";
+    document.getElementById("editObsTexto").value  = currentPlano.observacao || "";
 
-      // Atualizar campos do plano selecionado
-      document.getElementById("prontuarioPlanoServico").textContent = plano.servico;
-      document.getElementById("prontuarioPlanoData").textContent = plano.data;
-      document.getElementById("prontuarioCondicao").textContent = plano.condicao;
-      document.getElementById("prontuarioDescricao").textContent = plano.descricao;
-      document.getElementById("prontuarioObsTexto").textContent = plano.observacoes;
-      document.getElementById("prontuarioDentista").textContent = plano.dentista;
+    // Switch display → edit
+    document.getElementById("prontuarioCondicao").classList.add("d-none");
+    document.getElementById("editCondicao").classList.remove("d-none");
+    document.getElementById("prontuarioDescricao").classList.add("d-none");
+    document.getElementById("editDescricao").classList.remove("d-none");
+    document.getElementById("prontuarioObsTexto").classList.add("d-none");
+    document.getElementById("editObsTexto").classList.remove("d-none");
 
-      // Atualizar dentes no odontograma
-      document.querySelectorAll(".dente-prontuario").forEach(d => {
-        d.classList.remove("tratado-consulta");
-        d.classList.add("saudavel");
-      });
-      plano.dentesTratados.forEach(num => {
-        const dente = document.querySelector(`.dente-prontuario[data-num="${num}"]`);
-        if (dente) {
-          dente.classList.remove("saudavel");
-          dente.classList.add("tratado-consulta");
-        }
-      });
+    // Show save/cancel, hide edit button
+    document.getElementById("btnEditarRegistroProntuario").classList.add("d-none");
+    document.getElementById("prontuarioAcoesEditar").style.display = "flex";
+
+    // Hint on odontogram
+    document.getElementById("odontogramaHint")?.classList.remove("d-none");
+    document.querySelectorAll(".dente-prontuario").forEach(d => {
+      d.style.cursor = "pointer";
     });
+  }
+
+  function _fecharEdicaoInline() {
+    _editModeAtivo = false;
+
+    // Switch edit → display
+    document.getElementById("prontuarioCondicao").classList.remove("d-none");
+    document.getElementById("editCondicao").classList.add("d-none");
+    document.getElementById("prontuarioDescricao").classList.remove("d-none");
+    document.getElementById("editDescricao").classList.add("d-none");
+    document.getElementById("prontuarioObsTexto").classList.remove("d-none");
+    document.getElementById("editObsTexto").classList.add("d-none");
+
+    // Show edit button, hide save/cancel
+    document.getElementById("btnEditarRegistroProntuario").classList.remove("d-none");
+    document.getElementById("prontuarioAcoesEditar").style.display = "none";
+
+    document.getElementById("odontogramaHint")?.classList.add("d-none");
+    document.querySelectorAll(".dente-prontuario").forEach(d => {
+      d.style.cursor = "";
+    });
+  }
+
+  // Odontogram in prontuário view — only interactive in edit mode
+  document.getElementById("prontuarioOdontograma")?.addEventListener("click", (e) => {
+    if (!_editModeAtivo) return;
+    const d = e.target.closest(".dente-prontuario");
+    if (!d) return;
+    if (d.classList.contains("tratado-consulta")) {
+      d.classList.remove("tratado-consulta");
+      d.classList.add("saudavel");
+    } else {
+      d.classList.remove("saudavel");
+      d.classList.add("tratado-consulta");
+    }
+  });
+
+  document.getElementById("btnEditarRegistroProntuario")?.addEventListener("click", _abrirEdicaoInline);
+
+  document.getElementById("btnCancelarEdicaoInline")?.addEventListener("click", () => {
+    // Restore original teeth state from currentPlano
+    if (currentPlano && currentProntuario) mostrarDetalhePlano(currentPlano, currentProntuario);
+    _fecharEdicaoInline();
+  });
+
+  document.getElementById("btnSalvarEdicaoInline")?.addEventListener("click", async () => {
+    if (!currentPlano) return;
+    const btn = document.getElementById("btnSalvarEdicaoInline");
+    btn.disabled = true;
+
+    const editedPlanoId = currentPlano.id;
+    const dentesSelecionados = [...document.querySelectorAll(".dente-prontuario.tratado-consulta")]
+      .map(d => d.dataset.num).filter(Boolean);
+
+    const dados = {
+      idProntuario: currentPlano.idProntuario,
+      idServico:    currentPlano.idServico ?? null,
+      condicao:     document.getElementById("editCondicao").value.trim()  || null,
+      descricao:    document.getElementById("editDescricao").value.trim() || null,
+      observacao:   document.getElementById("editObsTexto").value.trim()  || null,
+      dente:        dentesSelecionados.length ? dentesSelecionados.join(",") : null,
+      status:       currentPlano.status || "Concluido"
+    };
+
+    const erroEl = document.getElementById("erroSalvarRegistro");
+    if (erroEl) erroEl.style.display = "none";
+
+    try {
+      await apiEditarPlano(editedPlanoId, dados);
+      _fecharEdicaoInline();
+
+      const idPac = currentTratamento?.idPaciente;
+      if (idPac) {
+        const { prontuario, planos } = await buscarProntuarioEPlanos(idPac);
+        setEl("prontuarioUltimaAtualizacao", prontuario
+          ? formatarData(prontuario.dataUltimaAtualizacao ?? prontuario.dataAbertura)
+          : "—");
+        renderPlanosRealizados(planos, prontuario);
+
+        // Re-select the plano that was edited
+        const idx = planos.findIndex(p => p.id === editedPlanoId);
+        if (idx >= 0) {
+          const tbodyEl = document.querySelector("#tabelaPlanosRealizados tbody");
+          tbodyEl?.querySelectorAll(".plano-row").forEach(r => r.classList.remove("selected"));
+          tbodyEl?.querySelector(`.plano-row[data-idx="${idx}"]`)?.classList.add("selected");
+          mostrarDetalhePlano(planos[idx], prontuario);
+        }
+      }
+    } catch (err) {
+      console.error("[EditarInline] erro:", err.message);
+      if (erroEl) {
+        erroEl.textContent = "Erro ao salvar: " + err.message;
+        erroEl.style.display = "block";
+      }
+    } finally {
+      btn.disabled = false;
+    }
   });
 
   // ══════════════════════════════════════════════════════
-  //  VERIFICAR REDIRECIONAMENTO PARA PRONTUÁRIO
+  //  VERIFICAR URL PARAMS (?prontuario=nome)
   // ══════════════════════════════════════════════════════
-  const urlParams = new URLSearchParams(window.location.search);
-  const prontuarioNome = urlParams.get("prontuario");
-  if (prontuarioNome) {
-    const idx = tratamentos.findIndex(t => t.paciente === prontuarioNome);
-    if (idx !== -1) {
-      selectedIndex = idx;
-      currentTratamento = tratamentos[idx];
-      renderTabela(tratamentos);
-      atualizarResumo(currentTratamento);
-    } else {
-      // Cria um mock temporário caso o paciente não esteja na lista local
-      currentTratamento = {
-        paciente: prontuarioNome,
-        servico: "Consulta",
-        status: "Em andamento",
-        progresso: 0,
-        proximaSessao: "A definir",
-        etapasFeitas: 0,
-        etapasTotal: 0,
-        ultimaEtapa: "—",
-        proximaEtapa: "—"
-      };
-      atualizarResumo(currentTratamento);
+  async function verificarUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // ?consultaId=X — abrir fluxo de consulta direto (vindo do dashboard)
+    const consultaIdParam = parseInt(urlParams.get("consultaId"));
+    if (consultaIdParam) {
+      // Remove query param da URL imediatamente para evitar reprocessamento
+      history.replaceState(null, '', window.location.pathname);
+
+      const consulta = todasConsultas.find(c => c.id === consultaIdParam);
+      if (consulta) {
+        currentTratamento = consultaToRow(consulta);
+        currentConsulta   = consulta;
+        if (consulta.status === 'Agendada' || consulta.status === 'Aguardando') {
+          try {
+            await apiAtualizarStatusConsulta(consultaIdParam, 'Em Consulta');
+          } catch (err) {
+            console.warn('Não foi possível atualizar status para Em Consulta:', err.message);
+          }
+        }
+        esconderTudo();
+        document.getElementById('consultaNomePaciente').textContent = currentTratamento.paciente || '—';
+        document.getElementById('consultaServico').textContent      = currentTratamento.servico  || '—';
+        consultaView.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+      return;
     }
-    abrirProntuario("lista");
+
+    // ?prontuario=nome — abrir prontuário do paciente
+    const prontuarioNome = urlParams.get("prontuario");
+    if (!prontuarioNome) return;
+
+    const consulta = consultasDent.find(c => c.nomePaciente === prontuarioNome)
+      || todasConsultas.find(c => c.nomePaciente === prontuarioNome);
+
+    if (consulta) {
+      currentTratamento = consultaToRow(consulta);
+      currentConsulta   = consulta;
+    } else {
+      currentTratamento = { paciente: prontuarioNome, servico: '—', idPaciente: null, etapasFeitas: 0, etapasTotal: 0, ultimaEtapa: '—', proximaEtapa: '—' };
+      currentConsulta   = null;
+    }
+
+    await abrirProntuario("lista");
   }
 
+  // ══════════════════════════════════
+  //  INICIALIZAÇÃO
+  // ══════════════════════════════════
+  carregarDados().then(() => verificarUrlParams());
 });

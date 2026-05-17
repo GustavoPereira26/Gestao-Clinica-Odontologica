@@ -1,110 +1,10 @@
 // js/dentista/dashboard.js
-// Dashboard do Dentista — seleção de fila e painel de detalhe
-
-// ─── Dados mock (substituir por chamadas à API futuramente) ─────────────────
-const PACIENTES_FILA = [
-  {
-    id: 1,
-    nome: 'Maria Souza',
-    servico: 'Limpeza',
-    tempo: '10 min',
-    foto: null,
-    telefone: '(11) 98765-4321',
-    cpf: '123.456.789-00',
-    endereco: 'Rua das Flores, 123, Centro, São Paulo – SP',
-    alergias: 'Penicilina',
-    condicoes: 'Hypertension (Controlado)',
-    medicamentos: 'Lisinopril (Diário)',
-    historico: 'Extração do dente do siso (2018)'
-  },
-  {
-    id: 2,
-    nome: 'Carlos Mendes',
-    servico: 'Extração',
-    tempo: '25 min',
-    foto: null,
-    telefone: '(11) 97654-3210',
-    cpf: '987.654.321-00',
-    endereco: 'Av. Paulista, 456, Bela Vista, São Paulo – SP',
-    alergias: 'Nenhuma',
-    condicoes: 'Nenhuma',
-    medicamentos: 'Nenhum',
-    historico: 'Nenhum'
-  },
-  {
-    id: 3,
-    nome: 'Ana Paula',
-    servico: 'Restauração',
-    tempo: '5 min',
-    foto: null,
-    telefone: '(11) 99999-0001',
-    cpf: '111.222.333-44',
-    endereco: 'Rua Augusta, 789, Consolação, São Paulo – SP',
-    alergias: 'Látex',
-    condicoes: 'Diabetes Tipo 2',
-    medicamentos: 'Metformina',
-    historico: 'Nenhum'
-  },
-  {
-    id: 4,
-    nome: 'Pedro Lima',
-    servico: 'Consulta',
-    tempo: '15 min',
-    foto: null,
-    telefone: '(21) 98888-7777',
-    cpf: '444.555.666-77',
-    endereco: 'Rua do Ouvidor, 50, Centro, Rio de Janeiro – RJ',
-    alergias: 'Nenhuma',
-    condicoes: 'Nenhuma',
-    medicamentos: 'Nenhum',
-    historico: 'Canal no molar (2020)'
-  },
-  {
-    id: 5,
-    nome: 'Fernanda Costa',
-    servico: 'Clareamento',
-    tempo: '30 min',
-    foto: null,
-    telefone: '(11) 92222-3333',
-    cpf: '555.666.777-88',
-    endereco: 'Al. Santos, 200, Jardins, São Paulo – SP',
-    alergias: 'Nenhuma',
-    condicoes: 'Nenhuma',
-    medicamentos: 'Nenhum',
-    historico: 'Nenhum'
-  },
-  {
-    id: 6,
-    nome: 'Ricardo Alves',
-    servico: 'Canal',
-    tempo: '20 min',
-    foto: null,
-    telefone: '(11) 91111-2222',
-    cpf: '666.777.888-99',
-    endereco: 'Rua Haddock Lobo, 300, Cerqueira César, São Paulo – SP',
-    alergias: 'Ibuprofeno',
-    condicoes: 'Nenhuma',
-    medicamentos: 'Nenhum',
-    historico: 'Extração (2019)'
-  },
-  {
-    id: 7,
-    nome: 'Juliana Santos',
-    servico: 'Revisão',
-    tempo: '12 min',
-    foto: null,
-    telefone: '(11) 93333-4444',
-    cpf: '777.888.999-00',
-    endereco: 'Rua Oscar Freire, 88, Pinheiros, São Paulo – SP',
-    alergias: 'Nenhuma',
-    condicoes: 'Nenhuma',
-    medicamentos: 'Nenhum',
-    historico: 'Nenhum'
-  }
-];
+// Dashboard do Dentista — fila de espera e painel de detalhe
 
 // ─── Estado local ───────────────────────────────────────────────────────────
-let pacienteSelecionadoId = null;
+let filaConsultas    = [];   // consultas do dia com status Aguardando
+let pacientesMap     = {};   // id -> PacienteResponse
+let consultaAtualId  = null; // id da consulta selecionada
 let planosTratamento = [];
 
 const ESTADOS_DENTE = ['saudavel', 'selecao', 'tratado', 'ausente'];
@@ -128,36 +28,88 @@ const NOMES_DENTES = {
   47:'Segundo Molar Inferior Direito',    48:'Terceiro Molar Inferior Direito',
 };
 
+// ─── Helpers ────────────────────────────────────────────────────────────────
+function formatarCPF(cpf) {
+  const d = (cpf || '').replace(/\D/g, '');
+  if (d.length !== 11) return cpf || '—';
+  return `${d.slice(0,3)}.${d.slice(3,6)}.${d.slice(6,9)}-${d.slice(9)}`;
+}
+
+function formatarTelefone(tel) {
+  const d = (tel || '').replace(/\D/g, '');
+  if (d.length === 11) return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+  if (d.length === 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+  return tel || '—';
+}
+
+function calcularTempoAguardando(horaConsulta) {
+  if (!horaConsulta) return '—';
+  const [h, m] = horaConsulta.split(':').map(Number);
+  const agora    = new Date();
+  const agendado = new Date(agora);
+  agendado.setHours(h, m, 0, 0);
+  const diffMin = Math.floor((agora - agendado) / 60000);
+  if (diffMin < 0) return horaConsulta.slice(0, 5);
+  return `${diffMin} min`;
+}
+
+function infoColuna(c) {
+  if (c.status === 'Aguardando')  return calcularTempoAguardando(c.horaConsulta);
+  if (c.status === 'Em Consulta') return 'Em Consulta';
+  return (c.horaConsulta || '').slice(0, 5);
+}
+
+// ─── Carga de dados da API ──────────────────────────────────────────────────
+async function carregarDashboard() {
+  const dentistaId = parseInt(sessionStorage.getItem('id'));
+  if (!dentistaId) return;
+
+  try {
+    const [resConsultas, resPacientes] = await Promise.all([
+      apiGetConsultasDia(),
+      apiGetPacientes()
+    ]);
+
+    const todasConsultas = resConsultas?.dados || [];
+    const todosPacientes = resPacientes?.dados || [];
+
+    todosPacientes.forEach(p => { pacientesMap[p.id] = p; });
+
+    const minhasHoje = todasConsultas.filter(c => c.idDentista === dentistaId);
+
+    // Show all active consultations for today (not just those who arrived)
+    filaConsultas = minhasHoje
+      .filter(c => ['Agendada', 'Aguardando', 'Em Consulta'].includes(c.status))
+      .sort((a, b) => (a.horaConsulta || '').localeCompare(b.horaConsulta || ''));
+
+    const emEspera = minhasHoje.filter(c => c.status === 'Aguardando').length;
+
+    document.getElementById('metricaConsultas').textContent = minhasHoje.length;
+    document.getElementById('metricaFila').textContent      = emEspera;
+
+    renderizarFila(filaConsultas);
+  } catch (err) {
+    console.error('Erro ao carregar dashboard:', err.message);
+  }
+}
+
 // ─── Inicialização ──────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Sidebar
   SidebarComponent.render('sidebarContainer', {
     perfil: 'dentista',
     ativo: 'dashboard'
   });
 
-  // Hamburguer
   const btnHamburger = document.getElementById('btnHamburger');
   if (btnHamburger) {
     btnHamburger.addEventListener('click', () => SidebarComponent.toggleSidebar());
   }
 
-  // Popular tabela com dados mock
-  // TODO: substituir por: apiGetPacientesEmFila().then(renderizarFila)
-  renderizarFila(PACIENTES_FILA);
+  carregarDashboard();
 
-  // Atualizar métricas
-  // TODO: substituir por: apiGetConsultasDia().then(data => { ... })
-  document.getElementById('metricaConsultas').textContent = 30;
-  document.getElementById('metricaFila').textContent = PACIENTES_FILA.length;
-
-  // Botão iniciar consulta
   document.getElementById('btnIniciarConsulta').addEventListener('click', iniciarConsulta);
-
-  // Botão voltar da tela de tratamento
   document.getElementById('btnVoltarDash').addEventListener('click', voltarAoDashboard);
 
-  // Tela de plano de tratamento
   document.getElementById('btnVoltarParaTratamento').addEventListener('click', () => {
     mostrarView('iniciarTratamento');
   });
@@ -166,29 +118,26 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('apBtnConfirmar').addEventListener('click', confirmarPlano);
 
-  // Tela de confirmação
   document.getElementById('cfBtnDashboard').addEventListener('click', () => {
     planosTratamento = [];
     mostrarView('dashboard');
   });
   document.getElementById('cfBtnProntuario').addEventListener('click', () => {
-    const paciente = PACIENTES_FILA.find(p => p.id === pacienteSelecionadoId);
-    if (paciente) {
-      window.location.href = `../dentista/tratamentos.html?prontuario=${encodeURIComponent(paciente.nome)}`;
+    const consulta = filaConsultas.find(c => c.id === consultaAtualId);
+    if (consulta) {
+      window.location.href = `../dentista/tratamentos.html?prontuario=${encodeURIComponent(consulta.nomePaciente)}`;
     }
   });
   document.getElementById('cfBtnImprimir').addEventListener('click', () => {
     window.print();
   });
 
-  // Odontograma
   inicializarOdontograma();
 
-  // Formulário de planejamento → adiciona ao array e vai para tela de plano
   document.getElementById('formPlano').addEventListener('submit', e => {
     e.preventDefault();
-    const dente    = document.getElementById('itInputDente').value.trim();
-    const condicao = document.getElementById('itInputCondicao').value.trim();
+    const dente     = document.getElementById('itInputDente').value.trim();
+    const condicao  = document.getElementById('itInputCondicao').value.trim();
     const descricao = document.getElementById('itTextareaDescricao').value.trim();
     if (!condicao || !descricao) {
       alert('Preencha todos os campos antes de adicionar o plano.');
@@ -198,132 +147,100 @@ document.addEventListener('DOMContentLoaded', () => {
     mostrarTelaDePlano();
   });
 
-  // Botão prontuário dentro da tela de tratamento
   document.getElementById('btnProntuarioIt').addEventListener('click', () => {
-    const paciente = PACIENTES_FILA.find(p => p.id === pacienteSelecionadoId);
-    if (paciente) {
-      window.location.href = `../dentista/tratamentos.html?prontuario=${encodeURIComponent(paciente.nome)}`;
+    const consulta = filaConsultas.find(c => c.id === consultaAtualId);
+    if (consulta) {
+      window.location.href = `../dentista/tratamentos.html?prontuario=${encodeURIComponent(consulta.nomePaciente)}`;
     }
   });
 });
 
 // ─── Renderiza as linhas da tabela ──────────────────────────────────────────
-function renderizarFila(pacientes) {
+function renderizarFila(consultas) {
   const tbody = document.getElementById('tbodyFila');
   tbody.innerHTML = '';
 
-  if (!pacientes.length) {
+  if (!consultas.length) {
     tbody.innerHTML = `
       <tr>
         <td colspan="3" style="text-align:center; padding:2rem; color:var(--c3);">
-          Nenhum paciente em espera
+          Nenhuma consulta para hoje
         </td>
       </tr>`;
     return;
   }
 
-  pacientes.forEach(p => {
+  consultas.forEach(c => {
     const tr = document.createElement('tr');
-    tr.dataset.id = p.id;
+    tr.dataset.id = c.id;
     tr.innerHTML = `
-      <td class="ps-4 fw-medium">${p.nome}</td>
-      <td>${p.servico}</td>
-      <td>${p.tempo}</td>
+      <td class="ps-4 fw-medium">${c.nomePaciente || '—'}</td>
+      <td>${c.nomeServico || '—'}</td>
+      <td>${infoColuna(c)}</td>
     `;
-    tr.addEventListener('click', () => selecionarPaciente(p.id));
+    tr.addEventListener('click', () => selecionarPaciente(c.id));
     tbody.appendChild(tr);
   });
 }
 
-// ─── Seleciona paciente e atualiza painel ───────────────────────────────────
-function selecionarPaciente(id) {
-  // Remove destaque da linha anterior
+// ─── Seleciona consulta e atualiza painel ───────────────────────────────────
+function selecionarPaciente(consultaId) {
   const linhaAnterior = document.querySelector('#tabelaFila tbody tr.selecionado');
   if (linhaAnterior) linhaAnterior.classList.remove('selecionado');
 
-  // Destaca nova linha
-  const linhaNova = document.querySelector(`#tabelaFila tbody tr[data-id="${id}"]`);
+  const linhaNova = document.querySelector(`#tabelaFila tbody tr[data-id="${consultaId}"]`);
   if (linhaNova) linhaNova.classList.add('selecionado');
 
-  pacienteSelecionadoId = id;
+  consultaAtualId = consultaId;
 
-  // Habilita botão iniciar consulta
+  const consulta = filaConsultas.find(c => c.id === consultaId);
+  const podeIniciar = ['Agendada', 'Aguardando', 'Em Consulta'].includes(consulta?.status);
   const btnIniciar = document.getElementById('btnIniciarConsulta');
-  btnIniciar.disabled = false;
-  document.getElementById('hintIniciar').style.visibility = 'hidden';
+  btnIniciar.disabled = !podeIniciar;
+  btnIniciar.textContent = consulta?.status === 'Em Consulta' ? 'Continuar Consulta' : 'Iniciar Consulta';
+  document.getElementById('hintIniciar').style.visibility = podeIniciar ? 'hidden' : 'visible';
 
-  // Busca dados e preenche painel
-  // TODO: substituir por chamada à API quando disponível: apiGetPaciente(id).then(preencherPainel)
-  const paciente = PACIENTES_FILA.find(p => p.id === id);
-  if (paciente) preencherPainel(paciente);
+  const paciente = pacientesMap[consulta?.idPaciente];
+  if (consulta) preencherPainel(consulta, paciente);
 }
 
 // ─── Preenche o painel lateral com os dados do paciente ─────────────────────
-function preencherPainel(p) {
-  // Troca estado vazio → conteúdo
+function preencherPainel(consulta, paciente) {
   document.getElementById('detalheVazio').style.display = 'none';
   document.getElementById('detalheConteudo').hidden = false;
 
-  // Foto / avatar placeholder
-  const foto = document.getElementById('detalheFoto');
+  const foto        = document.getElementById('detalheFoto');
   const placeholder = document.getElementById('detalheAvatarPlaceholder');
+  foto.classList.remove('visivel');
+  placeholder.classList.remove('oculto');
 
-  if (p.foto) {
-    foto.src = p.foto;
-    foto.alt = `Foto de ${p.nome}`;
-    foto.classList.add('visivel');
-    placeholder.classList.add('oculto');
-  } else {
-    foto.classList.remove('visivel');
-    placeholder.classList.remove('oculto');
-  }
+  document.getElementById('detalheNome').textContent    = consulta.nomePaciente || '—';
+  document.getElementById('detalheServico').textContent = consulta.nomeServico  || '—';
+  document.getElementById('detalheTempo').textContent   = calcularTempoAguardando(consulta.horaConsulta);
 
-  // Dados básicos
-  document.getElementById('detalheNome').textContent       = p.nome;
-  document.getElementById('detalheServico').textContent    = p.servico;
-  document.getElementById('detalheTempo').textContent      = p.tempo;
+  document.getElementById('detalheTelefone').textContent = formatarTelefone(paciente?.telefone);
+  document.getElementById('detalheCpf').textContent      = formatarCPF(paciente?.cpf);
+  document.getElementById('detalheEndereco').textContent = paciente?.endereco || '—';
 
-  // Contato
-  document.getElementById('detalheTelefone').textContent   = p.telefone;
-
-  // Pessoal
-  document.getElementById('detalheCpf').textContent        = p.cpf;
-  document.getElementById('detalheEndereco').textContent   = p.endereco;
-
-  // Observações
-  document.getElementById('detalheAlergias').textContent    = p.alergias;
-  document.getElementById('detalheCondicoes').textContent   = p.condicoes;
-  document.getElementById('detalheMedicamentos').textContent = p.medicamentos;
-  document.getElementById('detalheHistorico').textContent   = p.historico;
-
-  // Botão prontuário (redireciona para tela de tratamentos abrindo o prontuário)
   document.getElementById('btnProntuario').onclick = () => {
-    window.location.href = `../dentista/tratamentos.html?prontuario=${encodeURIComponent(p.nome)}`;
+    window.location.href = `../dentista/tratamentos.html?prontuario=${encodeURIComponent(consulta.nomePaciente)}`;
   };
 }
 
 // ─── Controle de views ───────────────────────────────────────────────────────
 function mostrarView(qual) {
-  document.querySelector('.dash-topbar').style.display       = qual === 'dashboard'         ? '' : 'none';
-  document.querySelector('.dash-body').style.display         = qual === 'dashboard'         ? '' : 'none';
-  document.getElementById('iniciarTratamentoView').style.display = qual === 'iniciarTratamento' ? 'block' : 'none';
-  document.getElementById('adicionarPlanoView').style.display    = qual === 'adicionarPlano'    ? 'block' : 'none';
-  document.getElementById('confirmacaoView').style.display       = qual === 'confirmacao'       ? 'block' : 'none';
+  document.querySelector('.dash-topbar').style.display            = qual === 'dashboard'         ? '' : 'none';
+  document.querySelector('.dash-body').style.display              = qual === 'dashboard'         ? '' : 'none';
+  document.getElementById('iniciarTratamentoView').style.display  = qual === 'iniciarTratamento' ? 'block' : 'none';
+  document.getElementById('adicionarPlanoView').style.display     = qual === 'adicionarPlano'    ? 'block' : 'none';
+  document.getElementById('confirmacaoView').style.display        = qual === 'confirmacao'       ? 'block' : 'none';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ─── Iniciar consulta → exibe tela de tratamento ────────────────────────────
+// ─── Iniciar consulta → redireciona para tratamentos.html com a consulta ────
 function iniciarConsulta() {
-  if (!pacienteSelecionadoId) return;
-  const paciente = PACIENTES_FILA.find(p => p.id === pacienteSelecionadoId);
-  if (!paciente) return;
-
-  document.getElementById('itNomePaciente').textContent = paciente.nome;
-  document.getElementById('itServico').textContent      = paciente.servico;
-
-  planosTratamento = [];
-  resetarOdontograma();
-  mostrarView('iniciarTratamento');
+  if (!consultaAtualId) return;
+  window.location.href = `../dentista/tratamentos.html?consultaId=${consultaAtualId}`;
 }
 
 // ─── Voltar ao dashboard ─────────────────────────────────────────────────────
@@ -333,10 +250,10 @@ function voltarAoDashboard() {
 
 // ─── Exibe a tela de plano de tratamento ────────────────────────────────────
 function mostrarTelaDePlano() {
-  const paciente = PACIENTES_FILA.find(p => p.id === pacienteSelecionadoId);
-  if (paciente) {
-    document.getElementById('apNomePaciente').textContent = paciente.nome;
-    document.getElementById('apServico').textContent      = paciente.servico;
+  const consulta = filaConsultas.find(c => c.id === consultaAtualId);
+  if (consulta) {
+    document.getElementById('apNomePaciente').textContent = consulta.nomePaciente || '—';
+    document.getElementById('apServico').textContent      = consulta.nomeServico  || '—';
   }
   renderizarPlanos();
   mostrarView('adicionarPlano');
@@ -344,8 +261,8 @@ function mostrarTelaDePlano() {
 
 // ─── Renderiza os cards de plano ─────────────────────────────────────────────
 function renderizarPlanos() {
-  const lista = document.getElementById('apEtapasLista');
-  const contador = document.getElementById('apContador');
+  const lista     = document.getElementById('apEtapasLista');
+  const contador  = document.getElementById('apContador');
 
   contador.textContent = planosTratamento.length === 1
     ? '1 etapa'
@@ -388,26 +305,23 @@ function renderizarPlanos() {
 }
 
 // ─── Confirmar plano ─────────────────────────────────────────────────────────
-function confirmarPlano() {
+async function confirmarPlano() {
   if (!planosTratamento.length) {
     alert('Adicione pelo menos uma etapa antes de confirmar.');
     return;
   }
 
-  // Preenche dados da tela de confirmação
-  const paciente = PACIENTES_FILA.find(p => p.id === pacienteSelecionadoId);
-  if (paciente) {
-    document.getElementById('cfNomePaciente').textContent = paciente.nome;
-    document.getElementById('cfServico').textContent      = paciente.servico;
+  const consulta = filaConsultas.find(c => c.id === consultaAtualId);
+  if (consulta) {
+    document.getElementById('cfNomePaciente').textContent = consulta.nomePaciente || '—';
+    document.getElementById('cfServico').textContent      = consulta.nomeServico  || '—';
   }
   document.getElementById('cfTotalEtapas').textContent = planosTratamento.length;
 
-  // Data/hora
-  const agora = new Date();
+  const agora  = new Date();
   const opcoes = { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
   document.getElementById('cfData').textContent = agora.toLocaleDateString('pt-BR', opcoes);
 
-  // Timeline de etapas
   const timeline = document.getElementById('cfEtapasTimeline');
   timeline.innerHTML = planosTratamento.map((p, i) => `
     <div class="cf-timeline-item">
@@ -423,23 +337,56 @@ function confirmarPlano() {
     </div>
   `).join('');
 
-  // Exibe a tela
   mostrarView('confirmacao');
 
-  // Dispara animação do check
   const animEl = document.getElementById('cfSucessoAnim');
   animEl.classList.remove('cf-animate');
-  void animEl.offsetWidth; // force reflow
+  void animEl.offsetWidth;
   animEl.classList.add('cf-animate');
+
+  // Salvar planos no banco de dados
+  if (consulta?.idPaciente) {
+    try {
+      const resPront   = await apiObterOuCriarProntuario(consulta.idPaciente);
+      const prontuario = resPront?.dados;
+      if (prontuario?.id) {
+        for (const p of planosTratamento) {
+          const denteNum = p.dente === 'Todos os dentes selecionados'
+            ? 'todos'
+            : (p.dente ? p.dente.split(' - ')[0].trim() : null);
+          await apiCadastrarPlano({
+            idProntuario: prontuario.id,
+            idServico:    consulta.idServico || null,
+            condicao:     p.condicao  || null,
+            descricao:    p.descricao || null,
+            observacao:   null,
+            dente:        denteNum,
+            status:       'Concluido'
+          });
+        }
+      }
+    } catch (err) {
+      console.error('[Dashboard] Erro ao salvar planos:', err.message);
+    }
+  }
+
+  // Encerrar consulta
+  if (consultaAtualId) {
+    try {
+      await apiAtualizarStatusConsulta(consultaAtualId, 'Encerrada');
+    } catch (err) {
+      console.warn('[Dashboard] Erro ao encerrar consulta:', err.message);
+    }
+  }
 }
 
 // ─── Odontograma ─────────────────────────────────────────────────────────────
 function inicializarOdontograma() {
   document.querySelectorAll('.it-dente').forEach(dente => {
     dente.addEventListener('click', () => {
-      const num         = parseInt(dente.dataset.num, 10);
-      const idxAtual    = ESTADOS_DENTE.findIndex(e => dente.classList.contains(e));
-      const proximoIdx  = (idxAtual + 1) % ESTADOS_DENTE.length;
+      const num        = parseInt(dente.dataset.num, 10);
+      const idxAtual   = ESTADOS_DENTE.findIndex(e => dente.classList.contains(e));
+      const proximoIdx = (idxAtual + 1) % ESTADOS_DENTE.length;
 
       ESTADOS_DENTE.forEach(e => dente.classList.remove(e));
       dente.classList.add(ESTADOS_DENTE[proximoIdx]);
@@ -473,7 +420,6 @@ function resetarOdontograma() {
     ESTADOS_DENTE.forEach(s => d.classList.remove(s));
     d.classList.add('saudavel');
   });
-  // Marca o 46 como seleção por padrão
   const d46 = document.querySelector('.it-dente[data-num="46"]');
   if (d46) {
     d46.classList.remove('saudavel');

@@ -1,0 +1,194 @@
+/* Extensões do layout Teams para a agenda da recepcionista */
+
+/* ── Seletor de dentista dentro da toolbar (lado direito) ── */
+.rec-dentista-icon {
+  font-size: 0.82rem;
+  color: var(--c2);
+  flex-shrink: 0;
+}
+
+.rec-dentista-select {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--c1);
+  background: transparent;
+  border: 1.5px solid var(--c4);
+  border-radius: var(--radius-md);
+  padding: 0.3rem 2rem 0.3rem 0.65rem;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a783f' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 0.9em;
+  transition: border-color var(--transition);
+  max-width: 240px;
+}
+
+.rec-dentista-select:focus {
+  outline: none;
+  border-color: var(--c1);
+}
+
+/* ── Célula livre — cursor e hover ── */
+.tcal-cell--livre {
+  cursor: pointer;
+  position: relative;
+}
+
+.tcal-cell--livre:hover::after {
+  content: '\f055'; /* fa-circle-plus */
+  font-family: 'Font Awesome 6 Free';
+  font-weight: 900;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.1rem;
+  color: var(--c3);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* ── Modal de detalhe — grid de campos ── */
+.detalhe-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem 1.5rem;
+}
+
+.detalhe-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.detalhe-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--c3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detalhe-valor {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--c1);
+}
+
+/* ── Info do slot no modal de agendar ── */
+.slot-info-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: var(--c5);
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+}
+
+.slot-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  color: var(--c1);
+  font-weight: 500;
+}
+
+.slot-info-item i {
+  color: var(--c3);
+  width: 14px;
+  text-align: center;
+}
+
+/* ── Mobile: barra do dentista ── */
+.am-dentista-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  background: var(--c5);
+  border-bottom: 1px solid var(--c4);
+  flex-shrink: 0;
+}
+
+.am-dentista-bar i {
+  color: var(--c2);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.am-dentista-select {
+  flex: 1;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--c1);
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+
+/* ── Mobile: botão agendar no slot livre ── */
+.am-btn-agendar {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--c2);
+  background: rgba(110, 84, 48, .06);
+  border: 1.5px dashed var(--c3);
+  border-radius: var(--radius-sm);
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.am-btn-agendar:hover {
+  background: var(--c1);
+  border-color: var(--c1);
+  color: #fff;
+}
+
+/* ── Dark mode overrides ── */
+html.dark-mode .rec-dentista-select {
+  color: var(--dm-text) !important;
+  border-color: var(--dm-border) !important;
+}
+
+html.dark-mode .detalhe-label {
+  color: var(--dm-text-2) !important;
+}
+
+html.dark-mode .detalhe-valor {
+  color: var(--dm-text) !important;
+}
+
+html.dark-mode .slot-info-modal {
+  background-color: var(--dm-card) !important;
+  border-color: var(--dm-border) !important;
+}
+
+html.dark-mode .am-dentista-bar {
+  background-color: var(--dm-card) !important;
+  border-color: var(--dm-border) !important;
+}
+
+html.dark-mode .am-dentista-select {
+  color: var(--dm-text) !important;
+}
+
+html.dark-mode .am-btn-agendar {
+  color: var(--dm-text-2) !important;
+  border-color: var(--dm-border) !important;
+  background-color: rgba(213, 197, 161, .06) !important;
+}
+
+html.dark-mode .am-btn-agendar:hover {
+  background-color: var(--c1) !important;
+  border-color: var(--c1) !important;
+  color: #fff !important;
+}

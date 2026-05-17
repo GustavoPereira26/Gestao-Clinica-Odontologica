@@ -1,180 +1,217 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  SidebarComponent.render("sidebarContainer", {
-    perfil: "dentista",
-    ativo: "pacientes"
-  });
+  SidebarComponent.render("sidebarContainer", { perfil: "dentista", ativo: "pacientes" });
 
   const btnHamburger = document.getElementById("btnHamburger");
-  if (btnHamburger) {
-    btnHamburger.addEventListener("click", () => SidebarComponent.toggleSidebar());
-  }
-
-  // Máscara de CPF para o input de filtro
-  const cpfInput = document.getElementById('filterCpf');
-  if (cpfInput) {
-    cpfInput.addEventListener('input', function (e) {
-      let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não é número
-      
-      // Limita o tamanho máximo a 11 números
-      if (value.length > 11) {
-        value = value.slice(0, 11);
-      }
-
-      // Aplica a formatação XXX.XXX.XXX-XX
-      if (value.length > 9) {
-        value = value.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-      } else if (value.length > 6) {
-        value = value.replace(/(\d{3})(\d{3})(\d{1,3})/, "$1.$2.$3");
-      } else if (value.length > 3) {
-        value = value.replace(/(\d{3})(\d{1,3})/, "$1.$2");
-      }
-      
-      e.target.value = value;
-    });
-  }
-
-  // Máscara de Data (DD/MM/AAAA) para o input de consulta
-  const consultaInput = document.getElementById('filterConsulta');
-  if (consultaInput) {
-    consultaInput.addEventListener('input', function (e) {
-      let value = e.target.value.replace(/\D/g, '');
-      if (value.length > 8) value = value.slice(0, 8);
-      if (value.length > 4) {
-        value = value.replace(/(\d{2})(\d{2})(\d{1,4})/, "$1/$2/$3");
-      } else if (value.length > 2) {
-        value = value.replace(/(\d{2})(\d{1,2})/, "$1/$2");
-      }
-      e.target.value = value;
-    });
-  }
-
-  // Máscara de Telefone ( (XX) XXXXX-XXXX ) para o input de telefone
-  const telefoneInput = document.getElementById('filterTelefone');
-  if (telefoneInput) {
-    telefoneInput.addEventListener('input', function (e) {
-      let value = e.target.value.replace(/\D/g, '');
-      
-      if (value.length > 11) {
-        value = value.slice(0, 11);
-      }
-
-      if (value.length > 10) {
-        // Fixo com 9 dígitos: (11) 98765-4321
-        value = value.replace(/(\d{2})(\d{5})(\d{4})/, "($1) $2-$3");
-      } else if (value.length > 6) {
-        // Fixo com 8 ou 9 dígitos incompletos: (11) 9876-
-        value = value.replace(/(\d{2})(\d{4,5})(\d{0,4})/, "($1) $2-$3");
-      } else if (value.length > 2) {
-        value = value.replace(/(\d{2})(\d{0,5})/, "($1) $2");
-      } else if (value.length > 0) {
-        value = value.replace(/(\d{1,2})/, "($1");
-      }
-      
-      e.target.value = value;
-    });
-  }
+  if (btnHamburger) btnHamburger.addEventListener("click", () => SidebarComponent.toggleSidebar());
 
   const btnHamburgerMobile = document.getElementById("btnHamburgerMobile");
-  if (btnHamburgerMobile) {
-    btnHamburgerMobile.addEventListener("click", () => SidebarComponent.toggleSidebar());
+  if (btnHamburgerMobile) btnHamburgerMobile.addEventListener("click", () => SidebarComponent.toggleSidebar());
+
+  const dentistaId = parseInt(sessionStorage.getItem('id'));
+
+  // ── Helpers ──────────────────────────────────────────────────────
+  function formatarData(iso) {
+    if (!iso) return '—';
+    const [y, m, d] = iso.split('-');
+    return `${d}/${m}/${y}`;
   }
 
-  // --- Lógica de Filtro dos Cards ---
+  function formatarCPF(cpf) {
+    const d = (cpf || '').replace(/\D/g, '');
+    if (d.length !== 11) return cpf || '—';
+    return `${d.slice(0,3)}.${d.slice(3,6)}.${d.slice(6,9)}-${d.slice(9)}`;
+  }
+
+  function formatarTelefone(tel) {
+    const d = (tel || '').replace(/\D/g, '');
+    if (d.length === 11) return `(${d.slice(0,2)}) ${d.slice(2,7)}-${d.slice(7)}`;
+    if (d.length === 10) return `(${d.slice(0,2)}) ${d.slice(2,6)}-${d.slice(6)}`;
+    return tel || '—';
+  }
+
+  function formatarHora(hora) {
+    return hora ? hora.slice(0, 5) : '—';
+  }
+
+  // ── Renderização dos cards ────────────────────────────────────────
+  function renderCards(consultas, pacientesMap) {
+    const lista    = document.getElementById('pacientesCardsList');
+    const empty    = document.getElementById('emptyState');
+    if (!lista) return;
+
+    if (consultas.length === 0) {
+      lista.innerHTML = '';
+      empty?.classList.remove('d-none');
+      return;
+    }
+
+    empty?.classList.add('d-none');
+
+    const servicos = [...new Set(consultas.map(c => c.nomeServico).filter(Boolean))].sort();
+    const select   = document.getElementById('filterServico');
+    if (select) {
+      const atual = select.value;
+      select.innerHTML = '<option value="">Todos os Serviços</option>' +
+        servicos.map(s => `<option value="${s}">${s}</option>`).join('');
+      if (atual) select.value = atual;
+    }
+
+    lista.innerHTML = consultas.map(c => {
+      const pac      = pacientesMap[c.idPaciente] || {};
+      const cpf      = formatarCPF(pac.cpf);
+      const telefone = formatarTelefone(pac.telefone);
+      const data     = formatarData(c.dataConsulta);
+      const hora     = formatarHora(c.horaConsulta);
+      const servico  = c.nomeServico || '—';
+      const nome     = c.nomePaciente || '—';
+      const status   = c.status || '—';
+
+      return `
+        <div class="patient-card"
+             data-nome="${nome}"
+             data-cpf="${cpf}"
+             data-servico="${servico}"
+             data-telefone="${telefone}"
+             data-consulta="${data}"
+             data-hora="${hora}"
+             data-status="${status}">
+          <div class="pc-header">
+            <h3 class="pc-name">${nome}</h3>
+          </div>
+          <div class="pc-body">
+            <div class="pc-item"><i class="fa-regular fa-id-card"></i><span>${cpf}</span></div>
+            <div class="pc-item"><i class="fa-solid fa-phone"></i><span>${telefone}</span></div>
+            <div class="pc-item pc-service"><i class="fa-solid fa-stethoscope"></i><span>${servico}</span></div>
+            <div class="pc-item"><i class="fa-regular fa-calendar"></i><span>${data} — ${hora}</span></div>
+          </div>
+          <div class="pc-footer">
+            <button class="btn-detalhes">Ver Detalhes</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ── Carrega dados da API ──────────────────────────────────────────
+  async function carregarConsultas() {
+    try {
+      const [resConsultas, resPacientes] = await Promise.all([
+        apiGetConsultas(),
+        apiGetPacientes()
+      ]);
+
+      const todasConsultas = resConsultas?.dados || [];
+      const todosPacientes = resPacientes?.dados || [];
+
+      const pacientesMap = {};
+      todosPacientes.forEach(p => { pacientesMap[p.id] = p; });
+
+      const minhas = todasConsultas
+        .filter(c => c.idDentista === dentistaId)
+        .sort((a, b) => {
+          const da = `${a.dataConsulta}T${a.horaConsulta}`;
+          const db = `${b.dataConsulta}T${b.horaConsulta}`;
+          return da.localeCompare(db);
+        });
+
+      renderCards(minhas, pacientesMap);
+    } catch (err) {
+      console.error('Erro ao carregar consultas:', err.message);
+    }
+  }
+
+  // ── Filtros ───────────────────────────────────────────────────────
   const filterInputs = {
-    cpf: document.getElementById('filterCpf'),
-    nome: document.getElementById('filterNome'),
-    servico: document.getElementById('filterServico'),
+    cpf:      document.getElementById('filterCpf'),
+    nome:     document.getElementById('filterNome'),
+    servico:  document.getElementById('filterServico'),
     consulta: document.getElementById('filterConsulta'),
     telefone: document.getElementById('filterTelefone')
   };
 
-  const cardsList = document.getElementById('pacientesCardsList');
+  function filterCards() {
+    const lista = document.getElementById('pacientesCardsList');
+    if (!lista) return;
 
-  function filterTable() {
-    try {
-      const filters = {
-        cpf: filterInputs.cpf ? filterInputs.cpf.value.toLowerCase().trim() : '',
-        nome: filterInputs.nome ? filterInputs.nome.value.toLowerCase().trim() : '',
-        servico: filterInputs.servico ? filterInputs.servico.value.toLowerCase().trim() : '',
-        consulta: filterInputs.consulta ? filterInputs.consulta.value.trim() : '',
-        telefone: filterInputs.telefone ? filterInputs.telefone.value.toLowerCase().trim() : ''
-      };
+    const f = {
+      cpf:      filterInputs.cpf?.value.toLowerCase().trim()      || '',
+      nome:     filterInputs.nome?.value.toLowerCase().trim()     || '',
+      servico:  filterInputs.servico?.value.toLowerCase().trim()  || '',
+      consulta: filterInputs.consulta?.value.trim()               || '',
+      telefone: filterInputs.telefone?.value.toLowerCase().trim() || ''
+    };
 
-      if (!cardsList) return;
-      
-      const cards = cardsList.querySelectorAll('.patient-card');
+    lista.querySelectorAll('.patient-card').forEach(card => {
+      const match =
+        card.dataset.nome?.toLowerCase().includes(f.nome) &&
+        card.dataset.cpf?.toLowerCase().includes(f.cpf) &&
+        card.dataset.servico?.toLowerCase().includes(f.servico) &&
+        card.dataset.telefone?.toLowerCase().includes(f.telefone) &&
+        card.dataset.consulta?.includes(f.consulta);
 
-      cards.forEach(card => {
-        const textNome = card.dataset.nome ? card.dataset.nome.toLowerCase() : '';
-        const textCpf = card.dataset.cpf ? card.dataset.cpf.toLowerCase() : '';
-        const textServico = card.dataset.servico ? card.dataset.servico.toLowerCase() : '';
-        const textTelefone = card.dataset.telefone ? card.dataset.telefone.toLowerCase() : '';
-        const textConsulta = card.dataset.consulta ? card.dataset.consulta.toLowerCase() : '';
-
-        const matchNome = textNome.includes(filters.nome);
-        const matchCpf = textCpf.includes(filters.cpf);
-        const matchServico = textServico.includes(filters.servico);
-        const matchTelefone = textTelefone.includes(filters.telefone);
-        const matchConsulta = textConsulta.includes(filters.consulta);
-
-        if (matchCpf && matchNome && matchServico && matchConsulta && matchTelefone) {
-          card.style.display = '';
-        } else {
-          card.style.display = 'none';
-        }
-      });
-    } catch (err) {
-      console.error('Filter Error:', err);
-    }
+      card.style.display = match ? '' : 'none';
+    });
   }
 
-  // Adicionar eventos 'input', 'keyup' e 'change' em todos os campos de filtro para atualizar em tempo real
   Object.values(filterInputs).forEach(input => {
     if (input) {
-      input.addEventListener('input', filterTable);
-      input.addEventListener('keyup', filterTable);
-      input.addEventListener('change', filterTable);
+      input.addEventListener('input',  filterCards);
+      input.addEventListener('change', filterCards);
     }
   });
 
-  // Botão de limpar filtros
-  const btnClearFilters = document.getElementById('btnClearFilters');
-  if (btnClearFilters) {
-    btnClearFilters.addEventListener('click', () => {
-      Object.values(filterInputs).forEach(input => {
-        if (input) input.value = '';
-      });
-      filterTable(); // Re-render the table with empty filters
-    });
-  }
+  document.getElementById('btnClearFilters')?.addEventListener('click', () => {
+    Object.values(filterInputs).forEach(input => { if (input) input.value = ''; });
+    filterCards();
+  });
 
-  // Lógica do Modal "Ver Detalhes"
-  const detalhesModalEl = document.getElementById('detalhesModal');
-  const detalhesModal = detalhesModalEl ? new bootstrap.Modal(detalhesModalEl) : null;
+  // ── Máscaras ──────────────────────────────────────────────────────
+  filterInputs.cpf?.addEventListener('input', e => {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 9)      v = v.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    else if (v.length > 6) v = v.replace(/(\d{3})(\d{3})(\d{1,3})/, '$1.$2.$3');
+    else if (v.length > 3) v = v.replace(/(\d{3})(\d{1,3})/, '$1.$2');
+    e.target.value = v;
+  });
 
-  if (cardsList && detalhesModal) {
-    cardsList.addEventListener('click', (e) => {
-      const btn = e.target.closest('.btn-detalhes');
-      if (!btn) return;
-      
-      const card = btn.closest('.patient-card');
-      if (!card) return;
+  filterInputs.consulta?.addEventListener('input', e => {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 8);
+    if (v.length > 4)      v = v.replace(/(\d{2})(\d{2})(\d{1,4})/, '$1/$2/$3');
+    else if (v.length > 2) v = v.replace(/(\d{2})(\d{1,2})/, '$1/$2');
+    e.target.value = v;
+  });
 
-      const nome = card.dataset.nome || '';
-      const cpf = card.dataset.cpf || '';
-      const servico = card.dataset.servico || '';
-      const telefone = card.dataset.telefone || '';
-      const consulta = card.dataset.consulta || '';
+  filterInputs.telefone?.addEventListener('input', e => {
+    let v = e.target.value.replace(/\D/g, '').slice(0, 11);
+    if (v.length > 10)     v = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
+    else if (v.length > 6) v = `(${v.slice(0,2)}) ${v.slice(2,6)}-${v.slice(6)}`;
+    else if (v.length > 2) v = `(${v.slice(0,2)}) ${v.slice(2)}`;
+    else if (v.length > 0) v = `(${v}`;
+    e.target.value = v;
+  });
 
-      document.getElementById('modalNome').textContent = nome;
-      document.getElementById('modalServico').textContent = servico;
-      document.getElementById('modalCpf').textContent = cpf;
-      document.getElementById('modalTelefone').textContent = telefone;
-      document.getElementById('modalConsulta').textContent = consulta;
+  // ── Modal Detalhes ────────────────────────────────────────────────
+  const detalhesModal = document.getElementById('detalhesModal')
+    ? new bootstrap.Modal(document.getElementById('detalhesModal'))
+    : null;
 
-      detalhesModal.show();
-    });
-  }
+  document.getElementById('pacientesCardsList')?.addEventListener('click', e => {
+    const btn  = e.target.closest('.btn-detalhes');
+    const card = btn?.closest('.patient-card');
+    if (!btn || !card) return;
 
+    document.getElementById('modalNome').textContent     = card.dataset.nome    || '—';
+    document.getElementById('modalServico').textContent  = card.dataset.servico || '—';
+    document.getElementById('modalCpf').textContent      = card.dataset.cpf     || '—';
+    document.getElementById('modalTelefone').textContent = card.dataset.telefone|| '—';
+    document.getElementById('modalConsulta').textContent = card.dataset.consulta|| '—';
+    document.getElementById('modalHora').textContent     = card.dataset.hora    || '—';
+    document.getElementById('modalStatus').textContent   = card.dataset.status  || '—';
+
+    detalhesModal?.show();
+  });
+
+  // ── Inicialização ─────────────────────────────────────────────────
+  carregarConsultas();
 });

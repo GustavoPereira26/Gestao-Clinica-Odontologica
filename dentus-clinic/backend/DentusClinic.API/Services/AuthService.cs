@@ -37,18 +37,19 @@ public class AuthService : IAuthService
             return null;
 
         string nome = login.Email; // fallback
+        int entidadeId = 0;
 
-        // Busca o nome do usuário conforme o tipo de acesso
+        // Busca o nome e ID da entidade conforme o tipo de acesso
         if (login.TipoAcesso == TiposAcessoEnum.ADMINISTRADOR ||
             login.TipoAcesso == TiposAcessoEnum.SECRETARIA)
         {
             var funcionario = await _funcionarioRepository.BuscarPorLoginIdAsync(login.Id);
-            if (funcionario is not null) nome = funcionario.Nome;
+            if (funcionario is not null) { nome = funcionario.Nome; entidadeId = funcionario.Id; }
         }
         else if (login.TipoAcesso == TiposAcessoEnum.DENTISTA)
         {
             var dentista = await _dentistaRepository.BuscarPorLoginIdAsync(login.Id);
-            if (dentista is not null) nome = dentista.Nome;
+            if (dentista is not null) { nome = dentista.Nome; entidadeId = dentista.Id; }
         }
 
         var token = GerarToken(
@@ -61,6 +62,7 @@ public class AuthService : IAuthService
 
         return new LoginResponse
         {
+            Id = entidadeId,
             Token = token,
             TipoAcesso = login.TipoAcesso.ToString(),
             Nome = nome,

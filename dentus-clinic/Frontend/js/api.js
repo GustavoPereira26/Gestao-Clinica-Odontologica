@@ -159,3 +159,29 @@ async function apiAtualizarStatusConsulta(id, status) {
 async function apiGetAgendaDentista(dentistaId, data) {
     return request(`/consultas/agenda?dentistaId=${dentistaId}&data=${data}`);
 }
+
+// ── Prontuários ──
+async function apiGetProntuarioPorPaciente(idPaciente) {
+    return request(`/prontuarios/paciente/${idPaciente}`);
+}
+
+async function apiObterOuCriarProntuario(idPaciente) {
+    return request('/prontuarios', 'POST', { idPaciente });
+}
+
+// ── Planos ──
+async function apiGetPlanos() {
+    return request('/planos');
+}
+
+async function apiGetPlanosPorProntuario(idProntuario) {
+    return request(`/planos/prontuario/${idProntuario}`);
+}
+
+async function apiCadastrarPlano(dados) {
+    return request('/planos', 'POST', dados);
+}
+
+async function apiEditarPlano(id, dados) {
+    return request(`/planos/${id}`, 'PUT', dados);
+}

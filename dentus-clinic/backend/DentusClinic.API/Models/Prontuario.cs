@@ -9,5 +9,7 @@ public class Prontuario
 
     public DateOnly DataAbertura { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
+    public DateOnly? DataUltimaAtualizacao { get; set; }
+
     public ICollection<Planos> Planos { get; set; } = new List<Planos>();
 }

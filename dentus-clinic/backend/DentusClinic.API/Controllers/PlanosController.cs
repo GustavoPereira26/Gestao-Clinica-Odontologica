@@ -25,6 +25,13 @@ public class PlanosController : ControllerBase
         return Ok(ApiResponse<object>.Ok(planos));
     }
 
+    [HttpGet("prontuario/{idProntuario}")]
+    public async Task<IActionResult> ListarPorProntuario(int idProntuario)
+    {
+        var planos = await _planosService.ListarPorProntuarioAsync(idProntuario);
+        return Ok(ApiResponse<object>.Ok(planos));
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> BuscarPorId(int id)
     {

@@ -1,10 +1,18 @@
 // js/auth.js
 
+// ── Aplica dark mode salvo antes de qualquer render ──
+(function () {
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.documentElement.classList.add('dark-mode');
+    }
+})();
+
 // ── Salva dados da sessão após login ──
 function salvarSessao(data) {
     sessionStorage.setItem('token',      data.token);
     sessionStorage.setItem('perfil',     data.tipoAcesso.toLowerCase());
     sessionStorage.setItem('nome',       data.nome);
+    sessionStorage.setItem('id',         data.id);
     sessionStorage.setItem('expiracao',  data.expiracao);
 }
 

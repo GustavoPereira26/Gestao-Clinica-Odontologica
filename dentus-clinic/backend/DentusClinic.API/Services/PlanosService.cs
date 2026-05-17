@@ -9,15 +9,23 @@ namespace DentusClinic.API.Services;
 public class PlanosService : IPlanosService
 {
     private readonly IPlanosRepository _planosRepository;
+    private readonly IProntuarioRepository _prontuarioRepository;
 
-    public PlanosService(IPlanosRepository planosRepository)
+    public PlanosService(IPlanosRepository planosRepository, IProntuarioRepository prontuarioRepository)
     {
         _planosRepository = planosRepository;
+        _prontuarioRepository = prontuarioRepository;
     }
 
     public async Task<IEnumerable<PlanosResponse>> ListarTodosAsync()
     {
         var lista = await _planosRepository.ListarTodosAsync();
+        return lista.Select(MapearResponse);
+    }
+
+    public async Task<IEnumerable<PlanosResponse>> ListarPorProntuarioAsync(int idProntuario)
+    {
+        var lista = await _planosRepository.ListarPorProntuarioAsync(idProntuario);
         return lista.Select(MapearResponse);
     }
 
@@ -36,7 +44,8 @@ public class PlanosService : IPlanosService
             Descricao = request.Descricao,
             Condicao = request.Condicao,
             Status = request.Status,
-            Observacao = request.Observacao
+            Observacao = request.Observacao,
+            Dente = request.Dente
         };
 
         await _planosRepository.AdicionarAsync(plano);
@@ -55,8 +64,11 @@ public class PlanosService : IPlanosService
         plano.Condicao = request.Condicao;
         plano.Status = request.Status;
         plano.Observacao = request.Observacao;
+        plano.Dente = request.Dente;
+        plano.DataAtualizacao = DateOnly.FromDateTime(DateTime.Today);
 
         await _planosRepository.AtualizarAsync(plano);
+        await _prontuarioRepository.AtualizarDataAsync(plano.IdProntuario, plano.DataAtualizacao.Value);
 
         var planoAtualizado = await _planosRepository.BuscarPorIdAsync(id);
         return MapearResponse(planoAtualizado!);
@@ -80,6 +92,9 @@ public class PlanosService : IPlanosService
         Descricao = p.Descricao,
         Condicao = p.Condicao,
         Status = p.Status,
-        Observacao = p.Observacao
+        Observacao = p.Observacao,
+        Dente = p.Dente,
+        DataCriacao = p.DataCriacao,
+        DataAtualizacao = p.DataAtualizacao
     };
 }

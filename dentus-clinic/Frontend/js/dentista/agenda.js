@@ -9,9 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const appointmentModal = modalEl ? new bootstrap.Modal(modalEl) : null;
 
   // ── Configurações ──────────────────────────────────────────────────
-  const CELL_H      = 64;   // px — deve coincidir com --tcal-cell-h
+  const CELL_H      = 48;
   const HOUR_START  = 8;
-  const HOUR_COUNT  = 10;   // 08:00 → 17:00
+  const SLOT_MIN    = 30;
+  const HOUR_COUNT  = 27;   // 08:00 → 21:00, de 30 em 30 min
 
   const MONTHS_PT = [
     "Janeiro","Fevereiro","Março","Abril","Maio","Junho",
@@ -19,23 +20,13 @@ document.addEventListener("DOMContentLoaded", () => {
   ];
   const DAY_ABBR = ["Dom","Seg","Ter","Qua","Qui","Sex","Sáb"];
   const DAY_FULL = ["Domingo","Segunda","Terça","Quarta","Quinta","Sexta","Sábado"];
-  const HOUR_LABELS = Array.from({ length: HOUR_COUNT }, (_, i) => `${HOUR_START + i} AM`.replace("12 AM","12 PM").replace(/^(1[3-9]|2\d) AM$/, h => `${parseInt(h) - 12} PM`));
 
-  const NAMES_MOCK = [
-    "Ana Costa","Bruno Lima","Carla Souza","Diego Alves",
-    "Elena Rocha","Felipe Melo","Gabi Nunes","Hélio Pinto",
-  ];
-  const SERVICES_MOCK = [
-    "Limpeza","Clareamento","Extração","Canal",
-    "Consulta","Prótese","Ortodontia","Restauração",
-  ];
-
-
+  const dentistaId = sessionStorage.getItem('id');
 
   // ── Estado ─────────────────────────────────────────────────────────
   let weekOffset  = 0;
-  let dadosSemana = [];   // [7][HOUR_COUNT] → { occupied, nome, servico }
-  let diaAtivo    = 0;   // mobile only
+  let dadosSemana = [];
+  let diaAtivo    = 0;
 
   // ── Helpers ────────────────────────────────────────────────────────
   function getMonday(offset = 0) {
@@ -51,25 +42,78 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
   }
 
-  function buildHourLabel(h) {
-    if (h < 12) return `${h}:00`;
-    if (h === 12) return "12:00";
-    return `${h - 12}:00`;
+  function toISODate(d) {
+    const y  = d.getFullYear();
+    const m  = String(d.getMonth() + 1).padStart(2, '0');
+    const dd = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${dd}`;
   }
 
-  function gerarDados() {
+  function formatarHora(horaStr) {
+    return horaStr ? horaStr.slice(0, 5) : '';
+  }
+
+  function slotToTime(idx) {
+    const mins = HOUR_START * 60 + idx * SLOT_MIN;
+    return `${String(Math.floor(mins / 60)).padStart(2,'0')}:${String(mins % 60).padStart(2,'0')}`;
+  }
+
+  // ── Carrega dados reais da API ─────────────────────────────────────
+  async function carregarSemana() {
+    const monday = getMonday(weekOffset);
+
     dadosSemana = Array.from({ length: 7 }, () =>
-      Array.from({ length: HOUR_COUNT }, () => {
-        if (Math.random() < 0.27) {
-          return {
-            occupied: true,
-            nome:    NAMES_MOCK[Math.floor(Math.random() * NAMES_MOCK.length)],
-            servico: SERVICES_MOCK[Math.floor(Math.random() * SERVICES_MOCK.length)],
-          };
-        }
-        return { occupied: false };
-      })
+      Array.from({ length: HOUR_COUNT }, () => ({ occupied: false }))
     );
+
+    if (!dentistaId) return;
+
+    const datas = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      return toISODate(d);
+    });
+
+    try {
+      const resultados = await Promise.all(
+        datas.map(data => apiGetAgendaDentista(dentistaId, data).catch(() => null))
+      );
+
+      resultados.forEach((res, d) => {
+        const consultas = res?.dados || [];
+        consultas.forEach(c => {
+          const parts = (c.horaConsulta || '00:00:00').split(':');
+          const hh = parseInt(parts[0]);
+          const mm = parseInt(parts[1] || '0');
+          const h  = Math.round(((hh - HOUR_START) * 60 + mm) / SLOT_MIN);
+          if (h >= 0 && h < HOUR_COUNT && !dadosSemana[d][h].occupied) {
+            dadosSemana[d][h] = {
+              occupied: true,
+              id:       c.id,
+              nome:     c.nomePaciente,
+              servico:  c.nomeServico || '—',
+              hora:     slotToTime(h),
+              data:     datas[d],
+              status:   c.status || ''
+            };
+          }
+        });
+      });
+    } catch (err) {
+      console.error('Erro ao carregar agenda:', err.message);
+    }
+  }
+
+  // ── Abre o modal com os dados da consulta ──────────────────────────
+  function abrirModal(slot, diaDate) {
+    if (!appointmentModal) return;
+    const label = document.getElementById("appointmentModalLabel");
+    if (label) label.textContent = `${DAY_FULL[diaDate.getDay()]} | ${slot.hora || ''}`;
+    document.getElementById("modalPaciente").textContent = slot.nome || '—';
+    document.getElementById("modalServico").textContent  = slot.servico || '—';
+    const statusEl = document.getElementById("modalStatus");
+    if (statusEl) statusEl.textContent = slot.status || '';
+    appointmentModal.show();
   }
 
   // ══════════════════════════════════════════════════
@@ -81,7 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
     sunday.setDate(monday.getDate() + 6);
     const todayKey = dateKey(new Date());
 
-    // Período no toolbar
     const label = document.getElementById("monthYearLabel");
     if (label) {
       if (monday.getMonth() === sunday.getMonth()) {
@@ -97,7 +140,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const day = new Date(monday);
       day.setDate(monday.getDate() + d);
       const isToday = dateKey(day) === todayKey;
-
       const el = document.getElementById(`day-${d}`);
       if (!el) continue;
       el.className = "tcal-head-day" + (isToday ? " today" : "");
@@ -109,6 +151,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // ══════════════════════════════════════════════════
   // DESKTOP — grade de células + eventos
   // ══════════════════════════════════════════════════
+  function buildTimeCol() {
+    const col = document.getElementById('tcalTimeCol');
+    if (!col) return;
+    col.innerHTML = '';
+    for (let i = 0; i < HOUR_COUNT; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'tcal-hour-cell';
+      const lbl = document.createElement('span');
+      lbl.className   = 'tcal-hour-lbl';
+      lbl.textContent = slotToTime(i);
+      cell.appendChild(lbl);
+      col.appendChild(cell);
+    }
+  }
+
   function buildGrid() {
     const grid = document.getElementById("tcalGrid");
     if (!grid) return;
@@ -128,7 +185,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       for (let h = 0; h < HOUR_COUNT; h++) {
         const cell = document.createElement("div");
-        cell.className  = "tcal-cell";
+        cell.className   = "tcal-cell";
         cell.dataset.hour = HOUR_START + h;
 
         const slot = dadosSemana[d][h];
@@ -138,22 +195,11 @@ document.addEventListener("DOMContentLoaded", () => {
           ev.className = "tcal-event";
           ev.style.cssText = `background: var(--c1); color: #fff; border-left: none; border-radius: 6px; box-shadow: 0 2px 8px rgba(110, 84, 48, .25);`;
           ev.innerHTML = `
-            <span class="tcal-event-name" style="color: #fff;">${slot.nome}</span>
-            <span class="tcal-event-service" style="color: rgba(255, 255, 255, 0.72);">${slot.servico}</span>
+            <span class="tcal-event-name"  style="color:#fff;">${slot.nome}</span>
+            <span class="tcal-event-service" style="color:rgba(255,255,255,0.72);">${slot.servico}</span>
           `;
-          ev.addEventListener("click", e => {
-            e.stopPropagation();
-            if (appointmentModal) {
-              document.getElementById("modalPaciente").textContent = slot.nome;
-              document.getElementById("modalServico").textContent  = slot.servico;
-              appointmentModal.show();
-            }
-          });
+          ev.addEventListener("click", e => { e.stopPropagation(); abrirModal(slot, day); });
           cell.appendChild(ev);
-        } else {
-          cell.addEventListener("click", () => {
-            if (appointmentModal) appointmentModal.show();
-          });
         }
 
         col.appendChild(cell);
@@ -163,16 +209,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-
-
-  // ── Scroll para o horário atual no início ────────────────────────
+  // ── Scroll para o horário atual ──────────────────────────────────
   function scrollToNow() {
-    const body = document.getElementById("tcalBody");
-    if (!body) return;
-    const h = new Date().getHours();
-    if (h < HOUR_START) return;
-    const offset = Math.max(0, (h - HOUR_START - 1) * CELL_H);
-    body.scrollTop = offset;
+    const area = document.getElementById("tcalScrollArea");
+    if (!area) return;
+    const now  = new Date();
+    const mins = (now.getHours() - HOUR_START) * 60 + now.getMinutes();
+    if (mins < 0) return;
+    area.scrollTop = Math.max(0, (Math.floor(mins / SLOT_MIN) - 1) * CELL_H + 68);
   }
 
   // ══════════════════════════════════════════════════
@@ -182,9 +226,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const amSemana = document.getElementById("amSemana");
     const amMes    = document.getElementById("amMes");
     if (!amSemana || !amMes) return;
-
-    const sunday = new Date(base);
-    sunday.setDate(base.getDate() + 6);
     const semNum = getWeekNumber(base);
     amSemana.textContent = `Semana ${semNum}`;
     amMes.textContent    = `${MONTHS_PT[base.getMonth()]} ${base.getFullYear()}`;
@@ -233,12 +274,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const d           = new Date(base);
     d.setDate(base.getDate() + diaAtivo);
 
-    let html = `<div class="am-slots-titulo">${DAY_FULL[d.getDay()]}, ${d.getDate()} de ${MONTHS_PT[d.getMonth()]}</div>`;
+    const horasLabels = Array.from({ length: HOUR_COUNT }, (_, i) => slotToTime(i));
 
-    const horasLabels = Array.from({ length: HOUR_COUNT }, (_, i) => {
-      const h = HOUR_START + i;
-      return h < 12 ? `${h} AM` : h === 12 ? "12 PM" : `${h - 12} PM`;
-    });
+    let html = `<div class="am-slots-titulo">${DAY_FULL[d.getDay()]}, ${d.getDate()} de ${MONTHS_PT[d.getMonth()]}</div>`;
 
     if (!temConsulta) {
       html += `
@@ -259,7 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="am-slot-corpo">
               ${slot.occupied
-                ? `<div class="am-evento">
+                ? `<div class="am-evento" data-idx="${idx}">
                     <span class="am-evento-nome">${slot.nome}</span>
                     <span class="am-evento-servico">${slot.servico}</span>
                   </div>`
@@ -274,9 +312,9 @@ document.addEventListener("DOMContentLoaded", () => {
     container.innerHTML = html;
 
     container.querySelectorAll(".am-evento").forEach(ev => {
-      ev.addEventListener("click", () => {
-        if (appointmentModal) appointmentModal.show();
-      });
+      const idx  = parseInt(ev.dataset.idx);
+      const slot = slots[idx];
+      ev.addEventListener("click", () => abrirModal(slot, d));
     });
   }
 
@@ -288,19 +326,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ══════════════════════════════════════════════════
-  // UPDATE COMPLETO
+  // UPDATE COMPLETO (async)
   // ══════════════════════════════════════════════════
-  function updateAll() {
-    gerarDados();
+  async function updateAll() {
+    await carregarSemana();
     updateHeaders();
+    buildTimeCol();
     buildGrid();
     renderMobile();
   }
 
-  // ── Navegação (desktop e mobile compartilham weekOffset) ──────────
+  // ── Navegação ─────────────────────────────────────────────────────
   document.getElementById("btnPrevWeek")?.addEventListener("click", () => { weekOffset--; diaAtivo = 0; updateAll(); });
   document.getElementById("btnNextWeek")?.addEventListener("click", () => { weekOffset++; diaAtivo = 0; updateAll(); });
-  document.getElementById("btnToday")?.addEventListener("click",    () => { weekOffset = 0; diaAtivo = 0; updateAll(); scrollToNow(); });
+  document.getElementById("btnToday")?.addEventListener("click",    () => { weekOffset = 0; diaAtivo = 0; updateAll().then(scrollToNow); });
   document.getElementById("amPrev")?.addEventListener("click",      () => { weekOffset--; diaAtivo = 0; updateAll(); });
   document.getElementById("amNext")?.addEventListener("click",      () => { weekOffset++; diaAtivo = 0; updateAll(); });
 
@@ -309,15 +348,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const n = document.getElementById("tcalNotif");
     if (n) n.style.display = "none";
   });
-
   document.getElementById("amNotifFechar")?.addEventListener("click", () => {
     const n = document.getElementById("amNotif");
     if (n) n.style.display = "none";
   });
 
   // ── Inicialização ─────────────────────────────────────────────────
-  gerarDados();
-  updateHeaders();
-  buildGrid();
-  renderMobile();
+  updateAll().then(scrollToNow);
 });

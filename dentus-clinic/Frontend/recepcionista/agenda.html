@@ -5,11 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dentu's Clinic — Agenda</title>
 
-  <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
@@ -18,157 +15,123 @@
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/layout.css" />
   <link rel="stylesheet" href="../css/components.css" />
-  <link rel="stylesheet" href="../css/recepcionista/agenda.css" />
+  <link rel="stylesheet" href="../css/dentista/agenda.css" />
+  <link rel="stylesheet" href="../css/recepcionista/agenda-teams.css" />
 </head>
 <body>
 
-  <!-- Botão hamburguer (mobile) -->
   <button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
     <i class="fa-solid fa-bars"></i>
   </button>
 
   <div class="app-layout">
-
     <div id="sidebarContainer"></div>
 
     <main class="app-content">
 
-      <!-- Header -->
-      <header class="page-header">
-        <div class="page-header-left">
-          <h1 class="page-title">
-            <i class="fa-solid fa-calendar-check page-title-icon"></i>
-            Agenda
-          </h1>
-          <p class="page-subtitle">Visualize os horários do dentista e agende consultas</p>
-        </div>
-      </header>
+      <!-- ══ DESKTOP ══ -->
+      <div class="tcal-wrapper" id="tcalWrapper">
 
-      <!-- Filtros -->
-      <section class="agenda-filters">
-
-        <div class="agenda-filter-field agenda-filter-field--dentista">
-          <label class="filter-label" for="selectDentista">Dentista</label>
-          <div class="filter-input-wrapper">
-            <i class="fa-solid fa-user-doctor filter-input-icon"></i>
-            <select class="filter-input filter-select" id="selectDentista">
-              <option value="">Selecione um dentista...</option>
+        <div class="tcal-toolbar">
+          <div class="tcal-toolbar-left">
+            <button class="tcal-btn-today" id="btnToday">Hoje</button>
+            <div class="tcal-nav-group">
+              <button class="tcal-btn-nav" id="btnPrevWeek" aria-label="Semana anterior">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button class="tcal-btn-nav" id="btnNextWeek" aria-label="Próxima semana">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+            <span class="tcal-period" id="monthYearLabel">Maio 2026</span>
+          </div>
+          <div class="tcal-toolbar-right">
+            <i class="fa-solid fa-user-doctor rec-dentista-icon"></i>
+            <select id="selectDentista" class="rec-dentista-select">
+              <option value="">Carregando…</option>
             </select>
           </div>
         </div>
 
-        <div class="agenda-filter-separador"></div>
+        <div class="tcal-scroll-area" id="tcalScrollArea">
+          <div class="tcal-head" id="tcalHead">
+            <div class="tcal-head-gutter"></div>
+            <div class="tcal-head-day" id="day-0"><span class="tcal-abbr">Seg</span><span class="tcal-num">19</span></div>
+            <div class="tcal-head-day" id="day-1"><span class="tcal-abbr">Ter</span><span class="tcal-num">20</span></div>
+            <div class="tcal-head-day" id="day-2"><span class="tcal-abbr">Qua</span><span class="tcal-num">21</span></div>
+            <div class="tcal-head-day" id="day-3"><span class="tcal-abbr">Qui</span><span class="tcal-num">22</span></div>
+            <div class="tcal-head-day" id="day-4"><span class="tcal-abbr">Sex</span><span class="tcal-num">23</span></div>
+            <div class="tcal-head-day" id="day-5"><span class="tcal-abbr">Sáb</span><span class="tcal-num">24</span></div>
+            <div class="tcal-head-day" id="day-6"><span class="tcal-abbr">Dom</span><span class="tcal-num">25</span></div>
+          </div>
 
-        <div class="agenda-filter-field agenda-filter-field--date">
-          <label class="filter-label" for="inputData">Data</label>
-          <div class="filter-input-wrapper">
-            <input type="date" class="filter-input filter-input-date" id="inputData" />
+          <div class="tcal-body" id="tcalBody">
+            <div class="tcal-time-col" id="tcalTimeCol"></div>
+            <div class="tcal-grid" id="tcalGrid"></div>
           </div>
         </div>
 
-        <div class="agenda-nav-group">
-          <button type="button" class="btn-nav-dia btn-nav-prev" id="btnDiaAnterior" title="Dia anterior">
-            <i class="fa-solid fa-chevron-left"></i>
-          </button>
-          <button type="button" class="btn-nav-dia btn-nav-hoje" id="btnHoje" title="Ir para hoje">
-            <i class="fa-solid fa-calendar-day"></i>
-            Hoje
-          </button>
-          <button type="button" class="btn-nav-dia btn-nav-next" id="btnProximoDia" title="Próximo dia">
-            <i class="fa-solid fa-chevron-right"></i>
-          </button>
+      </div>
+
+      <!-- ══ MOBILE ══ -->
+      <div class="agenda-mobile" id="agendaMobile">
+
+        <div class="am-dentista-bar">
+          <i class="fa-solid fa-user-doctor"></i>
+          <select id="selectDentistaMobile" class="am-dentista-select">
+            <option value="">Selecione um dentista…</option>
+          </select>
         </div>
 
-        <!-- Busca por paciente (linha completa) -->
-        <div class="agenda-search-row">
-          <div class="filter-input-wrapper">
-            <i class="fa-solid fa-magnifying-glass filter-input-icon"></i>
-            <input type="text" class="filter-input" id="buscaPaciente"
-                   placeholder="Buscar consulta por nome do paciente..." autocomplete="off" />
-            <div id="buscaResultados" class="agenda-busca-resultados"></div>
+        <div class="am-nav">
+          <button class="am-nav-btn" id="amPrev"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="am-nav-info">
+            <span class="am-nav-semana" id="amSemana">Semana 12</span>
+            <span class="am-nav-mes" id="amMes">Março 2026</span>
           </div>
+          <button class="am-nav-btn" id="amNext"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
 
-      </section>
-
-      <!-- Legenda -->
-      <div class="agenda-legenda" id="agendaLegenda" style="display:none;">
-        <span class="legenda-item"><span class="legenda-cor legenda-livre"></span>Disponível</span>
-        <span class="legenda-item"><span class="legenda-cor legenda-agendada"></span>Agendada</span>
-        <span class="legenda-item"><span class="legenda-cor legenda-fila"></span>Em fila</span>
-        <span class="legenda-item"><span class="legenda-cor legenda-consulta"></span>Em consulta</span>
-        <span class="legenda-item"><span class="legenda-cor legenda-encerrada"></span>Encerrada</span>
-        <span class="legenda-item"><span class="legenda-cor legenda-cancelada"></span>Cancelada</span>
-      </div>
-
-      <!-- Estado: selecione dentista -->
-      <div class="agenda-placeholder" id="placeholderSelecioneDentista">
-        <i class="fa-solid fa-user-doctor"></i>
-        <p>Selecione um dentista para ver a agenda</p>
-      </div>
-
-      <!-- Grid da agenda -->
-      <div class="agenda-grid-wrapper" id="agendaGridWrapper" style="display:none;">
-        <div class="agenda-grid" id="agendaGrid">
-          <!-- Preenchido pelo JS -->
+        <div class="am-strip-wrap">
+          <div class="am-strip" id="amStrip"></div>
         </div>
+
+        <div class="am-slots" id="amSlots"></div>
       </div>
 
     </main>
   </div>
 
-  <!-- VLibras -->
-  <div vw class="enabled">
-    <div vw-access-button class="active"></div>
-    <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
-  </div>
-  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
-
-  <!-- Modal Agendar via Agenda -->
+  <!-- Modal: Agendar -->
   <div class="modal fade" id="modalAgendarSlot" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title fs-6"><i class="fa-solid fa-calendar-plus me-2"></i>Agendar Consulta</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="AgendaPage.resetarModalAgendar()"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="AgendaRec.resetarModalAgendar()"></button>
         </div>
         <div class="modal-body px-4 pb-2">
           <div id="alertaAgendarSlot" class="alert alert-danger d-none mb-3"></div>
 
-          <!-- Info do slot (read-only) -->
           <div class="slot-info-modal mb-3">
-            <div class="slot-info-item">
-              <i class="fa-solid fa-user-doctor"></i>
-              <span id="modalNomeDentista">—</span>
-            </div>
-            <div class="slot-info-item">
-              <i class="fa-solid fa-calendar"></i>
-              <span id="modalDataFormatada">—</span>
-            </div>
-            <div class="slot-info-item">
-              <i class="fa-solid fa-clock"></i>
-              <span id="modalHoraFormatada">—</span>
-            </div>
+            <div class="slot-info-item"><i class="fa-solid fa-user-doctor"></i><span id="modalNomeDentista">—</span></div>
+            <div class="slot-info-item"><i class="fa-solid fa-calendar"></i><span id="modalDataFormatada">—</span></div>
+            <div class="slot-info-item"><i class="fa-solid fa-clock"></i><span id="modalHoraFormatada">—</span></div>
           </div>
 
           <div class="mb-3">
             <label class="form-label fw-semibold">Paciente <span class="text-danger">*</span></label>
             <div class="position-relative">
-              <input type="text" class="form-control" id="slotPacienteSearch"
-                     placeholder="Digite o nome do paciente..." autocomplete="off" />
+              <input type="text" class="form-control" id="slotPacienteSearch" placeholder="Digite o nome do paciente..." autocomplete="off" />
               <input type="hidden" id="slotPacienteId" />
-              <div id="slotPacienteSugestoes"
-                   class="list-group position-absolute w-100 shadow"
-                   style="z-index:1060; max-height:180px; overflow-y:auto; display:none; border-radius:0 0 6px 6px;"></div>
+              <div id="slotPacienteSugestoes" class="list-group position-absolute w-100 shadow"
+                   style="z-index:1060;max-height:180px;overflow-y:auto;display:none;border-radius:0 0 6px 6px;"></div>
             </div>
           </div>
 
           <div class="mb-3">
             <label class="form-label fw-semibold">Serviço</label>
-            <select class="form-select" id="slotServico">
-              <option value="">Nenhum</option>
-            </select>
+            <select class="form-select" id="slotServico"><option value="">Nenhum</option></select>
           </div>
 
           <div class="mb-4">
@@ -179,154 +142,100 @@
           </div>
         </div>
         <div class="modal-footer border-0 pt-0 gap-2">
-          <button type="button" class="btn px-4 text-dark bg-white border" data-bs-dismiss="modal" onclick="AgendaPage.resetarModalAgendar()">Cancelar</button>
-          <button type="button" class="btn px-4 text-white" id="btnConfirmarAgendarSlot" onclick="AgendaPage.confirmarAgendamento()" style="background-color:#0d6efd; border-color:#0d6efd;">Agendar</button>
+          <button type="button" class="btn px-4 text-dark bg-white border" data-bs-dismiss="modal" onclick="AgendaRec.resetarModalAgendar()">Cancelar</button>
+          <button type="button" class="btn px-4 text-white" id="btnConfirmarAgendarSlot" onclick="AgendaRec.confirmarAgendamento()"
+                  style="background-color:#0d6efd;border-color:#0d6efd;">Agendar</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal Detalhe / Editar / Cancelar -->
+  <!-- Modal: Detalhe / Editar / Cancelar -->
   <div class="modal fade" id="modalDetalhe" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title fs-6"><i class="fa-solid fa-calendar-check me-2"></i>Detalhes da Consulta</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="AgendaPage.resetarModalDetalhe()"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="AgendaRec.resetarModalDetalhe()"></button>
         </div>
         <div class="modal-body px-4 pb-4">
 
-          <!-- ── VIEW: Info ── -->
           <div id="viewInfo">
             <div class="detalhe-grid">
-              <div class="detalhe-item">
-                <span class="detalhe-label"><i class="fa-solid fa-user fa-fw"></i> Paciente</span>
-                <span class="detalhe-valor" id="dtlPaciente">—</span>
-              </div>
-              <div class="detalhe-item">
-                <span class="detalhe-label"><i class="fa-solid fa-user-doctor fa-fw"></i> Dentista</span>
-                <span class="detalhe-valor" id="dtlDentista">—</span>
-              </div>
-              <div class="detalhe-item">
-                <span class="detalhe-label"><i class="fa-solid fa-calendar fa-fw"></i> Data</span>
-                <span class="detalhe-valor" id="dtlData">—</span>
-              </div>
-              <div class="detalhe-item">
-                <span class="detalhe-label"><i class="fa-solid fa-clock fa-fw"></i> Horário</span>
-                <span class="detalhe-valor" id="dtlHora">—</span>
-              </div>
-              <div class="detalhe-item">
-                <span class="detalhe-label"><i class="fa-solid fa-tooth fa-fw"></i> Serviço</span>
-                <span class="detalhe-valor" id="dtlServico">—</span>
-              </div>
-              <div class="detalhe-item">
-                <span class="detalhe-label"><i class="fa-solid fa-circle-info fa-fw"></i> Status</span>
-                <span class="detalhe-valor" id="dtlStatus">—</span>
-              </div>
+              <div class="detalhe-item"><span class="detalhe-label"><i class="fa-solid fa-user fa-fw"></i> Paciente</span><span class="detalhe-valor" id="dtlPaciente">—</span></div>
+              <div class="detalhe-item"><span class="detalhe-label"><i class="fa-solid fa-user-doctor fa-fw"></i> Dentista</span><span class="detalhe-valor" id="dtlDentista">—</span></div>
+              <div class="detalhe-item"><span class="detalhe-label"><i class="fa-solid fa-calendar fa-fw"></i> Data</span><span class="detalhe-valor" id="dtlData">—</span></div>
+              <div class="detalhe-item"><span class="detalhe-label"><i class="fa-solid fa-clock fa-fw"></i> Horário</span><span class="detalhe-valor" id="dtlHora">—</span></div>
+              <div class="detalhe-item"><span class="detalhe-label"><i class="fa-solid fa-tooth fa-fw"></i> Serviço</span><span class="detalhe-valor" id="dtlServico">—</span></div>
+              <div class="detalhe-item"><span class="detalhe-label"><i class="fa-solid fa-circle-info fa-fw"></i> Status</span><span class="detalhe-valor" id="dtlStatus">—</span></div>
             </div>
             <div class="mt-2 d-none" id="dtlRetorno">
               <span class="badge-retorno"><i class="fa-solid fa-rotate-left me-1"></i>Retorno</span>
             </div>
             <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top">
-              <button type="button" class="btn px-3 text-dark bg-white border"
-                      data-bs-dismiss="modal" onclick="AgendaPage.resetarModalDetalhe()">
-                Fechar
-              </button>
+              <button type="button" class="btn px-3 text-dark bg-white border" data-bs-dismiss="modal" onclick="AgendaRec.resetarModalDetalhe()">Fechar</button>
               <button type="button" class="btn px-3" id="btnCancelarConsulta"
-                      style="background:#fdf0ee; color:#c0392b; border:1.5px solid #fca5a5;"
-                      onclick="AgendaPage.mostrarViewCancelar()">
-                <i class="fa-solid fa-ban me-1"></i>Cancelar Consulta
-              </button>
+                      style="background:#fdf0ee;color:#c0392b;border:1.5px solid #fca5a5;"
+                      onclick="AgendaRec.mostrarViewCancelar()"><i class="fa-solid fa-ban me-1"></i>Cancelar Consulta</button>
               <button type="button" class="btn px-3 text-white" id="btnEditarConsulta"
-                      style="background-color:#0d6efd; border-color:#0d6efd;"
-                      onclick="AgendaPage.mostrarViewEditar()">
-                <i class="fa-solid fa-pen me-1"></i>Editar
-              </button>
+                      style="background-color:#0d6efd;border-color:#0d6efd;"
+                      onclick="AgendaRec.mostrarViewEditar()"><i class="fa-solid fa-pen me-1"></i>Editar</button>
             </div>
           </div>
 
-          <!-- ── VIEW: Cancelar ── -->
           <div id="viewCancelar" class="d-none">
-            <div class="alert py-2 mb-3"
-                 style="background:#fff3e0; border:1px solid #ffd180; color:#e65100; font-size:0.88rem;">
-              <i class="fa-solid fa-triangle-exclamation me-1"></i>
-              Tem certeza que deseja cancelar esta consulta? Esta ação não pode ser desfeita.
+            <div class="alert py-2 mb-3" style="background:#fff3e0;border:1px solid #ffd180;color:#e65100;font-size:0.88rem;">
+              <i class="fa-solid fa-triangle-exclamation me-1"></i>Tem certeza que deseja cancelar esta consulta? Esta ação não pode ser desfeita.
             </div>
             <div id="alertaCancelar" class="alert alert-danger py-2 d-none" style="font-size:0.82rem;"></div>
             <div class="d-flex gap-2 justify-content-end mt-3 pt-3 border-top">
-              <button type="button" class="btn px-3 text-dark bg-white border" onclick="AgendaPage.voltarInfo()">
-                <i class="fa-solid fa-arrow-left me-1"></i>Voltar
-              </button>
+              <button type="button" class="btn px-3 text-dark bg-white border" onclick="AgendaRec.voltarInfo()"><i class="fa-solid fa-arrow-left me-1"></i>Voltar</button>
               <button type="button" class="btn px-3 text-white" id="btnConfirmarCancelar"
-                      style="background-color:#c0392b; border-color:#c0392b;"
-                      onclick="AgendaPage.confirmarCancelar()">
-                <i class="fa-solid fa-ban me-1"></i>Sim, Cancelar
-              </button>
+                      style="background-color:#c0392b;border-color:#c0392b;"
+                      onclick="AgendaRec.confirmarCancelar()"><i class="fa-solid fa-ban me-1"></i>Sim, Cancelar</button>
             </div>
           </div>
 
-          <!-- ── VIEW: Editar ── -->
           <div id="viewEditar" class="d-none">
             <div id="alertaEditarDetalhe" class="alert alert-danger py-2 d-none mb-3" style="font-size:0.82rem;"></div>
-
             <div class="mb-3">
-              <label class="form-label fw-semibold" style="font-size:0.85rem;">
-                Paciente <span class="text-danger">*</span>
-              </label>
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">Paciente <span class="text-danger">*</span></label>
               <div class="position-relative">
-                <input type="text" class="form-control" id="editPacienteSearch"
-                       placeholder="Nome do paciente..." autocomplete="off" />
+                <input type="text" class="form-control" id="editPacienteSearch" placeholder="Nome do paciente..." autocomplete="off" />
                 <input type="hidden" id="editPacienteId" />
-                <div id="editPacienteSugestoes"
-                     class="list-group position-absolute w-100 shadow"
-                     style="z-index:1060; max-height:180px; overflow-y:auto; display:none; border-radius:0 0 6px 6px;"></div>
+                <div id="editPacienteSugestoes" class="list-group position-absolute w-100 shadow"
+                     style="z-index:1060;max-height:180px;overflow-y:auto;display:none;border-radius:0 0 6px 6px;"></div>
               </div>
             </div>
-
             <div class="row g-2 mb-3">
               <div class="col-md-6">
-                <label class="form-label fw-semibold" style="font-size:0.85rem;">
-                  Dentista <span class="text-danger">*</span>
-                </label>
+                <label class="form-label fw-semibold" style="font-size:0.85rem;">Dentista <span class="text-danger">*</span></label>
                 <select class="form-select" id="editDentista"></select>
               </div>
               <div class="col-md-3">
-                <label class="form-label fw-semibold" style="font-size:0.85rem;">
-                  Data <span class="text-danger">*</span>
-                </label>
+                <label class="form-label fw-semibold" style="font-size:0.85rem;">Data <span class="text-danger">*</span></label>
                 <input type="date" class="form-control" id="editData" />
               </div>
               <div class="col-md-3">
-                <label class="form-label fw-semibold" style="font-size:0.85rem;">
-                  Horário <span class="text-danger">*</span>
-                </label>
+                <label class="form-label fw-semibold" style="font-size:0.85rem;">Horário <span class="text-danger">*</span></label>
                 <input type="time" class="form-control" id="editHora" step="1800" />
               </div>
             </div>
-
             <div class="mb-3">
               <label class="form-label fw-semibold" style="font-size:0.85rem;">Serviço</label>
               <select class="form-select" id="editServico"></select>
             </div>
-
             <div class="mb-3">
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" id="editRetorno" />
-                <label class="form-check-label" for="editRetorno" style="font-size:0.88rem;">
-                  É uma consulta de retorno?
-                </label>
+                <label class="form-check-label" for="editRetorno" style="font-size:0.88rem;">É uma consulta de retorno?</label>
               </div>
             </div>
-
             <div class="d-flex gap-2 justify-content-end pt-3 border-top">
-              <button type="button" class="btn px-3 text-dark bg-white border" onclick="AgendaPage.voltarInfo()">
-                <i class="fa-solid fa-arrow-left me-1"></i>Voltar
-              </button>
+              <button type="button" class="btn px-3 text-dark bg-white border" onclick="AgendaRec.voltarInfo()"><i class="fa-solid fa-arrow-left me-1"></i>Voltar</button>
               <button type="button" class="btn px-3 text-white" id="btnSalvarEdicao"
-                      style="background-color:#0d6efd; border-color:#0d6efd;"
-                      onclick="AgendaPage.confirmarEdicao()">
-                <i class="fa-solid fa-floppy-disk me-1"></i>Salvar
-              </button>
+                      style="background-color:#0d6efd;border-color:#0d6efd;"
+                      onclick="AgendaRec.confirmarEdicao()"><i class="fa-solid fa-floppy-disk me-1"></i>Salvar</button>
             </div>
           </div>
 
@@ -335,12 +244,18 @@
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper><div class="vw-plugin-top-wrapper"></div></div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../components/sidebar.js"></script>
+  <script src="../components/settings.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/api.js"></script>
-  <script src="../js/recepcionista/agenda.js"></script>
-
+  <script src="../js/recepcionista/agenda.js?v=7"></script>
 </body>
 </html>

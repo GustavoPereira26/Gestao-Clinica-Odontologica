@@ -145,6 +145,7 @@ public class AppDbContext : DbContext
             e.HasOne(x => x.Servico)
              .WithMany(x => x.Planos)
              .HasForeignKey(x => x.IdServico)
+             .IsRequired(false)
              .OnDelete(DeleteBehavior.Restrict);
         });
     }

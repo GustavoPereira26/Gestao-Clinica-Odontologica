@@ -62,59 +62,22 @@
           </div>
         </div>
 
-        <!-- Cabeçalho de dias (fixo, fora do scroll) -->
-        <div class="tcal-head" id="tcalHead">
-          <div class="tcal-head-gutter"></div>
-          <div class="tcal-head-day" id="day-0">
-            <span class="tcal-abbr">Seg</span>
-            <span class="tcal-num">19</span>
-          </div>
-          <div class="tcal-head-day" id="day-1">
-            <span class="tcal-abbr">Ter</span>
-            <span class="tcal-num">20</span>
-          </div>
-          <div class="tcal-head-day" id="day-2">
-            <span class="tcal-abbr">Qua</span>
-            <span class="tcal-num">21</span>
-          </div>
-          <div class="tcal-head-day" id="day-3">
-            <span class="tcal-abbr">Qui</span>
-            <span class="tcal-num">22</span>
-          </div>
-          <div class="tcal-head-day" id="day-4">
-            <span class="tcal-abbr">Sex</span>
-            <span class="tcal-num">23</span>
-          </div>
-          <div class="tcal-head-day" id="day-5">
-            <span class="tcal-abbr">Sáb</span>
-            <span class="tcal-num">24</span>
-          </div>
-          <div class="tcal-head-day" id="day-6">
-            <span class="tcal-abbr">Dom</span>
-            <span class="tcal-num">25</span>
-          </div>
-        </div>
-
-        <!-- Corpo scrollável -->
-        <div class="tcal-body" id="tcalBody">
-
-          <!-- Coluna de horas -->
-          <div class="tcal-time-col">
-            <div class="tcal-hour-cell"><span class="tcal-hour-lbl">08:00</span></div>
-            <div class="tcal-hour-cell"><span class="tcal-hour-lbl">09:00</span></div>
-            <div class="tcal-hour-cell"><span class="tcal-hour-lbl">10:00</span></div>
-            <div class="tcal-hour-cell"><span class="tcal-hour-lbl">11:00</span></div>
-            <div class="tcal-hour-cell"><span class="tcal-hour-lbl">12:00</span></div>
-            <div class="tcal-hour-cell"><span class="tcal-hour-lbl">13:00</span></div>
-            <div class="tcal-hour-cell"><span class="tcal-hour-lbl">14:00</span></div>
-            <div class="tcal-hour-cell"><span class="tcal-hour-lbl">15:00</span></div>
-            <div class="tcal-hour-cell"><span class="tcal-hour-lbl">16:00</span></div>
-            <div class="tcal-hour-cell"><span class="tcal-hour-lbl">17:00</span></div>
+        <div class="tcal-scroll-area" id="tcalScrollArea">
+          <div class="tcal-head" id="tcalHead">
+            <div class="tcal-head-gutter"></div>
+            <div class="tcal-head-day" id="day-0"><span class="tcal-abbr">Seg</span><span class="tcal-num">19</span></div>
+            <div class="tcal-head-day" id="day-1"><span class="tcal-abbr">Ter</span><span class="tcal-num">20</span></div>
+            <div class="tcal-head-day" id="day-2"><span class="tcal-abbr">Qua</span><span class="tcal-num">21</span></div>
+            <div class="tcal-head-day" id="day-3"><span class="tcal-abbr">Qui</span><span class="tcal-num">22</span></div>
+            <div class="tcal-head-day" id="day-4"><span class="tcal-abbr">Sex</span><span class="tcal-num">23</span></div>
+            <div class="tcal-head-day" id="day-5"><span class="tcal-abbr">Sáb</span><span class="tcal-num">24</span></div>
+            <div class="tcal-head-day" id="day-6"><span class="tcal-abbr">Dom</span><span class="tcal-num">25</span></div>
           </div>
 
-          <!-- Grade de 7 dias (gerada por JS) -->
-          <div class="tcal-grid" id="tcalGrid"></div>
-
+          <div class="tcal-body" id="tcalBody">
+            <div class="tcal-time-col" id="tcalTimeCol"></div>
+            <div class="tcal-grid" id="tcalGrid"></div>
+          </div>
         </div>
       </div>
       <!-- END DESKTOP -->
@@ -174,13 +137,8 @@
             </div>
           </div>
           <div class="mb-5">
-            <h6 class="fw-medium text-dark mb-3">Observação do paciente</h6>
-            <p class="text-muted small lh-lg mb-0">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc scelerisque suscipit rhoncus.
-              In lectus nisl, ultricies efficitur nibh quis, lobortis porttitor tortor. Fusce imperdiet
-              turpis vitae lorem consectetur auctor. Donec efficitur mauris non leo placerat tincidunt.
-              Suspendisse sodales vel ante non molestie. Praesent vitae libero sapien.
-            </p>
+            <h6 class="fw-medium text-dark mb-3">Status</h6>
+            <p class="text-muted small mb-0" id="modalStatus">—</p>
           </div>
           <div class="text-center mt-4">
             <button type="button" class="btn btn-primary px-4 py-2 rounded-3 fw-medium shadow-sm" data-bs-dismiss="modal">
@@ -211,7 +169,7 @@
   <script src="../components/settings.js"></script>
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>
-  <script src="../js/dentista/agenda.js"></script>
+  <script src="../js/dentista/agenda.js?v=4"></script>
 
 </body>
 </html>

@@ -3,11 +3,11 @@
    ══════════════════════════════════════════════════ */
 
 :root {
-  --tcal-cell-h: 64px;
+  --tcal-cell-h: 48px;
   --tcal-time-w: 64px;
   --tcal-head-h: 68px;
   --tcal-toolbar-h: 56px;
-  --tcal-border: #e8e8e8;
+  --tcal-border: #c8c8c8;
   --tcal-today-bg: rgba(110, 84, 48, 0.05);
   --tcal-hover-bg: rgba(110, 84, 48, 0.04);
   --tcal-now-color: #c0392b;
@@ -111,7 +111,7 @@
 .tcal-notif-close {
   background: none;
   border: none;
-  color: #aaa;
+  color: #666;
   cursor: pointer;
   padding: 0.2rem;
   font-size: 0.8rem;
@@ -216,13 +216,27 @@
 /* ══════════════════════════════════════════════════
    CABEÇALHO DOS DIAS
    ══════════════════════════════════════════════════ */
+/* ── Container único que faz o scroll (head + body juntos) ── */
+.tcal-scroll-area {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.tcal-scroll-area::-webkit-scrollbar       { width: 5px; }
+.tcal-scroll-area::-webkit-scrollbar-thumb { background: #d5d5d5; border-radius: 3px; }
+.tcal-scroll-area::-webkit-scrollbar-track { background: transparent; }
+
 .tcal-head {
   display: flex;
   align-items: stretch;
   height: var(--tcal-head-h);
   border-bottom: 2px solid var(--tcal-border);
-  flex-shrink: 0;
   background: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .tcal-head-gutter {
@@ -250,7 +264,7 @@
 .tcal-abbr {
   font-size: 0.66rem;
   font-weight: 600;
-  color: #999;
+  color: #555;
   text-transform: uppercase;
   letter-spacing: 0.07em;
 }
@@ -282,23 +296,7 @@
    ══════════════════════════════════════════════════ */
 .tcal-body {
   display: flex;
-  flex: 1 1 0;
-  min-height: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.tcal-body::-webkit-scrollbar {
-  width: 5px;
-}
-
-.tcal-body::-webkit-scrollbar-thumb {
-  background: #d5d5d5;
-  border-radius: 3px;
-}
-
-.tcal-body::-webkit-scrollbar-track {
-  background: transparent;
+  align-items: flex-start;
 }
 
 /* ── Coluna de horas ── */
@@ -324,7 +322,7 @@
 .tcal-hour-lbl {
   font-size: 0.66rem;
   font-weight: 500;
-  color: #bbb;
+  color: #666;
 }
 
 /* ══════════════════════════════════════════════════

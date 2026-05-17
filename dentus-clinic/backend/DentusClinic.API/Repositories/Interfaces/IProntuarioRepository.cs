@@ -8,4 +8,5 @@ public interface IProntuarioRepository
     Task<Prontuario?> BuscarPorIdAsync(int id);
     Task<Prontuario?> BuscarPorPacienteAsync(int idPaciente);
     Task AdicionarAsync(Prontuario prontuario);
+    Task AtualizarDataAsync(int prontuarioId, DateOnly data);
 }

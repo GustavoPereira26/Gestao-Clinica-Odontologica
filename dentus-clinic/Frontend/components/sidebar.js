@@ -109,7 +109,7 @@ const SidebarComponent = (() => {
                 <p class="mb-0">Deseja realmente sair?</p>
               </div>
               <div class="modal-footer border-0 pt-0 justify-content-center gap-2">
-                <button type="button" class="btn px-4 text-dark bg-white border" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn px-4 btn-cancelar-logout" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn px-4 text-white" id="btnConfirmarLogout" style="background-color:#c0392b; border-color:#c0392b;">Sair</button>
               </div>
             </div>

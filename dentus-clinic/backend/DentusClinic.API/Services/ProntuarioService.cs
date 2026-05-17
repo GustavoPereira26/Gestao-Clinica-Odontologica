@@ -31,11 +31,23 @@ public class ProntuarioService : IProntuarioService
         return prontuario is null ? null : MapearResponse(prontuario);
     }
 
+    public async Task<ProntuarioResponse> ObterOuCriarAsync(int idPaciente)
+    {
+        var existente = await _prontuarioRepository.BuscarPorPacienteAsync(idPaciente);
+        if (existente is not null) return MapearResponse(existente);
+
+        var novo = new Models.Prontuario { IdPaciente = idPaciente };
+        await _prontuarioRepository.AdicionarAsync(novo);
+        var criado = await _prontuarioRepository.BuscarPorIdAsync(novo.Id);
+        return MapearResponse(criado!);
+    }
+
     private static ProntuarioResponse MapearResponse(Models.Prontuario p) => new()
     {
         Id = p.Id,
         IdPaciente = p.IdPaciente,
         NomePaciente = p.Paciente?.Nome ?? string.Empty,
-        DataAbertura = p.DataAbertura
+        DataAbertura = p.DataAbertura,
+        DataUltimaAtualizacao = p.DataUltimaAtualizacao
     };
 }

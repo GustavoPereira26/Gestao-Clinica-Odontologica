@@ -35,7 +35,7 @@ public class ConsultaController : ControllerBase
     }
 
     [HttpGet("agenda")]
-    [Authorize(Roles = "SECRETARIA")]
+    [Authorize(Roles = "DENTISTA,SECRETARIA")]
     public async Task<IActionResult> ListarAgenda([FromQuery] int dentistaId, [FromQuery] string data)
     {
         if (!DateOnly.TryParse(data, out var dataParsed))
@@ -46,7 +46,7 @@ public class ConsultaController : ControllerBase
     }
 
     [HttpPut("{id}/status")]
-    [Authorize(Roles = "SECRETARIA")]
+    [Authorize(Roles = "DENTISTA,SECRETARIA")]
     public async Task<IActionResult> AtualizarStatus(int id, [FromBody] AtualizarStatusRequest request)
     {
         var sucesso = await _consultaService.AtualizarStatusAsync(id, request.Status);

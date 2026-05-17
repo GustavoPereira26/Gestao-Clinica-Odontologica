@@ -162,7 +162,7 @@ function initHamburger() {
 /* ── Botões de ação ── */
 function initActionButtons() {
   document.getElementById('btnAgendar')?.addEventListener('click', () => {
-    window.location.href = '../recepcionista/consultas.html?acao=agendar';
+    window.location.href = '../recepcionista/agenda.html';
   });
   document.getElementById('btnVisualizarPaciente')?.addEventListener('click', () => {
     window.location.href = '../recepcionista/pacientes.html';

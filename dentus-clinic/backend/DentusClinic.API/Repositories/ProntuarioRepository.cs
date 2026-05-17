@@ -28,4 +28,12 @@ public class ProntuarioRepository : IProntuarioRepository
         _contexto.Prontuarios.Add(prontuario);
         await _contexto.SaveChangesAsync();
     }
+
+    public async Task AtualizarDataAsync(int prontuarioId, DateOnly data)
+    {
+        var prontuario = await _contexto.Prontuarios.FindAsync(prontuarioId);
+        if (prontuario is null) return;
+        prontuario.DataUltimaAtualizacao = data;
+        await _contexto.SaveChangesAsync();
+    }
 }
