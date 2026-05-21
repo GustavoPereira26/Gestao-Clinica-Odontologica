@@ -71,8 +71,6 @@ html.dark-mode .app-content {
   background-color: var(--dm-bg) !important;
 }
 
-html.dark-mode .dash-topbar,
-html.dark-mode .dash-body,
 html.dark-mode .page-container,
 html.dark-mode .metricas-row,
 html.dark-mode .filter-bar,
@@ -392,7 +390,8 @@ html.dark-mode .dash-detalhe {
 
 html.dark-mode .dash-detalhe-card,
 html.dark-mode .dash-detalhe-obs,
-html.dark-mode .ap-etapa-header {
+html.dark-mode .ap-etapa-header,
+html.dark-mode .dash-fila-card {
   background-color: var(--dm-card) !important;
   border-color: var(--dm-border) !important;
 }

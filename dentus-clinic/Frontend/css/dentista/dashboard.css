@@ -806,6 +806,16 @@
   .it-arcada-gap { width: 8px; }
   .it-arcada-grupo { gap: 2px; }
   .it-arcada-row { gap: 2px; }
+
+  /* Odontograma: scroll horizontal em vez de vazar para fora da tela */
+  .it-odontograma-chart {
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+
+  .it-odontograma-section {
+    padding: var(--space-4);
+  }
 }
 
 /* ══════════════════════════════════════════════════
@@ -1482,6 +1492,116 @@
   }
 }
 
+/* ── Cards Mobile: fila de consultas ── */
+.dash-fila-cards {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.dash-fila-card {
+  background: var(--c5);
+  border: 1px solid var(--c4);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  transition: box-shadow var(--transition), border-color var(--transition);
+}
+
+.dash-fila-card:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--c3);
+}
+
+.dash-fila-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.dash-fila-card-hora {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--c1);
+  font-family: var(--font-display);
+}
+
+.dash-fila-card-status {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.18rem 0.6rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dash-fila-card-status.aguardando  { background: #fff3cd; color: #856404; }
+.dash-fila-card-status.em-consulta { background: #d4edda; color: #1a6e35; }
+.dash-fila-card-status.agendada    { background: var(--c4); color: var(--c2); }
+
+.dash-fila-card-nome {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--c1);
+  margin-bottom: var(--space-2);
+}
+
+.dash-fila-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  font-size: 0.8rem;
+  color: var(--c2);
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--c4);
+}
+
+.dash-fila-card-meta i {
+  font-size: 0.7rem;
+  margin-right: 0.25rem;
+  color: var(--c3);
+}
+
+.dash-fila-card-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: 0.65rem;
+  background: var(--c1);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.dash-fila-card-btn:hover { background: var(--c2); }
+
+.dash-fila-card-vazio {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--c3);
+}
+
+.dash-fila-card-vazio i {
+  font-size: 2.5rem;
+  margin-bottom: var(--space-3);
+  display: block;
+  opacity: 0.5;
+}
+
+.dash-fila-card-vazio p {
+  font-size: 0.88rem;
+  font-weight: 500;
+  margin: 0;
+}
+
 /* ── RESPONSIVO ── */
 @media (max-width: 992px) {
   .dash-metrics {
@@ -1489,7 +1609,8 @@
   }
 }
 
-@media (max-width: 900px) {
+/* Tablet: coluna de detalhes (420px) consumia quase todo o espaço ao lado da tabela */
+@media (max-width: 1024px) {
   .dash-body {
     grid-template-columns: 1fr;
   }
@@ -1497,6 +1618,7 @@
   .dash-detalhe {
     position: static;
     max-height: none;
+    margin-top: 0;
   }
 }
 
@@ -1509,12 +1631,18 @@
 
   .dash-metrics {
     width: 100%;
+    flex-direction: row;
   }
 
   .dash-metric-card {
     flex: 1;
-    min-width: 120px;
+    min-width: 0;
   }
+
+  /* Esconde tabela + painel, exibe cards */
+  .dash-body         { display: none !important; }
+  .dash-fila-cards   { display: flex !important; }
+  .dash-iniciar-wrapper { display: none; }
 }
 
 @media (max-width: 480px) {
@@ -1526,5 +1654,21 @@
     align-items: flex-start;
     flex-direction: row;
     flex-wrap: wrap;
+    gap: var(--space-3);
   }
+
+  .dash-detalhe-foto-wrapper {
+    width: 100px;
+    height: 100px;
+  }
+
+  /* Dentes menores em telas pequenas */
+  .it-dente {
+    width: 22px;
+    height: 26px;
+    font-size: 0.55rem;
+  }
+
+  .it-arcada-gap { width: 5px; }
+  .it-arcada-grupo { gap: 1px; }
 }

@@ -88,6 +88,7 @@ async function carregarDashboard() {
     document.getElementById('metricaFila').textContent      = emEspera;
 
     renderizarFila(filaConsultas);
+    renderizarFilaCards(filaConsultas);
   } catch (err) {
     console.error('Erro ao carregar dashboard:', err.message);
   }
@@ -180,6 +181,49 @@ function renderizarFila(consultas) {
     `;
     tr.addEventListener('click', () => selecionarPaciente(c.id));
     tbody.appendChild(tr);
+  });
+}
+
+// ─── Renderiza cards mobile da fila ────────────────────────────────────────
+function renderizarFilaCards(consultas) {
+  const container = document.getElementById('dashFilaCards');
+  if (!container) return;
+
+  if (!consultas.length) {
+    container.innerHTML = `
+      <div class="dash-fila-card-vazio">
+        <i class="fa-regular fa-calendar-xmark"></i>
+        <p>Nenhuma consulta para hoje</p>
+      </div>`;
+    return;
+  }
+
+  const STATUS_LABEL = { Aguardando: 'Aguardando', 'Em Consulta': 'Em Consulta', Agendada: 'Agendada' };
+  const STATUS_CLASS = { Aguardando: 'aguardando', 'Em Consulta': 'em-consulta', Agendada: 'agendada' };
+
+  container.innerHTML = consultas.map(c => `
+    <div class="dash-fila-card">
+      <div class="dash-fila-card-top">
+        <span class="dash-fila-card-hora">${(c.horaConsulta || '').slice(0, 5) || '—'}</span>
+        <span class="dash-fila-card-status ${STATUS_CLASS[c.status] || 'agendada'}">${STATUS_LABEL[c.status] || c.status}</span>
+      </div>
+      <div class="dash-fila-card-nome">${c.nomePaciente || '—'}</div>
+      <div class="dash-fila-card-meta">
+        <span><i class="fa-solid fa-tooth"></i>${c.nomeServico || '—'}</span>
+        <span><i class="fa-solid fa-clock"></i>${infoColuna(c)}</span>
+      </div>
+      <button class="dash-fila-card-btn" data-id="${c.id}">
+        <i class="fa-solid fa-tooth"></i>
+        ${c.status === 'Em Consulta' ? 'Continuar Consulta' : 'Iniciar Consulta'}
+      </button>
+    </div>
+  `).join('');
+
+  container.querySelectorAll('.dash-fila-card-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      consultaAtualId = Number(btn.dataset.id);
+      iniciarConsulta();
+    });
   });
 }
 
