@@ -153,6 +153,12 @@
   color: #fff;
 }
 
+@media (max-width: 480px) {
+  .detalhe-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* ── Dark mode overrides ── */
 html.dark-mode .rec-dentista-select {
   color: var(--dm-text) !important;

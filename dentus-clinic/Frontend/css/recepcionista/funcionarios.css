@@ -234,7 +234,8 @@
     border: 1px solid #c8e6c9;
 }
 
-.cargo-badge.ti {
+.cargo-badge.ti,
+.cargo-badge.administrador {
     background: #e3f2fd;
     color: #1565c0;
     border: 1px solid #bbdefb;

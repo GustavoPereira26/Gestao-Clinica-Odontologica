@@ -129,11 +129,13 @@ const FuncionariosPage = (() => {
     try {
       const res = await apiGetEspecialidades();
       const select = document.getElementById('cadEspecialidade');
+      if (!select) return;
       select.innerHTML = (res.dados || [])
         .map(e => `<option value="${e.id}">${e.nome}</option>`)
         .join('');
     } catch {
-      document.getElementById('cadEspecialidade').innerHTML = '<option value="">Erro ao carregar</option>';
+      const select = document.getElementById('cadEspecialidade');
+      if (select) select.innerHTML = '<option value="">Erro ao carregar</option>';
     }
   }
 

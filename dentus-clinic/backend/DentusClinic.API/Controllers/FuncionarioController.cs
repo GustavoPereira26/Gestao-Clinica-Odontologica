@@ -35,20 +35,20 @@ public class FuncionarioController : ControllerBase
         return Ok(ApiResponse<object>.Ok(funcionario));
     }
 
-    [HttpPost("cadastrar")]
+    [HttpPost]
     [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Cadastrar([FromBody] FuncionarioRequest request)
     {
         try {
             var resultado = await _funcionarioService.CadastrarAsync(request);
-            return Ok("Funcionário cadastrado com sucesso");
+            return Ok(ApiResponse<object>.Ok(resultado, "Funcionário cadastrado com sucesso."));
         }
         catch (InvalidOperationException ex) {
             return BadRequest(new { mensagem = ex.Message });
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Editar(int id, [FromBody] FuncionarioEditarRequest request)
     {

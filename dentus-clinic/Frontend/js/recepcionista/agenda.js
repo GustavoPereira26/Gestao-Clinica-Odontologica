@@ -486,7 +486,7 @@ const AgendaRec = {
 
     const { dentistaId, data, hora } = slotSelecionado;
     const agora     = new Date();
-    const hoje      = agora.toISOString().split('T')[0];
+    const hoje      = toISODate(agora);
     const horaAtual = agora.toTimeString().slice(0, 5);
 
     if (data < hoje)                       { this._erroAgendar('Não é possível agendar em uma data passada.'); return; }

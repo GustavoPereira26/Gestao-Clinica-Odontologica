@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initActionButtons();
   document.getElementById('tabelaConsultas')
     ?.addEventListener('click', handleStatusClick);
+  document.getElementById('consultasCards')
+    ?.addEventListener('click', handleStatusClick);
 });
 
 /* ── Carregamento da API ── */
@@ -58,6 +60,7 @@ async function carregarConsultasDia() {
       status:   STATUS_DB_TO_UI[c.status] || 'agendada'
     }));
     renderTabela();
+    renderCards();
   } catch (erro) {
     const tbody = document.getElementById('tbodyConsultasDia');
     if (tbody) tbody.innerHTML = `<tr><td colspan="5" class="text-center py-4 text-danger">Erro ao carregar consultas. Tente recarregar a página.</td></tr>`;
@@ -106,6 +109,51 @@ function renderTabela() {
   }).join('');
 }
 
+/* ── Cards Mobile ── */
+function renderCards() {
+  const container = document.getElementById('consultasCards');
+  if (!container) return;
+
+  if (CONSULTAS_DIA.length === 0) {
+    container.innerHTML = `<div class="cons-card-vazio">
+      <i class="fa-solid fa-calendar-xmark"></i>
+      <p>Nenhuma consulta agendada para hoje</p>
+    </div>`;
+    return;
+  }
+
+  container.innerHTML = CONSULTAS_DIA.map(c => {
+    const isCancelada = c.status === 'cancelada';
+    const controles = isCancelada
+      ? `<span class="status-badge ${STATUS_CLASSES[c.status]}">${STATUS_LABELS[c.status]}</span>`
+      : `<div class="status-cell">
+           <button class="btn-status-arrow" data-dir="prev" data-id="${c.id}" title="Status anterior">
+             <i class="fa-solid fa-chevron-left"></i>
+           </button>
+           <span class="status-badge ${STATUS_CLASSES[c.status]}"
+                 data-status="${c.status}" data-id="${c.id}">${STATUS_LABELS[c.status]}</span>
+           <button class="btn-status-arrow" data-dir="next" data-id="${c.id}" title="Próximo status">
+             <i class="fa-solid fa-chevron-right"></i>
+           </button>
+         </div>`;
+
+    const retornoBadge = c.retorno ? `<span class="badge-retorno">Retorno</span>` : '';
+
+    return `<div class="cons-card" data-id="${c.id}">
+      <div class="cons-card-header">
+        <span class="cons-hora">${c.hora}</span>
+        ${retornoBadge}
+      </div>
+      <div class="cons-card-nome">${c.paciente}</div>
+      <div class="cons-card-meta">
+        <span><i class="fa-solid fa-user-doctor"></i>${c.doutor}</span>
+        <span><i class="fa-solid fa-tooth"></i>${c.servico}</span>
+      </div>
+      <div class="cons-card-controles">${controles}</div>
+    </div>`;
+  }).join('');
+}
+
 /* ── Clique nas setas de status ── */
 async function handleStatusClick(e) {
   const btn = e.target.closest('.btn-status-arrow');
@@ -132,16 +180,31 @@ async function handleStatusClick(e) {
     await apiAtualizarStatusConsulta(id, novoStatusDB);
     consulta.status = novoStatusUI;
 
+    /* Atualiza badge na view ativa (tabela ou card) */
     const badge = cell.querySelector('.status-badge');
     Object.values(STATUS_CLASSES).forEach(cls => badge.classList.remove(cls));
     badge.classList.add(STATUS_CLASSES[novoStatusUI]);
-    badge.textContent   = STATUS_LABELS[novoStatusUI];
+    badge.textContent    = STATUS_LABELS[novoStatusUI];
     badge.dataset.status = novoStatusUI;
+
+    /* Sincroniza a outra view */
+    _sincronizarStatusOutraView(id, novoStatusUI);
   } catch (erro) {
     console.error('Erro ao atualizar status:', erro.message);
   } finally {
     cell.querySelectorAll('.btn-status-arrow').forEach(b => b.disabled = false);
   }
+}
+
+function _sincronizarStatusOutraView(id, novoStatusUI) {
+  /* Atualiza todos os badges com data-id correspondente nas outras views */
+  document.querySelectorAll(`.status-badge[data-id="${id}"]`).forEach(badge => {
+    if (badge.dataset.status === novoStatusUI) return;
+    Object.values(STATUS_CLASSES).forEach(cls => badge.classList.remove(cls));
+    badge.classList.add(STATUS_CLASSES[novoStatusUI]);
+    badge.textContent    = STATUS_LABELS[novoStatusUI];
+    badge.dataset.status = novoStatusUI;
+  });
 }
 
 /* ── Sidebar ── */

@@ -7,8 +7,9 @@
 .dash-topbar {
   display: flex;
   align-items: center;
-  column-gap: 32rem;
+  justify-content: space-between;
   flex-wrap: wrap;
+  gap: var(--space-6);
   margin-bottom: var(--space-6);
 }
 
@@ -128,6 +129,7 @@
 .table-container {
   border-radius: var(--radius-md);
   overflow-y: auto;
+  overflow-x: auto;
   box-shadow: var(--shadow-sm);
   background-color: var(--c5);
 }
@@ -149,6 +151,8 @@
 .table-custom {
   border-collapse: collapse;
   margin-bottom: 0;
+  min-width: 520px;
+  width: 100%;
 }
 
 .table-custom thead th {
@@ -1479,6 +1483,12 @@
 }
 
 /* ── RESPONSIVO ── */
+@media (max-width: 992px) {
+  .dash-metrics {
+    column-gap: var(--space-4);
+  }
+}
+
 @media (max-width: 900px) {
   .dash-body {
     grid-template-columns: 1fr;
@@ -1504,5 +1514,17 @@
   .dash-metric-card {
     flex: 1;
     min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dash-detalhe-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dash-detalhe-col-foto {
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
   }
 }
