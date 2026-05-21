@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DentusClinic.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260517160655_PlanosDataCriacao")]
-    partial class PlanosDataCriacao
+    [Migration("20260520233306_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -299,6 +299,9 @@ namespace DentusClinic.API.Migrations
                     b.Property<string>("Condicao")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateOnly?>("DataAtualizacao")
+                        .HasColumnType("date");
+
                     b.Property<DateOnly>("DataCriacao")
                         .HasColumnType("date");
 
@@ -340,6 +343,9 @@ namespace DentusClinic.API.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateOnly>("DataAbertura")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("DataUltimaAtualizacao")
                         .HasColumnType("date");
 
                     b.Property<int>("IdPaciente")

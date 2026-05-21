@@ -31,8 +31,8 @@ namespace DentusClinic.API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Senha = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TipoAcesso = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false)
+                    Senha = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
+                    TipoAcesso = table.Column<int>(type: "int", maxLength: 20, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,12 +45,12 @@ namespace DentusClinic.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    Endereco = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Cpf = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
-                    Telefone = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DataNascimento = table.Column<DateOnly>(type: "date", nullable: false),
-                    Endereco = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Telefone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DataNascimento = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -63,11 +63,18 @@ namespace DentusClinic.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Nome = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    IdEspecialidade = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Servicos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Servicos_Especialidades_IdEspecialidade",
+                        column: x => x.IdEspecialidade,
+                        principalTable: "Especialidades",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -76,12 +83,13 @@ namespace DentusClinic.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Cro = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    IdEspecialidade = table.Column<int>(type: "int", nullable: false),
+                    IdAcesso = table.Column<int>(type: "int", nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Cpf = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
-                    Cro = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Telefone = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IdEspecialidade = table.Column<int>(type: "int", nullable: false),
-                    IdAcesso = table.Column<int>(type: "int", nullable: false)
+                    Telefone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DataNascimento = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -106,12 +114,12 @@ namespace DentusClinic.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    Cargo = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    IdAcesso = table.Column<int>(type: "int", nullable: false),
                     Nome = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
                     Cpf = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
-                    DataNascimento = table.Column<DateOnly>(type: "date", nullable: false),
-                    Telefone = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Cargo = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    IdAcesso = table.Column<int>(type: "int", nullable: false)
+                    Telefone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DataNascimento = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -131,7 +139,8 @@ namespace DentusClinic.API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdPaciente = table.Column<int>(type: "int", nullable: false),
-                    DataAbertura = table.Column<DateOnly>(type: "date", nullable: false)
+                    DataAbertura = table.Column<DateOnly>(type: "date", nullable: false),
+                    DataUltimaAtualizacao = table.Column<DateOnly>(type: "date", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -155,7 +164,8 @@ namespace DentusClinic.API.Migrations
                     Retorno = table.Column<bool>(type: "bit", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
                     IdDentista = table.Column<int>(type: "int", nullable: false),
-                    IdPaciente = table.Column<int>(type: "int", nullable: false)
+                    IdPaciente = table.Column<int>(type: "int", nullable: false),
+                    IdServico = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -172,6 +182,12 @@ namespace DentusClinic.API.Migrations
                         principalTable: "Pacientes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Consultas_Servicos_IdServico",
+                        column: x => x.IdServico,
+                        principalTable: "Servicos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -181,11 +197,14 @@ namespace DentusClinic.API.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     IdProntuario = table.Column<int>(type: "int", nullable: false),
-                    IdServico = table.Column<int>(type: "int", nullable: false),
+                    IdServico = table.Column<int>(type: "int", nullable: true),
                     Descricao = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Condicao = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
-                    Observacao = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Observacao = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Dente = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DataCriacao = table.Column<DateOnly>(type: "date", nullable: false),
+                    DataAtualizacao = table.Column<DateOnly>(type: "date", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -244,6 +263,11 @@ namespace DentusClinic.API.Migrations
                 column: "IdPaciente");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Consultas_IdServico",
+                table: "Consultas",
+                column: "IdServico");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Dentistas_Cpf",
                 table: "Dentistas",
                 column: "Cpf",
@@ -291,6 +315,12 @@ namespace DentusClinic.API.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Pacientes_Email",
+                table: "Pacientes",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Planos_IdProntuario",
                 table: "Planos",
                 column: "IdProntuario");
@@ -305,6 +335,11 @@ namespace DentusClinic.API.Migrations
                 table: "Prontuarios",
                 column: "IdPaciente",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Servicos_IdEspecialidade",
+                table: "Servicos",
+                column: "IdEspecialidade");
         }
 
         /// <inheritdoc />
@@ -326,19 +361,19 @@ namespace DentusClinic.API.Migrations
                 name: "Prontuarios");
 
             migrationBuilder.DropTable(
-                name: "Servicos");
+                name: "Dentistas");
 
             migrationBuilder.DropTable(
-                name: "Dentistas");
+                name: "Servicos");
 
             migrationBuilder.DropTable(
                 name: "Pacientes");
 
             migrationBuilder.DropTable(
-                name: "Especialidades");
+                name: "Logins");
 
             migrationBuilder.DropTable(
-                name: "Logins");
+                name: "Especialidades");
         }
     }
 }

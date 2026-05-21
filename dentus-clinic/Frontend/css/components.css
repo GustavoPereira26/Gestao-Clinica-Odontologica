@@ -99,6 +99,15 @@
     outline: none;
 }
 
+/* Move os ícones de validação do Bootstrap (check/exclamação) para a esquerda */
+.form-control.is-valid,
+.was-validated .form-control:valid,
+.form-control.is-invalid,
+.was-validated .form-control:invalid {
+    background-position: left .85rem center;
+    padding-left: 2.5rem;
+}
+
 .input-wrapper {
     position: relative;
 }
@@ -111,6 +120,19 @@
     color: var(--c3);
     font-size: 1rem;
     pointer-events: none;
+    z-index: 2;
+}
+
+/* Ícone clicável (toggle de senha) */
+.input-wrapper .input-icon.toggle-pw {
+    pointer-events: auto;
+    cursor: pointer;
+    border-radius: .25rem;
+    transition: color var(--transition);
+}
+
+.input-wrapper .input-icon.toggle-pw:hover {
+    color: var(--c1);
 }
 
 /* ── CARDS ── */

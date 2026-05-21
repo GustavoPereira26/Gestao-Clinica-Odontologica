@@ -63,9 +63,9 @@
     line-height: 1.2;
 }
 
-/* Form overrides or additions */
-.login-form .form-control {
-    padding-right: 2.4rem;
+/* Form overrides — garante espaço para o ícone não sobrepor o texto */
+.login-form .input-wrapper .form-control {
+    padding-right: 2.5rem;
 }
 
 .btn-login {
