@@ -23,25 +23,18 @@
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/layout.css" />
   <link rel="stylesheet" href="../css/components.css" />
-
-  <!-- Estilos da página -->
-  <link rel="stylesheet" href="../css/dentista/tratamentos.css?v=3" />
+  <link rel="stylesheet" href="../css/dentista/tratamentos.css?v=12" />
 </head>
 
 <body>
 
-  <!-- Botão hamburguer (mobile) -->
   <button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
     <i class="fa-solid fa-bars"></i>
   </button>
 
-  <!-- Layout principal -->
   <div class="app-layout">
-
-    <!-- ═══ SIDEBAR (renderizada pelo componente) ═══ -->
     <div id="sidebarContainer"></div>
 
-    <!-- ═══ CONTEÚDO ═══ -->
     <main class="app-content">
       <div class="page-container">
 
@@ -50,204 +43,79 @@
           <h1 class="mobile-header-title mb-0">Tratamentos</h1>
         </header>
 
-        <!-- ── Cards de Métricas ── -->
-        <div class="metricas-row">
-
-          <div class="metrica-card">
-            <div class="metrica-icon">
-              <i class="fa-solid fa-clipboard-list"></i>
-            </div>
-            <div class="metrica-info">
-              <span class="metrica-label">em Andamento</span>
-              <span class="metrica-valor" id="metricaAndamento">5</span>
-            </div>
-          </div>
-
-          <div class="metrica-card">
-            <div class="metrica-icon">
-              <i class="fa-solid fa-clock-rotate-left"></i>
-            </div>
-            <div class="metrica-info">
-              <span class="metrica-label">Aguardando Retorno</span>
-              <span class="metrica-valor" id="metricaRetorno">4</span>
-            </div>
-          </div>
-
-          <div class="metrica-card">
-            <div class="metrica-icon">
-              <i class="fa-solid fa-check-circle"></i>
-            </div>
-            <div class="metrica-info">
-              <span class="metrica-label">Concluídos</span>
-              <span class="metrica-valor" id="metricaConcluidos">15</span>
-            </div>
-          </div>
-
-        </div>
-
         <!-- ── Barra de Filtros ── -->
-        <div class="filter-bar">
-
-          <div class="filter-field">
-            <label class="filter-label">Paciente</label>
-            <div class="filter-input-wrapper">
-              <i class="fa-solid fa-user filter-input-icon"></i>
-              <input type="text" class="filter-input" id="filtroPaciente" placeholder="Nome do paciente" />
+        <div class="filter-bar bg-white border rounded-3 p-3 p-lg-4 mb-4">
+          <div class="row g-2 align-items-end">
+            <div class="filter-field col-12 col-sm-8 col-lg-4">
+              <label class="filter-label d-block small fw-semibold text-uppercase mb-1">Paciente</label>
+              <div class="filter-input-wrapper position-relative">
+                <i class="fa-solid fa-user filter-input-icon"></i>
+                <input type="text" class="filter-input form-control form-control-sm" id="filtroPaciente" placeholder="Nome do paciente" />
+              </div>
+            </div>
+            <div class="filter-actions col-12 col-sm-4 col-lg-2 d-flex align-items-end">
+              <button class="btn-filter-clear btn btn-sm btn-outline-secondary w-100" id="btnLimparFiltros">
+                <i class="fa-solid fa-xmark"></i> Limpar
+              </button>
             </div>
           </div>
-
-          <div class="filter-field">
-            <label class="filter-label">Serviço</label>
-            <div class="filter-input-wrapper">
-              <i class="fa-solid fa-tooth filter-input-icon"></i>
-              <input type="text" class="filter-input" id="filtroServico" placeholder="Ex: Limpeza" />
-            </div>
-          </div>
-
-          <div class="filter-field">
-            <label class="filter-label">Status</label>
-            <div class="filter-input-wrapper">
-              <i class="fa-solid fa-circle-info filter-input-icon"></i>
-              <input type="text" class="filter-input" id="filtroStatus" placeholder="Ex: Aguardando" />
-            </div>
-          </div>
-
-          <div class="filter-field">
-            <label class="filter-label">Próxima Sessão</label>
-            <div class="filter-input-wrapper">
-              <input type="date" class="filter-input filter-input-date" id="filtroSessao" />
-            </div>
-          </div>
-
-          <div class="filter-actions">
-            <button class="btn-filter-clear" id="btnLimparFiltros">
-              <i class="fa-solid fa-xmark"></i> Limpar
-            </button>
-          </div>
-
         </div>
 
         <!-- ── Área principal: Tabela + Resumo ── -->
-        <div class="tratamentos-layout">
+        <div class="tratamentos-layout tratamentos-layout-grid" id="tratamentosLayout">
 
-          <!-- Coluna da Tabela -->
           <div class="tratamentos-tabela-col">
-
-            <!-- Abas -->
-            <div class="tratamentos-tabs">
-              <button class="tab-btn active" data-tab="fila">Pacientes em Fila</button>
-              <button class="tab-btn" data-tab="andamento">Tratamento em andamentos</button>
-              <button class="tab-btn" data-tab="concluidos">Tratamentos Concluídos</button>
+            <div class="tratamentos-lista-wrapper">
+              <div class="tratamentos-lista-titulo">Pacientes</div>
+              <ul class="tratamentos-pacientes-list" id="listaPacientes" role="listbox" aria-label="Pacientes"></ul>
             </div>
-
-            <!-- Tabela -->
-            <!-- Tabela (Desktop) -->
-            <div class="table-container d-none d-lg-block">
-              <table class="table-custom" id="tabelaTratamentos">
-                <thead>
-                  <tr>
-                    <th>paciente</th>
-                    <th>Serviço</th>
-                    <th>status</th>
-                    <th>Progresso</th>
-                    <th>Próxima Sessão <i class="fa-solid fa-sort"></i></th>
-                  </tr>
-                </thead>
-                <tbody id="tbodyTratamentos">
-                  <!-- Preenchido pelo JS -->
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Cards (Mobile) -->
-            <div class="tratamentos-cards-list d-lg-none" id="cardsTratamentos">
-              <!-- Preenchido pelo JS -->
-            </div>
-
           </div>
 
-          <!-- Coluna Resumo do Tratamento -->
+          <!-- Coluna Resumo -->
           <div class="tratamentos-resumo-col" id="painelResumo">
+            <div class="resumo-card bg-white border rounded p-3 shadow-sm">
 
-            <div class="resumo-card">
-              <h3 class="resumo-titulo">Resumo do Tratamento</h3>
+              <h3 class="resumo-titulo fw-bold text-center mb-3 pb-3">Paciente</h3>
 
-              <!-- Foto placeholder -->
-              <div class="resumo-foto">
+              <div class="resumo-foto d-flex justify-content-center mb-3">
                 <div class="foto-placeholder">
                   <div class="foto-x"></div>
                 </div>
               </div>
 
-              <!-- Info do paciente -->
-              <div class="resumo-paciente-info">
+              <div class="resumo-paciente-info d-flex flex-column text-center mb-3">
                 <span class="resumo-label-small">Nome</span>
-                <span class="resumo-nome" id="resumoNome">—</span>
-                <span class="resumo-label-small">serviço</span>
-                <span class="resumo-servico" id="resumoServico">—</span>
+                <span class="resumo-nome fw-bold" id="resumoNome">—</span>
               </div>
 
-              <!-- Barra de progresso -->
-              <div class="resumo-progresso-wrapper">
-                <div class="resumo-progresso-header">
-                  <span class="resumo-label-small">Progresso</span>
-                  <span class="resumo-etapas" id="resumoEtapas">—</span>
-                </div>
-                <div class="resumo-progresso-bar">
-                  <div class="resumo-progresso-fill" id="resumoProgressoFill" style="width: 0%"></div>
-                </div>
-              </div>
-
-              <!-- Etapas -->
-              <div class="resumo-etapas-info">
-                <div class="resumo-etapa-item">
-                  <span class="resumo-label-small">Última etapa Feita</span>
-                  <span class="resumo-etapa-nome" id="resumoUltimaEtapa">—</span>
-                </div>
-                <div class="resumo-etapa-item text-end">
-                  <span class="resumo-label-small">Próxima Etapa</span>
-                  <span class="resumo-etapa-nome" id="resumoProximaEtapa">—</span>
-                </div>
-              </div>
-
-              <!-- Botões -->
-              <div class="resumo-acoes">
-                <button class="btn-resumo-editar" id="btnEditarPlano">
-                  <i class="fa-solid fa-pen"></i> Editar Plano
-                </button>
-                <button class="btn-resumo-prontuario" id="btnResumoProntuario">
+              <div class="resumo-acoes d-flex flex-column gap-2 mt-2">
+                <button class="btn-resumo-prontuario btn btn-sm w-100" id="btnResumoProntuario">
                   <i class="fa-regular fa-eye"></i> Prontuário
                 </button>
               </div>
 
             </div>
-
           </div>
 
         </div>
 
         <!-- ══════════════════════════════════════════════════
-         TELA EDITAR PLANO (oculta por padrão)
+         TELA EDITAR PLANO
          ══════════════════════════════════════════════════ -->
         <div class="editar-plano-view" id="editarPlanoView" style="display:none;">
 
-          <!-- Botão Voltar -->
-          <button class="btn-voltar" id="btnVoltarPlano">
+          <button class="btn-voltar btn btn-sm btn-outline-secondary mb-3 d-inline-flex align-items-center gap-2" id="btnVoltarPlano">
             <i class="fa-solid fa-arrow-left"></i> Voltar
           </button>
 
-          <!-- Layout principal do editor -->
-          <div class="editar-plano-layout">
+          <div class="editar-plano-layout row g-3">
 
-            <!-- ═══ COLUNA ESQUERDA (Odontograma + Etapas) ═══ -->
-            <div class="editar-plano-main">
+            <!-- Coluna Esquerda -->
+            <div class="editar-plano-main col-12 col-lg-8">
 
-              <!-- Odontograma -->
-              <div class="odontograma-section">
-                <h3 class="odontograma-titulo">Odontograma</h3>
-
+              <div class="odontograma-section bg-white border rounded p-3 shadow-sm mb-4">
+                <h3 class="odontograma-titulo fw-bold mb-3">Odontograma</h3>
                 <div class="odontograma-chart">
-                  <!-- Arcada Superior -->
                   <div class="arcada-row">
                     <div class="arcada-grupo">
                       <div class="dente saudavel" data-num="18">18</div>
@@ -271,8 +139,6 @@
                       <div class="dente saudavel" data-num="28">28</div>
                     </div>
                   </div>
-
-                  <!-- Arcada Inferior -->
                   <div class="arcada-row">
                     <div class="arcada-grupo">
                       <div class="dente saudavel" data-num="48">48</div>
@@ -297,23 +163,18 @@
                     </div>
                   </div>
                 </div>
-
-                <!-- Legenda -->
-                <div class="odontograma-legenda">
-                  <span class="legenda-item"><span class="legenda-cor saudavel-bg"></span> Saudável</span>
-                  <span class="legenda-item"><span class="legenda-cor selecao-bg"></span> Seleção</span>
-                  <span class="legenda-item"><span class="legenda-cor tratado-bg"></span> Tratado</span>
-                  <span class="legenda-item"><span class="legenda-cor ausente-bg"></span> Ausente</span>
+                <div class="odontograma-legenda d-flex flex-wrap gap-3 mt-2">
+                  <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor saudavel-bg"></span> Saudável</span>
+                  <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor selecao-bg"></span> Seleção</span>
+                  <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor tratado-bg"></span> Tratado</span>
+                  <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor ausente-bg"></span> Ausente</span>
                 </div>
               </div>
 
-              <!-- Etapas do Planejamento -->
-              <div class="etapas-section">
-                <h3 class="etapas-titulo">Etapas do planejamento</h3>
-
+              <div class="etapas-section bg-white border rounded p-3 shadow-sm">
+                <h3 class="etapas-titulo fw-bold mb-3">Etapas do planejamento</h3>
                 <div class="etapas-scroll" id="etapasScroll">
 
-                  <!-- Etapa 1 -->
                   <div class="etapa-card" data-etapa="1" draggable="true">
                     <div class="etapa-header">
                       <i class="fa-solid fa-grip-vertical etapa-drag-handle" title="Arrastar para reordenar"></i>
@@ -323,17 +184,16 @@
                     </div>
                     <div class="etapa-body">
                       <div class="etapa-campo">
-                        <label>Dente Selecionado <button class="etapa-edit-btn"><i
-                              class="fa-solid fa-pen fa-xs"></i></button></label>
-                        <input type="text" class="etapa-input" value="Todos" readonly />
+                        <label>Dente Selecionado <button class="etapa-edit-btn"><i class="fa-solid fa-pen fa-xs"></i></button></label>
+                        <input type="text" class="etapa-input form-control form-control-sm" value="Todos" readonly />
                       </div>
                       <div class="etapa-campo">
                         <label>Condição</label>
-                        <input type="text" class="etapa-input" value="Limpeza" readonly />
+                        <input type="text" class="etapa-input form-control form-control-sm" value="Limpeza" readonly />
                       </div>
                       <div class="etapa-campo">
                         <label>Descrição do Tratamento</label>
-                        <textarea class="etapa-textarea" readonly>Limpeza
+                        <textarea class="etapa-textarea form-control form-control-sm" readonly>Limpeza
 foweydufhiouoehfiohuodfhouiwduo
 dhfuohowodhouonfooejioohjowdho
 uowhdouohwuofhowofploowdlooido
@@ -342,7 +202,6 @@ oiowdfioo</textarea>
                     </div>
                   </div>
 
-                  <!-- Etapa 2 (ativa/selecionada) -->
                   <div class="etapa-card active" data-etapa="2" draggable="true">
                     <div class="etapa-header">
                       <i class="fa-solid fa-grip-vertical etapa-drag-handle" title="Arrastar para reordenar"></i>
@@ -352,17 +211,16 @@ oiowdfioo</textarea>
                     </div>
                     <div class="etapa-body">
                       <div class="etapa-campo">
-                        <label>Dente Selecionado <button class="etapa-edit-btn"><i
-                              class="fa-solid fa-pen fa-xs"></i></button></label>
-                        <input type="text" class="etapa-input" value="Todos" readonly />
+                        <label>Dente Selecionado <button class="etapa-edit-btn"><i class="fa-solid fa-pen fa-xs"></i></button></label>
+                        <input type="text" class="etapa-input form-control form-control-sm" value="Todos" readonly />
                       </div>
                       <div class="etapa-campo">
                         <label>Condição</label>
-                        <input type="text" class="etapa-input" value="Clareamento I" readonly />
+                        <input type="text" class="etapa-input form-control form-control-sm" value="Clareamento I" readonly />
                       </div>
                       <div class="etapa-campo">
                         <label>Descrição do Tratamento</label>
-                        <textarea class="etapa-textarea" readonly>Clareamento
+                        <textarea class="etapa-textarea form-control form-control-sm" readonly>Clareamento
 ogwidboiwbdiohodtheisthooehfabi
 uefhoeuiihfoeghfeuihfsuojculoeh7
 89fhohiebcvuiochfulooghflznovhisuj
@@ -371,7 +229,6 @@ coodihoo</textarea>
                     </div>
                   </div>
 
-                  <!-- Etapa 3 -->
                   <div class="etapa-card" data-etapa="3" draggable="true">
                     <div class="etapa-header">
                       <i class="fa-solid fa-grip-vertical etapa-drag-handle" title="Arrastar para reordenar"></i>
@@ -381,18 +238,16 @@ coodihoo</textarea>
                     </div>
                     <div class="etapa-body">
                       <div class="etapa-campo">
-                        <label>Dente Selecionado <button class="etapa-edit-btn"><i
-                              class="fa-solid fa-pen fa-xs"></i></button></label>
-                        <input type="text" class="etapa-input" value="todos" readonly />
+                        <label>Dente Selecionado <button class="etapa-edit-btn"><i class="fa-solid fa-pen fa-xs"></i></button></label>
+                        <input type="text" class="etapa-input form-control form-control-sm" value="todos" readonly />
                       </div>
                       <div class="etapa-campo">
                         <label>Condição</label>
-                        <input type="text" class="etapa-input" value="Clareamento II" readonly />
+                        <input type="text" class="etapa-input form-control form-control-sm" value="Clareamento II" readonly />
                       </div>
                       <div class="etapa-campo">
                         <label>Descrição do Tratamento</label>
-                        <textarea class="etapa-textarea"
-                          readonly>Tratamento endodôntico necessário. Obturação temporária aplicada.</textarea>
+                        <textarea class="etapa-textarea form-control form-control-sm" readonly>Tratamento endodôntico necessário. Obturação temporária aplicada.</textarea>
                       </div>
                     </div>
                   </div>
@@ -402,53 +257,48 @@ coodihoo</textarea>
 
             </div>
 
-            <!-- ═══ COLUNA DIREITA (Alerta + Info + Calendário) ═══ -->
-            <div class="editar-plano-sidebar">
+            <!-- Coluna Direita -->
+            <div class="editar-plano-sidebar col-12 col-lg-4">
 
-              <!-- Alerta Clínico -->
-              <div class="alerta-clinico">
-                <h4 class="alerta-titulo"><i class="fa-solid fa-triangle-exclamation"></i> Alerta Clínico</h4>
-                <div class="alerta-grid">
-                  <div class="alerta-item">
-                    <span class="alerta-label">Alergias</span>
-                    <span class="alerta-valor">—</span>
+              <div class="alerta-clinico rounded p-3 mb-3">
+                <h4 class="alerta-titulo fw-bold mb-2 d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Alerta Clínico
+                </h4>
+                <div class="alerta-grid row row-cols-2 g-2">
+                  <div class="alerta-item col d-flex flex-column">
+                    <span class="alerta-label small fw-semibold">Alergias</span>
+                    <span class="alerta-valor small">—</span>
                   </div>
-                  <div class="alerta-item">
-                    <span class="alerta-label">Condições:</span>
-                    <span class="alerta-valor">—</span>
+                  <div class="alerta-item col d-flex flex-column">
+                    <span class="alerta-label small fw-semibold">Condições:</span>
+                    <span class="alerta-valor small">—</span>
                   </div>
-                  <div class="alerta-item">
-                    <span class="alerta-label">Medicamentos:</span>
-                    <span class="alerta-valor">—</span>
+                  <div class="alerta-item col d-flex flex-column">
+                    <span class="alerta-label small fw-semibold">Medicamentos:</span>
+                    <span class="alerta-valor small">—</span>
                   </div>
-                  <div class="alerta-item">
-                    <span class="alerta-label">Cirurgias Anteriores:</span>
-                    <span class="alerta-valor">—</span>
+                  <div class="alerta-item col d-flex flex-column">
+                    <span class="alerta-label small fw-semibold">Cirurgias Anteriores:</span>
+                    <span class="alerta-valor small">—</span>
                   </div>
                 </div>
               </div>
 
-              <!-- Info Paciente (mesmo resumo) -->
-              <div class="resumo-card editar-resumo-card">
+              <div class="resumo-card editar-resumo-card bg-white border rounded p-3 shadow-sm">
 
-                <!-- Foto placeholder -->
-                <div class="resumo-foto">
-                  <div class="foto-placeholder">
-                    <div class="foto-x"></div>
-                  </div>
+                <div class="resumo-foto d-flex justify-content-center mb-3">
+                  <div class="foto-placeholder"><div class="foto-x"></div></div>
                 </div>
 
-                <!-- Info do paciente -->
-                <div class="resumo-paciente-info">
+                <div class="resumo-paciente-info d-flex flex-column text-center mb-3">
                   <span class="resumo-label-small">Nome</span>
-                  <span class="resumo-nome" id="editarResumoNome">—</span>
-                  <span class="resumo-label-small">serviço</span>
-                  <span class="resumo-servico" id="editarResumoServico">Clareamento</span>
+                  <span class="resumo-nome fw-bold" id="editarResumoNome">—</span>
+                  <span class="resumo-label-small mt-2">serviço</span>
+                  <span class="resumo-servico fw-semibold" id="editarResumoServico">Clareamento</span>
                 </div>
 
-                <!-- Barra de progresso -->
-                <div class="resumo-progresso-wrapper">
-                  <div class="resumo-progresso-header">
+                <div class="resumo-progresso-wrapper mb-3">
+                  <div class="resumo-progresso-header d-flex justify-content-between align-items-center mb-1">
                     <span class="resumo-label-small">Progresso</span>
                     <span class="resumo-etapas" id="editarResumoEtapas">—</span>
                   </div>
@@ -457,41 +307,37 @@ coodihoo</textarea>
                   </div>
                 </div>
 
-                <!-- Etapas -->
-                <div class="resumo-etapas-info">
-                  <div class="resumo-etapa-item">
+                <div class="resumo-etapas-info d-flex justify-content-between mb-3">
+                  <div class="resumo-etapa-item d-flex flex-column">
                     <span class="resumo-label-small">Última etapa Feita</span>
                     <span class="resumo-etapa-nome" id="editarUltimaEtapa">—</span>
                   </div>
-                  <div class="resumo-etapa-item text-end">
+                  <div class="resumo-etapa-item text-end d-flex flex-column">
                     <span class="resumo-label-small">Próxima Etapa</span>
                     <span class="resumo-etapa-nome" id="editarProximaEtapa">Clareamento</span>
                   </div>
                 </div>
 
-                <!-- Container para Datas e Calendário -->
-                <div class="datas-calendario-row">
-                  <!-- Datas Consultas -->
-                  <div class="datas-consultas">
-                    <h4 class="datas-titulo">Datas Consultas</h4>
-                    <div class="datas-lista" id="datasLista">
-                      <div class="data-item">
+                <div class="datas-calendario-row row g-2">
+                  <div class="datas-consultas col-12 col-sm-6 col-lg-12 col-xl-6">
+                    <h4 class="datas-titulo fw-semibold small text-uppercase mb-2">Datas Consultas</h4>
+                    <div class="datas-lista d-flex flex-column gap-1" id="datasLista">
+                      <div class="data-item d-flex align-items-center gap-2 small">
                         <i class="fa-regular fa-calendar"></i>
                         <span>20/03/2026</span>
                       </div>
-                      <div class="data-item destaque">
+                      <div class="data-item destaque d-flex align-items-center gap-2 small">
                         <i class="fa-regular fa-calendar"></i>
                         <span>05/04/2026</span>
                       </div>
-                      <div class="data-item">
+                      <div class="data-item d-flex align-items-center gap-2 small">
                         <i class="fa-regular fa-calendar"></i>
                         <span>20/03/2026</span>
                       </div>
                     </div>
                   </div>
 
-                  <!-- Calendário -->
-                  <div class="calendario-wrapper">
+                  <div class="calendario-wrapper col-12 col-sm-6 col-lg-12 col-xl-6">
                     <div class="calendario-header">
                       <button class="calendario-nav" id="calPrev"><i class="fa-solid fa-chevron-left"></i></button>
                       <span class="calendario-mes" id="calMesAno">APRIL 2026</span>
@@ -500,18 +346,10 @@ coodihoo</textarea>
                     <table class="calendario-table">
                       <thead>
                         <tr>
-                          <th>D</th>
-                          <th>S</th>
-                          <th>T</th>
-                          <th>Q</th>
-                          <th>Q</th>
-                          <th>S</th>
-                          <th>S</th>
+                          <th>D</th><th>S</th><th>T</th><th>Q</th><th>Q</th><th>S</th><th>S</th>
                         </tr>
                       </thead>
-                      <tbody id="calBody">
-                        <!-- Preenchido pelo JS -->
-                      </tbody>
+                      <tbody id="calBody"></tbody>
                     </table>
                   </div>
                 </div>
@@ -524,11 +362,10 @@ coodihoo</textarea>
         </div>
 
         <!-- ══════════════════════════════════════════════════
-         TELA CONSULTA EM ANDAMENTO (oculta por padrão)
+         TELA CONSULTA EM ANDAMENTO
          ══════════════════════════════════════════════════ -->
         <div class="consulta-view" id="consultaView" style="display:none;">
 
-          <!-- Header da Consulta -->
           <div class="consulta-header-row">
             <div class="consulta-header-left">
               <div class="consulta-header-item">
@@ -542,52 +379,49 @@ coodihoo</textarea>
               </div>
               <span class="consulta-badge-atendimento"><i class="fa-solid fa-circle fa-xs"></i> Em Atendimento</span>
             </div>
-            <!-- Alerta Clínico -->
             <details class="alerta-clinico alerta-clinico-compact alerta-details">
               <summary class="alerta-titulo alerta-summary">
                 <i class="fa-solid fa-triangle-exclamation"></i> Alerta Clínico
                 <span class="alerta-toggle-hint">ver detalhes</span>
               </summary>
-              <div class="alerta-grid">
-                <div class="alerta-item">
-                  <span class="alerta-label">Alergias</span>
-                  <span class="alerta-valor">—</span>
+              <div class="alerta-grid row row-cols-2 g-2">
+                <div class="alerta-item col d-flex flex-column">
+                  <span class="alerta-label small fw-semibold">Alergias</span>
+                  <span class="alerta-valor small">—</span>
                 </div>
-                <div class="alerta-item">
-                  <span class="alerta-label">Condições</span>
-                  <span class="alerta-valor">—</span>
+                <div class="alerta-item col d-flex flex-column">
+                  <span class="alerta-label small fw-semibold">Condições</span>
+                  <span class="alerta-valor small">—</span>
                 </div>
-                <div class="alerta-item">
-                  <span class="alerta-label">Medicamentos</span>
-                  <span class="alerta-valor">—</span>
+                <div class="alerta-item col d-flex flex-column">
+                  <span class="alerta-label small fw-semibold">Medicamentos</span>
+                  <span class="alerta-valor small">—</span>
                 </div>
-                <div class="alerta-item">
-                  <span class="alerta-label">Cirurgias</span>
-                  <span class="alerta-valor">—</span>
+                <div class="alerta-item col d-flex flex-column">
+                  <span class="alerta-label small fw-semibold">Cirurgias</span>
+                  <span class="alerta-valor small">—</span>
                 </div>
               </div>
             </details>
           </div>
 
-          <!-- Odontograma da Consulta -->
-          <div class="consulta-layout">
+          <div class="consulta-layout row g-3">
 
-            <div class="consulta-main">
+            <div class="consulta-main col-12 col-lg-8">
 
-              <div class="consulta-odontograma-section">
-                <div class="consulta-odontograma-header">
+              <div class="consulta-odontograma-section bg-white border rounded p-3 shadow-sm mb-3">
+                <div class="consulta-odontograma-header d-flex justify-content-between align-items-start mb-3">
                   <div>
-                    <h3 class="odontograma-titulo" style="text-align:left;margin-bottom:0.2rem;">Odontograma</h3>
-                    <p class="consulta-odontograma-sub">Selecione o dente que fez planejamento</p>
+                    <h3 class="odontograma-titulo fw-bold mb-1" style="text-align:left;">Odontograma</h3>
+                    <p class="consulta-odontograma-sub small text-muted mb-0">Selecione o dente que fez planejamento</p>
                   </div>
-                  <label class="consulta-selecionar-todos">
+                  <label class="consulta-selecionar-todos d-flex align-items-center gap-2 small fw-semibold">
                     <input type="checkbox" id="chkSelecionarTodos" />
                     Selecionar Todos
                   </label>
                 </div>
 
                 <div class="odontograma-chart">
-                  <!-- Arcada Superior -->
                   <div class="arcada-row">
                     <div class="arcada-grupo">
                       <div class="dente-consulta saudavel" data-num="18">18</div>
@@ -611,7 +445,6 @@ coodihoo</textarea>
                       <div class="dente-consulta saudavel" data-num="28">28</div>
                     </div>
                   </div>
-                  <!-- Arcada Inferior -->
                   <div class="arcada-row">
                     <div class="arcada-grupo">
                       <div class="dente-consulta saudavel" data-num="48">48</div>
@@ -637,52 +470,45 @@ coodihoo</textarea>
                   </div>
                 </div>
 
-                <!-- Legenda -->
-                <div class="odontograma-legenda" style="justify-content:flex-start;margin-top:0.5rem;">
-                  <span class="legenda-item"><span class="legenda-cor tratamento-bg"></span> Em Tratamento</span>
+                <div class="odontograma-legenda d-flex flex-wrap gap-3 mt-2">
+                  <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor tratamento-bg"></span> Em Tratamento</span>
                 </div>
               </div>
 
-              <!-- Condição + Descrição -->
-              <div class="consulta-campos-row">
-
-                <!-- Condição e Descrição -->
-                <div class="consulta-condicao-col consulta-campo-card">
-                  <h4 class="consulta-campo-card-titulo"><i class="fa-solid fa-tooth fa-xs"></i> Diagnóstico</h4>
-                  <div class="consulta-campo">
-                    <label class="consulta-campo-label">Condição</label>
-                    <input type="text" class="consulta-campo-input" id="consultaCondicao" placeholder="Ex: Cárie profunda..." />
+              <div class="consulta-campos-row row g-3">
+                <div class="consulta-condicao-col consulta-campo-card col-12 bg-white border rounded p-3 shadow-sm">
+                  <h4 class="consulta-campo-card-titulo fw-bold mb-3 small text-uppercase">
+                    <i class="fa-solid fa-tooth fa-xs"></i> Diagnóstico
+                  </h4>
+                  <div class="consulta-campo mb-3">
+                    <label class="consulta-campo-label form-label small fw-semibold">Condição</label>
+                    <input type="text" class="consulta-campo-input form-control" id="consultaCondicao" placeholder="Ex: Cárie profunda..." />
                   </div>
                   <div class="consulta-campo">
-                    <label class="consulta-campo-label">Descrição do Tratamento</label>
-                    <textarea class="consulta-campo-textarea" id="consultaDescricao" placeholder="Descreva o tratamento realizado..."></textarea>
+                    <label class="consulta-campo-label form-label small fw-semibold">Descrição do Tratamento</label>
+                    <textarea class="consulta-campo-textarea form-control" id="consultaDescricao" placeholder="Descreva o tratamento realizado..."></textarea>
                   </div>
                 </div>
-
               </div>
 
             </div>
 
-            <!-- Observações Clínicas -->
-            <div class="consulta-sidebar">
-              <div class="observacoes-card">
-                <h4 class="observacoes-titulo">Observações Clínicas</h4>
-                <textarea class="observacoes-textarea" id="observacoesClinicas"
+            <div class="consulta-sidebar col-12 col-lg-4">
+              <div class="observacoes-card bg-white border rounded p-3 h-100 d-flex flex-column">
+                <h4 class="observacoes-titulo fw-bold mb-2">Observações Clínicas</h4>
+                <textarea class="observacoes-textarea form-control flex-grow-1" id="observacoesClinicas"
                   placeholder="Digite observações clínicas..."></textarea>
-                <p class="observacoes-aviso">essas informações serão adicionadas ao prontuário ao encerrar a consulta
-                </p>
+                <p class="observacoes-aviso small text-muted mt-2 mb-0">essas informações serão adicionadas ao prontuário ao encerrar a consulta</p>
               </div>
             </div>
 
           </div>
 
-          <!-- Aviso e Botões de rodapé -->
           <div class="consulta-footer">
-            <button class="btn-prontuario-footer" id="btnProntuarioConsulta">
+            <button class="btn-prontuario-footer btn btn-sm btn-outline-secondary" id="btnProntuarioConsulta">
               <i class="fa-regular fa-eye"></i> Prontuário
             </button>
-
-            <button class="btn-finalizar-consulta" id="btnFinalizarConsulta">
+            <button class="btn-finalizar-consulta btn btn-sm btn-success" id="btnFinalizarConsulta">
               <i class="fa-solid fa-check"></i> Finalizar Consulta
             </button>
           </div>
@@ -690,52 +516,52 @@ coodihoo</textarea>
         </div>
 
         <!-- ══════════════════════════════════════════════════
-         TELA PRONTUÁRIO (oculta por padrão)
+         TELA PRONTUÁRIO
          ══════════════════════════════════════════════════ -->
         <div class="prontuario-view" id="prontuarioView" style="display:none;">
 
-          <!-- Header do Prontuário -->
           <div class="prontuario-header">
-            <button class="btn-voltar" id="btnVoltarProntuario">
+            <button class="btn-voltar btn btn-sm btn-outline-secondary mb-3 d-inline-flex align-items-center gap-2" id="btnVoltarProntuario">
               <i class="fa-solid fa-arrow-left"></i> Voltar
             </button>
             <div class="prontuario-paciente-header">
               <div class="prontuario-foto-placeholder">
                 <div class="foto-x"></div>
               </div>
-              <div class="prontuario-paciente-dados">
-                <span class="prontuario-label">Paciente</span>
-                <span class="prontuario-nome" id="prontuarioNome">—</span>
-                <span class="prontuario-cpf" id="prontuarioCPF">CPF: —</span>
+              <div class="prontuario-paciente-dados d-flex flex-column">
+                <span class="prontuario-label small text-muted">Paciente</span>
+                <span class="prontuario-nome fw-bold" id="prontuarioNome">—</span>
+                <span class="prontuario-cpf small text-muted" id="prontuarioCPF">CPF: —</span>
               </div>
-              <div class="prontuario-contatos">
-                <span class="prontuario-contato"><i class="fa-solid fa-phone"></i> <span id="prontuarioTel">—</span></span>
-                <span class="prontuario-contato"><i class="fa-solid fa-envelope"></i> <span id="prontuarioEmail">—</span></span>
+              <div class="prontuario-contatos d-flex gap-4 ms-auto flex-wrap">
+                <span class="prontuario-contato d-flex align-items-center gap-2 small fw-medium">
+                  <i class="fa-solid fa-phone text-muted"></i> <span id="prontuarioTel">—</span>
+                </span>
+                <span class="prontuario-contato d-flex align-items-center gap-2 small fw-medium">
+                  <i class="fa-solid fa-envelope text-muted"></i> <span id="prontuarioEmail">—</span>
+                </span>
               </div>
             </div>
           </div>
 
-          <!-- Layout principal -->
-          <div class="prontuario-layout">
+          <div class="prontuario-layout row g-3">
 
-            <!-- ═══ COLUNA ESQUERDA ═══ -->
-            <div class="prontuario-main">
+            <div class="prontuario-main col-12 col-lg-8">
 
-              <!-- Plano Selecionado -->
-              <div class="prontuario-plano-section">
-                <div class="prontuario-plano-header">
-                  <h3 class="prontuario-plano-titulo">Plano Selecionado</h3>
-                  <div class="prontuario-plano-info-right">
-                    <span class="prontuario-plano-servico" id="prontuarioPlanoServico">—</span>
-                    <span class="prontuario-plano-data" id="prontuarioPlanoData">—</span>
+              <div class="prontuario-plano-section bg-white border rounded p-3 shadow-sm">
+                <div class="prontuario-plano-header d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
+                  <h3 class="prontuario-plano-titulo fw-bold mb-0">Plano Selecionado</h3>
+                  <div class="prontuario-plano-info-right d-flex flex-column align-items-end">
+                    <span class="prontuario-plano-servico fw-bold" id="prontuarioPlanoServico">—</span>
+                    <span class="prontuario-plano-data small text-muted" id="prontuarioPlanoData">—</span>
                   </div>
                 </div>
 
-                <!-- Odontograma do Prontuário -->
-                <div class="prontuario-odontograma" id="prontuarioOdontograma">
-                  <h4 class="prontuario-sub-titulo">Odontograma <small id="odontogramaHint" class="d-none" style="font-size:0.72rem;font-weight:400;color:#6366f1;margin-left:0.4rem;">— clique para selecionar/desmarcar</small></h4>
+                <div class="prontuario-odontograma mb-3" id="prontuarioOdontograma">
+                  <h4 class="prontuario-sub-titulo fw-bold mb-2">Odontograma
+                    <small id="odontogramaHint" class="d-none" style="font-size:0.72rem;font-weight:400;color:#6366f1;margin-left:0.4rem;">— clique para selecionar/desmarcar</small>
+                  </h4>
                   <div class="odontograma-chart">
-                    <!-- Arcada Superior -->
                     <div class="arcada-row">
                       <div class="arcada-grupo">
                         <div class="dente-prontuario saudavel" data-num="18">18</div>
@@ -759,7 +585,6 @@ coodihoo</textarea>
                         <div class="dente-prontuario saudavel" data-num="28">28</div>
                       </div>
                     </div>
-                    <!-- Arcada Inferior -->
                     <div class="arcada-row">
                       <div class="arcada-grupo">
                         <div class="dente-prontuario tratado-consulta" data-num="48">48</div>
@@ -784,43 +609,38 @@ coodihoo</textarea>
                       </div>
                     </div>
                   </div>
-                  <!-- Legenda -->
-                  <div class="odontograma-legenda" style="justify-content:flex-start;margin-top:0.5rem;">
-                    <span class="legenda-item"><span class="legenda-cor tratado-consulta-bg"></span> Tratado em
-                      Consulta</span>
+                  <div class="odontograma-legenda d-flex flex-wrap gap-3 mt-2">
+                    <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor tratado-consulta-bg"></span> Tratado em Consulta</span>
                   </div>
                 </div>
 
-                <!-- Condição + Observações lado a lado -->
-                <div class="prontuario-detalhes-row">
-                  <div class="prontuario-detalhes-esq">
-                    <div class="prontuario-campo">
-                      <label class="prontuario-campo-label">Condição</label>
+                <div class="prontuario-detalhes-row row g-3 mb-3">
+                  <div class="prontuario-detalhes-esq col-12 col-md-7">
+                    <div class="prontuario-campo mb-3">
+                      <label class="prontuario-campo-label form-label small fw-semibold mb-1">Condição</label>
                       <div class="prontuario-campo-valor" id="prontuarioCondicao">—</div>
                       <input type="text" class="form-control d-none" id="editCondicao" style="font-size:0.88rem;" placeholder="Ex: Cárie profunda..." />
                     </div>
                     <div class="prontuario-campo">
-                      <label class="prontuario-campo-label">Descrição do Tratamento</label>
+                      <label class="prontuario-campo-label form-label small fw-semibold mb-1">Descrição do Tratamento</label>
                       <div class="prontuario-campo-textarea" id="prontuarioDescricao">—</div>
                       <textarea class="form-control d-none" id="editDescricao" rows="4" style="font-size:0.88rem;" placeholder="Descreva o tratamento..."></textarea>
                     </div>
                   </div>
-                  <div class="prontuario-detalhes-dir">
-                    <div class="prontuario-obs-card">
-                      <h4 class="prontuario-obs-titulo">Observações Clínicas</h4>
-                      <div class="prontuario-obs-texto" id="prontuarioObsTexto">—</div>
+                  <div class="prontuario-detalhes-dir col-12 col-md-5">
+                    <div class="prontuario-obs-card rounded p-3 h-100 d-flex flex-column">
+                      <h4 class="prontuario-obs-titulo fw-bold mb-2">Observações Clínicas</h4>
+                      <div class="prontuario-obs-texto small flex-grow-1" id="prontuarioObsTexto">—</div>
                       <textarea class="form-control d-none" id="editObsTexto" rows="5" style="font-size:0.88rem;" placeholder="Observações clínicas..."></textarea>
                     </div>
                   </div>
                 </div>
 
-                <!-- Dentista Responsável -->
-                <div class="prontuario-dentista">
+                <div class="prontuario-dentista mt-3 small fw-semibold">
                   <span class="prontuario-dentista-label">Dentista Responsável:</span>
                   <span class="prontuario-dentista-nome" id="prontuarioDentista">—</span>
                 </div>
 
-                <!-- Ações do registro -->
                 <div class="prontuario-editar-acao" id="prontuarioEditarAcao" style="display:none;margin-top:1rem;gap:0.5rem;flex-wrap:wrap;align-items:center;">
                   <button class="btn btn-sm px-3" id="btnEditarRegistroProntuario"
                           style="background:#eef2ff;color:#3730a3;border:1.5px solid #c7d2fe;border-radius:8px;font-size:0.82rem;">
@@ -843,65 +663,49 @@ coodihoo</textarea>
 
             </div>
 
-            <!-- ═══ COLUNA DIREITA (Consultas + Planos + Info) ═══ -->
-            <div class="prontuario-sidebar">
+            <div class="prontuario-sidebar col-12 col-lg-4">
 
-              <!-- Consultas Agendadas -->
-              <div class="prontuario-card">
-                <h4 class="prontuario-card-titulo">Consultas Agendadas</h4>
-                <div class="prontuario-table-wrapper">
+              <div class="prontuario-card bg-white border rounded p-3 shadow-sm mb-3">
+                <h4 class="prontuario-card-titulo fw-semibold mb-2">Consultas Agendadas</h4>
+                <div class="prontuario-table-wrapper overflow-auto">
                   <table class="prontuario-table">
                     <thead>
-                      <tr>
-                        <th>Data</th>
-                        <th>Hora</th>
-                        <th>Procedimento</th>
-                      </tr>
+                      <tr><th>Data</th><th>Hora</th><th>Procedimento</th></tr>
                     </thead>
-                    <tbody id="tbodyConsultasAgendadas">
-                      <!-- Preenchido pelo JS -->
-                    </tbody>
+                    <tbody id="tbodyConsultasAgendadas"></tbody>
                   </table>
                 </div>
               </div>
 
-              <!-- Planos Realizados -->
-              <div class="prontuario-card">
-                <h4 class="prontuario-card-titulo">Plano Realizados</h4>
-                <div class="prontuario-table-wrapper">
+              <div class="prontuario-card bg-white border rounded p-3 shadow-sm mb-3">
+                <h4 class="prontuario-card-titulo fw-semibold mb-2">Plano Realizados</h4>
+                <div class="prontuario-table-wrapper overflow-auto">
                   <table class="prontuario-table" id="tabelaPlanosRealizados">
                     <thead>
-                      <tr>
-                        <th>Data</th>
-                        <th>Serviço</th>
-                        <th>Dentista</th>
-                      </tr>
+                      <tr><th>Data</th><th>Serviço</th><th>Dentista</th></tr>
                     </thead>
-                    <tbody>
-                      <!-- Preenchido pelo JS -->
-                    </tbody>
+                    <tbody></tbody>
                   </table>
                 </div>
               </div>
 
-              <!-- Informações do Paciente -->
-              <div class="prontuario-card">
-                <div class="prontuario-card-titulo-row">
-                  <h4 class="prontuario-card-titulo">Informações do paciente</h4>
-                  <button class="prontuario-edit-btn"><i class="fa-solid fa-pen fa-xs"></i></button>
+              <div class="prontuario-card bg-white border rounded p-3 shadow-sm mb-3">
+                <div class="prontuario-card-titulo-row d-flex justify-content-between align-items-center mb-2">
+                  <h4 class="prontuario-card-titulo fw-semibold mb-0">Informações do paciente</h4>
+                  <button class="prontuario-edit-btn btn btn-sm btn-link p-0"><i class="fa-solid fa-pen fa-xs"></i></button>
                 </div>
-                <div class="prontuario-info-grid">
-                  <div class="prontuario-info-item">
-                    <span class="prontuario-info-label">Última atualização:</span>
-                    <span class="prontuario-info-valor" id="prontuarioUltimaAtualizacao">—</span>
+                <div class="prontuario-info-grid d-flex flex-column gap-2">
+                  <div class="prontuario-info-item d-flex flex-column">
+                    <span class="prontuario-info-label small fw-semibold">Última atualização:</span>
+                    <span class="prontuario-info-valor small" id="prontuarioUltimaAtualizacao">—</span>
                   </div>
-                  <div class="prontuario-info-item">
-                    <span class="prontuario-info-label">E-mail:</span>
-                    <span class="prontuario-info-valor" id="prontuarioInfoEmail">—</span>
+                  <div class="prontuario-info-item d-flex flex-column">
+                    <span class="prontuario-info-label small fw-semibold">E-mail:</span>
+                    <span class="prontuario-info-valor small" id="prontuarioInfoEmail">—</span>
                   </div>
-                  <div class="prontuario-info-item">
-                    <span class="prontuario-info-label">Endereço:</span>
-                    <span class="prontuario-info-valor" id="prontuarioInfoEndereco">—</span>
+                  <div class="prontuario-info-item d-flex flex-column">
+                    <span class="prontuario-info-label small fw-semibold">Endereço:</span>
+                    <span class="prontuario-info-valor small" id="prontuarioInfoEndereco">—</span>
                   </div>
                 </div>
               </div>
@@ -913,11 +717,10 @@ coodihoo</textarea>
         </div>
 
         <!-- ══════════════════════════════════════════════════
-         TELA FINALIZAR CONSULTA (oculta por padrão)
+         TELA FINALIZAR CONSULTA
          ══════════════════════════════════════════════════ -->
         <div class="finalizar-consulta-view" id="finalizarConsultaView" style="display:none;">
 
-          <!-- Header -->
           <div class="finalizar-header-row">
             <div class="finalizar-header-left">
               <div class="consulta-header-item">
@@ -935,27 +738,20 @@ coodihoo</textarea>
             </div>
           </div>
 
-          <!-- Aviso informativo -->
           <div class="finalizar-aviso-bar">
             <i class="fa-solid fa-circle-info"></i>
             Revise as informações abaixo antes de confirmar. As observações serão salvas no prontuário do paciente.
           </div>
 
-          <!-- Layout principal -->
-          <div class="finalizar-layout">
+          <div class="finalizar-layout row g-3">
 
-            <!-- ═══ COLUNA PRINCIPAL ═══ -->
-            <div class="finalizar-main">
+            <div class="finalizar-main col-12 col-lg-8">
+              <div class="finalizar-section bg-white border rounded p-3 shadow-sm">
+                <h3 class="finalizar-section-titulo fw-bold mb-3 pb-2 border-bottom">Resumo da Consulta</h3>
 
-              <!-- Resumo do que foi feito -->
-              <div class="finalizar-section">
-                <h3 class="finalizar-section-titulo">Resumo da Consulta</h3>
-
-                <!-- Odontograma (snapshot somente leitura) -->
-                <div class="finalizar-odontograma">
-                  <h4 class="prontuario-sub-titulo">Dentes Tratados</h4>
+                <div class="finalizar-odontograma mb-3">
+                  <h4 class="prontuario-sub-titulo fw-bold mb-2">Dentes Tratados</h4>
                   <div class="odontograma-chart">
-                    <!-- Arcada Superior -->
                     <div class="arcada-row">
                       <div class="arcada-grupo">
                         <div class="dente-finalizar saudavel" data-num="18">18</div>
@@ -979,7 +775,6 @@ coodihoo</textarea>
                         <div class="dente-finalizar saudavel" data-num="28">28</div>
                       </div>
                     </div>
-                    <!-- Arcada Inferior -->
                     <div class="arcada-row">
                       <div class="arcada-grupo">
                         <div class="dente-finalizar saudavel" data-num="48">48</div>
@@ -1004,55 +799,48 @@ coodihoo</textarea>
                       </div>
                     </div>
                   </div>
-                  <div class="odontograma-legenda" style="justify-content:flex-start;margin-top:0.5rem;">
-                    <span class="legenda-item"><span class="legenda-cor tratado-consulta-bg"></span> Tratado na
-                      Consulta</span>
+                  <div class="odontograma-legenda d-flex flex-wrap gap-3 mt-2">
+                    <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor tratado-consulta-bg"></span> Tratado na Consulta</span>
                   </div>
                 </div>
 
-                <!-- Condição + Observações -->
-                <div class="finalizar-detalhes-row">
-                  <div class="finalizar-detalhes-esq">
-                    <div class="prontuario-campo">
-                      <label class="prontuario-campo-label">Condição</label>
+                <div class="finalizar-detalhes-row row g-3">
+                  <div class="finalizar-detalhes-esq col-12 col-md-7">
+                    <div class="prontuario-campo mb-3">
+                      <label class="prontuario-campo-label form-label small fw-semibold mb-1">Condição</label>
                       <div class="prontuario-campo-valor" id="finalizarCondicao">—</div>
                     </div>
                     <div class="prontuario-campo">
-                      <label class="prontuario-campo-label">Descrição do Tratamento</label>
+                      <label class="prontuario-campo-label form-label small fw-semibold mb-1">Descrição do Tratamento</label>
                       <div class="prontuario-campo-textarea" id="finalizarDescricao">—</div>
                     </div>
                   </div>
-                  <div class="finalizar-detalhes-dir">
-                    <div class="prontuario-obs-card">
-                      <h4 class="prontuario-obs-titulo">Observações Clínicas</h4>
-                      <div class="prontuario-obs-texto" id="finalizarObservacoes">—</div>
+                  <div class="finalizar-detalhes-dir col-12 col-md-5">
+                    <div class="prontuario-obs-card rounded p-3 h-100 d-flex flex-column">
+                      <h4 class="prontuario-obs-titulo fw-bold mb-2">Observações Clínicas</h4>
+                      <div class="prontuario-obs-texto small flex-grow-1" id="finalizarObservacoes">—</div>
                     </div>
                   </div>
                 </div>
 
               </div>
-
             </div>
 
-            <!-- ═══ COLUNA LATERAL ═══ -->
-            <div class="finalizar-sidebar">
+            <div class="finalizar-sidebar col-12 col-lg-4">
 
-              <!-- Resumo do paciente -->
-              <div class="resumo-card">
-                <h3 class="resumo-titulo">Resumo do Paciente</h3>
-                <div class="resumo-foto">
-                  <div class="foto-placeholder">
-                    <div class="foto-x"></div>
-                  </div>
+              <div class="resumo-card bg-white border rounded p-3 shadow-sm mb-3">
+                <h3 class="resumo-titulo fw-bold text-center mb-3 pb-3">Resumo do Paciente</h3>
+                <div class="resumo-foto d-flex justify-content-center mb-3">
+                  <div class="foto-placeholder"><div class="foto-x"></div></div>
                 </div>
-                <div class="resumo-paciente-info">
+                <div class="resumo-paciente-info d-flex flex-column text-center mb-3">
                   <span class="resumo-label-small">Nome</span>
-                  <span class="resumo-nome" id="finalizarResumoNome">—</span>
-                  <span class="resumo-label-small">Serviço</span>
-                  <span class="resumo-servico" id="finalizarResumoServico">—</span>
+                  <span class="resumo-nome fw-bold" id="finalizarResumoNome">—</span>
+                  <span class="resumo-label-small mt-2">Serviço</span>
+                  <span class="resumo-servico fw-semibold" id="finalizarResumoServico">—</span>
                 </div>
-                <div class="resumo-progresso-wrapper">
-                  <div class="resumo-progresso-header">
+                <div class="resumo-progresso-wrapper mb-3">
+                  <div class="resumo-progresso-header d-flex justify-content-between align-items-center mb-1">
                     <span class="resumo-label-small">Progresso Atual</span>
                     <span class="resumo-etapas" id="finalizarResumoEtapas">— Etapas</span>
                   </div>
@@ -1060,37 +848,38 @@ coodihoo</textarea>
                     <div class="resumo-progresso-fill" id="finalizarResumoProgressoFill" style="width:0%"></div>
                   </div>
                 </div>
-                <div class="resumo-etapas-info">
-                  <div class="resumo-etapa-item">
+                <div class="resumo-etapas-info d-flex justify-content-between mb-3">
+                  <div class="resumo-etapa-item d-flex flex-column">
                     <span class="resumo-label-small">Última etapa Feita</span>
                     <span class="resumo-etapa-nome" id="finalizarResumoUltimaEtapa">—</span>
                   </div>
-                  <div class="resumo-etapa-item text-end">
+                  <div class="resumo-etapa-item text-end d-flex flex-column">
                     <span class="resumo-label-small">Próxima Etapa</span>
                     <span class="resumo-etapa-nome" id="finalizarResumoProximaEtapa">—</span>
                   </div>
                 </div>
               </div>
 
-              <!-- Alerta Clínico -->
-              <div class="alerta-clinico">
-                <h4 class="alerta-titulo"><i class="fa-solid fa-triangle-exclamation"></i> Alerta Clínico</h4>
-                <div class="alerta-grid">
-                  <div class="alerta-item">
-                    <span class="alerta-label">Alergias:</span>
-                    <span class="alerta-valor">—</span>
+              <div class="alerta-clinico rounded p-3">
+                <h4 class="alerta-titulo fw-bold mb-2 d-flex align-items-center gap-2">
+                  <i class="fa-solid fa-triangle-exclamation"></i> Alerta Clínico
+                </h4>
+                <div class="alerta-grid row row-cols-2 g-2">
+                  <div class="alerta-item col d-flex flex-column">
+                    <span class="alerta-label small fw-semibold">Alergias:</span>
+                    <span class="alerta-valor small">—</span>
                   </div>
-                  <div class="alerta-item">
-                    <span class="alerta-label">Condições:</span>
-                    <span class="alerta-valor">—</span>
+                  <div class="alerta-item col d-flex flex-column">
+                    <span class="alerta-label small fw-semibold">Condições:</span>
+                    <span class="alerta-valor small">—</span>
                   </div>
-                  <div class="alerta-item">
-                    <span class="alerta-label">Medicamentos:</span>
-                    <span class="alerta-valor">—</span>
+                  <div class="alerta-item col d-flex flex-column">
+                    <span class="alerta-label small fw-semibold">Medicamentos:</span>
+                    <span class="alerta-valor small">—</span>
                   </div>
-                  <div class="alerta-item">
-                    <span class="alerta-label">Cirurgias Anteriores:</span>
-                    <span class="alerta-valor">—</span>
+                  <div class="alerta-item col d-flex flex-column">
+                    <span class="alerta-label small fw-semibold">Cirurgias Anteriores:</span>
+                    <span class="alerta-valor small">—</span>
                   </div>
                 </div>
               </div>
@@ -1099,21 +888,19 @@ coodihoo</textarea>
 
           </div>
 
-          <!-- Footer -->
           <div class="finalizar-footer">
-            <button class="btn-cancelar-finalizar" id="btnCancelarFinalizar">
+            <button class="btn-cancelar-finalizar btn btn-sm btn-outline-secondary" id="btnCancelarFinalizar">
               <i class="fa-solid fa-arrow-left"></i> Voltar à Consulta
             </button>
             <div class="finalizar-aviso-info">
               <i class="fa-solid fa-circle-info fa-xs"></i>
               Observações serão adicionadas ao prontuário
             </div>
-            <button class="btn-confirmar-finalizar" id="btnConfirmarFinalizar">
+            <button class="btn-confirmar-finalizar btn btn-sm btn-success" id="btnConfirmarFinalizar">
               <i class="fa-solid fa-check"></i> Confirmar Finalização
             </button>
           </div>
 
-          <!-- Escolha: atualizar vs criar novo (oculta por padrão) -->
           <div id="finalizarEscolha" style="display:none;padding:1rem 1.5rem;background:#f0f4ff;border-top:1px solid #c7d2fe;flex-wrap:wrap;align-items:center;gap:0.75rem;">
             <span style="flex:1;min-width:200px;font-size:0.88rem;color:#374151;">
               <i class="fa-solid fa-file-circle-question me-1" style="color:#6366f1;"></i>
@@ -1135,10 +922,7 @@ coodihoo</textarea>
 
       </div><!-- /page-container -->
     </main>
-
   </div><!-- /app-layout -->
-
-  <!-- Impotação do VLibras-->
 
   <div vw class="enabled">
     <div vw-access-button class="active"></div>
@@ -1147,9 +931,7 @@ coodihoo</textarea>
     </div>
   </div>
   <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-  <script>
-    new window.VLibras.Widget('https://vlibras.gov.br/app');
-  </script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
 
   <!-- Modal: Editar Registro do Prontuário -->
   <div class="modal fade" id="modalEditarRegistro" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
@@ -1181,7 +963,6 @@ coodihoo</textarea>
             <div class="col-12">
               <label class="form-label fw-semibold d-block mb-2" style="font-size:0.85rem;">Dentes Tratados</label>
               <div class="odontograma-chart" id="editRegOdontograma" style="gap:2px;">
-                <!-- Arcada Superior -->
                 <div class="arcada-row">
                   <div class="arcada-grupo">
                     <div class="dente-consulta saudavel dente-modal" data-num="18">18</div>
@@ -1205,7 +986,6 @@ coodihoo</textarea>
                     <div class="dente-consulta saudavel dente-modal" data-num="28">28</div>
                   </div>
                 </div>
-                <!-- Arcada Inferior -->
                 <div class="arcada-row">
                   <div class="arcada-grupo">
                     <div class="dente-consulta saudavel dente-modal" data-num="48">48</div>
@@ -1230,8 +1010,8 @@ coodihoo</textarea>
                   </div>
                 </div>
               </div>
-              <div class="odontograma-legenda mt-1" style="justify-content:flex-start;">
-                <span class="legenda-item"><span class="legenda-cor tratamento-bg"></span> Em Tratamento</span>
+              <div class="odontograma-legenda d-flex mt-1">
+                <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor tratamento-bg"></span> Em Tratamento</span>
               </div>
             </div>
           </div>
@@ -1247,21 +1027,12 @@ coodihoo</textarea>
     </div>
   </div>
 
-  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Componente Sidebar -->
   <script src="../components/sidebar.js"></script>
-  <!-- Componente de Configurações -->
   <script src="../components/settings.js"></script>
-
-  <!-- API e Auth -->
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>
-
-  <!-- Lógica da página -->
-  <script src="../js/dentista/tratamentos.js?v=23"></script>
+  <script src="../js/dentista/tratamentos.js?v=28"></script>
 
 </body>
-
 </html>
