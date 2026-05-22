@@ -214,8 +214,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function resetarViewLista() {
     filterBar?.classList.remove("tratamentos-oculto");
     tratamentosLayout?.classList.remove("tratamentos-oculto");
-    filterBar?.style.removeProperty("display");
-    tratamentosLayout?.style.removeProperty("display");
 
     ["editarPlanoView", "consultaView", "prontuarioView", "finalizarConsultaView"].forEach((id) => {
       const el = document.getElementById(id);
@@ -1098,12 +1096,4 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.persisted) resetarViewLista();
   });
 
-  window.addEventListener("focus", () => {
-    if (prontuarioView?.style.display !== "block" &&
-        consultaView?.style.display !== "block" &&
-        editarPlanoView?.style.display !== "block" &&
-        finalizarConsultaView?.style.display !== "block") {
-      resetarViewLista();
-    }
-  });
 });

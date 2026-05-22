@@ -124,23 +124,14 @@
 }
 
 /* ══════════════════════════════════
-   LAYOUT TABELA + RESUMO
-   ══════════════════════════════════ */
-/* ══════════════════════════════════
-   LAYOUT LISTA + RESUMO (grid — estável desktop/mobile)
+   LAYOUT LISTA + RESUMO (grid — mesmo padrão do dashboard)
    ══════════════════════════════════ */
 .tratamentos-layout-grid {
   display: grid;
   width: 100%;
   gap: 1rem;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 340px);
   align-items: start;
-}
-
-@media (min-width: 992px) {
-  .tratamentos-layout-grid {
-    grid-template-columns: minmax(0, 1.65fr) minmax(280px, 1fr);
-  }
 }
 
 .tratamentos-tabela-col,
@@ -149,7 +140,23 @@
   width: 100%;
 }
 
-.tratamentos-oculto {
+.tratamentos-lista-wrapper {
+  width: 100%;
+}
+
+.tratamentos-resumo-col .resumo-card {
+  border: 1px solid var(--c4);
+  box-shadow: var(--shadow-sm);
+  background: #fff;
+  padding: 1rem;
+}
+
+html.dark-mode .tratamentos-resumo-col .resumo-card {
+  background-color: var(--dm-surface) !important;
+  border-color: var(--dm-border) !important;
+}
+
+.tratamentos-layout-grid.tratamentos-oculto {
   display: none !important;
 }
 
@@ -157,20 +164,11 @@
   display: none !important;
 }
 
-/* Resumo: garante card visível no desktop (não herda estilo mobile) */
-@media (min-width: 577px) {
-  .tratamentos-resumo-col .resumo-card {
-    border: 1px solid var(--c4) !important;
-    box-shadow: var(--shadow-sm) !important;
-    background: #fff !important;
-    padding: 1rem !important;
-    margin-top: 0 !important;
+/* Mobile: empilha lista + resumo (igual dashboard em ≤900px) */
+@media (max-width: 900px) {
+  .tratamentos-layout-grid {
+    grid-template-columns: 1fr;
   }
-}
-
-html.dark-mode .tratamentos-resumo-col .resumo-card {
-  background-color: var(--dm-surface) !important;
-  border-color: var(--dm-border) !important;
 }
 
 /* ══════════════════════════════════
@@ -259,7 +257,11 @@ html.dark-mode .tratamentos-resumo-col .resumo-card {
 }
 
 .tratamento-paciente-item {
+  display: block;
+  box-sizing: border-box;
   padding: 0.9rem 1.15rem;
+  min-height: 2.75rem;
+  line-height: 1.4;
   font-size: 0.92rem;
   font-weight: 600;
   color: var(--c1);
@@ -441,13 +443,6 @@ html.dark-mode .tratamentos-resumo-col .resumo-card {
    RESPONSIVIDADE
    ══════════════════════════════════ */
 
-/* Desktop (≥992px): lista ocupa toda a coluna do grid */
-@media (min-width: 992px) {
-  .tratamentos-lista-wrapper {
-    width: 100%;
-  }
-}
-
 @media (max-width: 768px) {
   .tab-btn {
     font-size: 0.75rem;
@@ -471,8 +466,8 @@ html.dark-mode .tratamentos-resumo-col .resumo-card {
     font-size: 1rem;
   }
 
-  /* Resumo changes - Mobile Refinement */
-  .resumo-card {
+  /* Resumo — só no mobile estreito */
+  .tratamentos-resumo-col .resumo-card {
     border: none !important;
     box-shadow: none !important;
     background: transparent !important;
