@@ -87,6 +87,19 @@ async function carregarDashboard() {
     document.getElementById('metricaConsultas').textContent = minhasHoje.length;
     document.getElementById('metricaFila').textContent      = emEspera;
 
+    const banner = document.getElementById('bannerAguardando');
+    const bannerTexto = document.getElementById('bannerAguardandoTexto');
+    if (banner && bannerTexto) {
+      if (emEspera > 0) {
+        bannerTexto.textContent = emEspera === 1
+          ? '1 paciente chegou e está aguardando atendimento'
+          : `${emEspera} pacientes chegaram e estão aguardando atendimento`;
+        banner.style.display = 'flex';
+      } else {
+        banner.style.display = 'none';
+      }
+    }
+
     renderizarFila(filaConsultas);
   } catch (err) {
     console.error('Erro ao carregar dashboard:', err.message);
@@ -106,6 +119,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   carregarDashboard();
+
+  // Auto-refresh a cada 30s para refletir pacientes que chegaram
+  setInterval(carregarDashboard, 30000);
 
   document.getElementById('btnIniciarConsulta').addEventListener('click', iniciarConsulta);
   document.getElementById('btnVoltarDash').addEventListener('click', voltarAoDashboard);
@@ -173,8 +189,12 @@ function renderizarFila(consultas) {
   consultas.forEach(c => {
     const tr = document.createElement('tr');
     tr.dataset.id = c.id;
+    if (c.status === 'Aguardando') tr.classList.add('fila-chegou');
+    const badgeChegou = c.status === 'Aguardando'
+      ? `<span class="badge-chegou-dash"><i class="fa-solid fa-person-walking-arrow-right"></i> Chegou</span>`
+      : '';
     tr.innerHTML = `
-      <td class="ps-4 fw-medium">${c.nomePaciente || '—'}</td>
+      <td class="ps-4 fw-medium">${c.nomePaciente || '—'}${badgeChegou}</td>
       <td>${c.nomeServico || '—'}</td>
       <td>${infoColuna(c)}</td>
     `;
@@ -288,7 +308,7 @@ function renderizarPlanos() {
           <span class="ap-etapa-campo-valor">${p.condicao}</span>
         </div>
         <div class="ap-etapa-campo full">
-          <span class="ap-etapa-campo-label">Descrição do Tratamento</span>
+          <span class="ap-etapa-campo-label">Planejamento do Tratamento</span>
           <span class="ap-etapa-campo-valor">${p.descricao}</span>
         </div>
       </div>

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   css/dentista/dashboard.css
+   css/dentista/dashboard.css  v3
    Dashboard do dentista — layout fila + painel detalhe
    ═══════════════════════════════════════════════════ */
 
@@ -191,6 +191,39 @@
   background-color: var(--c4);
   color: var(--c1);
   font-weight: 600;
+}
+
+.table-custom tbody tr.fila-chegou td {
+  background-color: #fff8ec;
+}
+
+.table-custom tbody tr.fila-chegou td:first-child {
+  border-left: 3px solid #d97706;
+}
+
+.table-custom tbody tr.fila-chegou.selecionado td {
+  background-color: #feebc8;
+}
+
+.badge-chegou-dash {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #fff;
+  background: #d97706;
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  margin-left: 0.5rem;
+  vertical-align: middle;
+  white-space: nowrap;
+  animation: pulse-chegou 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse-chegou {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.65; }
 }
 
 .table-custom tbody td {

@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="../css/base.css" />
   <link rel="stylesheet" href="../css/layout.css" />
   <link rel="stylesheet" href="../css/components.css" />
-  <link rel="stylesheet" href="../css/dentista/tratamentos.css?v=14" />
+  <link rel="stylesheet" href="../css/dentista/tratamentos.css?v=17" />
 </head>
 
 <body>
@@ -192,7 +192,7 @@
                         <input type="text" class="etapa-input form-control form-control-sm" value="Limpeza" readonly />
                       </div>
                       <div class="etapa-campo">
-                        <label>Descrição do Tratamento</label>
+                        <label>Planejamento do Tratamento</label>
                         <textarea class="etapa-textarea form-control form-control-sm" readonly>Limpeza
 foweydufhiouoehfiohuodfhouiwduo
 dhfuohowodhouonfooejioohjowdho
@@ -219,7 +219,7 @@ oiowdfioo</textarea>
                         <input type="text" class="etapa-input form-control form-control-sm" value="Clareamento I" readonly />
                       </div>
                       <div class="etapa-campo">
-                        <label>Descrição do Tratamento</label>
+                        <label>Planejamento do Tratamento</label>
                         <textarea class="etapa-textarea form-control form-control-sm" readonly>Clareamento
 ogwidboiwbdiohodtheisthooehfabi
 uefhoeuiihfoeghfeuihfsuojculoeh7
@@ -246,7 +246,7 @@ coodihoo</textarea>
                         <input type="text" class="etapa-input form-control form-control-sm" value="Clareamento II" readonly />
                       </div>
                       <div class="etapa-campo">
-                        <label>Descrição do Tratamento</label>
+                        <label>Planejamento do Tratamento</label>
                         <textarea class="etapa-textarea form-control form-control-sm" readonly>Tratamento endodôntico necessário. Obturação temporária aplicada.</textarea>
                       </div>
                     </div>
@@ -259,30 +259,6 @@ coodihoo</textarea>
 
             <!-- Coluna Direita -->
             <div class="editar-plano-sidebar col-12 col-lg-4">
-
-              <div class="alerta-clinico rounded p-3 mb-3">
-                <h4 class="alerta-titulo fw-bold mb-2 d-flex align-items-center gap-2">
-                  <i class="fa-solid fa-triangle-exclamation"></i> Alerta Clínico
-                </h4>
-                <div class="alerta-grid row row-cols-2 g-2">
-                  <div class="alerta-item col d-flex flex-column">
-                    <span class="alerta-label small fw-semibold">Alergias</span>
-                    <span class="alerta-valor small">—</span>
-                  </div>
-                  <div class="alerta-item col d-flex flex-column">
-                    <span class="alerta-label small fw-semibold">Condições:</span>
-                    <span class="alerta-valor small">—</span>
-                  </div>
-                  <div class="alerta-item col d-flex flex-column">
-                    <span class="alerta-label small fw-semibold">Medicamentos:</span>
-                    <span class="alerta-valor small">—</span>
-                  </div>
-                  <div class="alerta-item col d-flex flex-column">
-                    <span class="alerta-label small fw-semibold">Cirurgias Anteriores:</span>
-                    <span class="alerta-valor small">—</span>
-                  </div>
-                </div>
-              </div>
 
               <div class="resumo-card editar-resumo-card bg-white border rounded p-3 shadow-sm">
 
@@ -379,30 +355,6 @@ coodihoo</textarea>
               </div>
               <span class="consulta-badge-atendimento"><i class="fa-solid fa-circle fa-xs"></i> Em Atendimento</span>
             </div>
-            <details class="alerta-clinico alerta-clinico-compact alerta-details">
-              <summary class="alerta-titulo alerta-summary">
-                <i class="fa-solid fa-triangle-exclamation"></i> Alerta Clínico
-                <span class="alerta-toggle-hint">ver detalhes</span>
-              </summary>
-              <div class="alerta-grid row row-cols-2 g-2">
-                <div class="alerta-item col d-flex flex-column">
-                  <span class="alerta-label small fw-semibold">Alergias</span>
-                  <span class="alerta-valor small">—</span>
-                </div>
-                <div class="alerta-item col d-flex flex-column">
-                  <span class="alerta-label small fw-semibold">Condições</span>
-                  <span class="alerta-valor small">—</span>
-                </div>
-                <div class="alerta-item col d-flex flex-column">
-                  <span class="alerta-label small fw-semibold">Medicamentos</span>
-                  <span class="alerta-valor small">—</span>
-                </div>
-                <div class="alerta-item col d-flex flex-column">
-                  <span class="alerta-label small fw-semibold">Cirurgias</span>
-                  <span class="alerta-valor small">—</span>
-                </div>
-              </div>
-            </details>
           </div>
 
           <div class="consulta-layout row g-3">
@@ -485,7 +437,7 @@ coodihoo</textarea>
                     <input type="text" class="consulta-campo-input form-control" id="consultaCondicao" placeholder="Ex: Cárie profunda..." />
                   </div>
                   <div class="consulta-campo">
-                    <label class="consulta-campo-label form-label small fw-semibold">Descrição do Tratamento</label>
+                    <label class="consulta-campo-label form-label small fw-semibold">Planejamento do Tratamento</label>
                     <textarea class="consulta-campo-textarea form-control" id="consultaDescricao" placeholder="Descreva o tratamento realizado..."></textarea>
                   </div>
                 </div>
@@ -495,9 +447,9 @@ coodihoo</textarea>
 
             <div class="consulta-sidebar col-12 col-lg-4">
               <div class="observacoes-card bg-white border rounded p-3 h-100 d-flex flex-column">
-                <h4 class="observacoes-titulo fw-bold mb-2">Observações Clínicas</h4>
+                <h4 class="observacoes-titulo fw-bold mb-2">Procedimento Realizado</h4>
                 <textarea class="observacoes-textarea form-control flex-grow-1" id="observacoesClinicas"
-                  placeholder="Digite observações clínicas..."></textarea>
+                  placeholder="Descreva o procedimento realizado..."></textarea>
                 <p class="observacoes-aviso small text-muted mt-2 mb-0">essas informações serão adicionadas ao prontuário ao encerrar a consulta</p>
               </div>
             </div>
@@ -622,14 +574,14 @@ coodihoo</textarea>
                       <input type="text" class="form-control d-none" id="editCondicao" style="font-size:0.88rem;" placeholder="Ex: Cárie profunda..." />
                     </div>
                     <div class="prontuario-campo">
-                      <label class="prontuario-campo-label form-label small fw-semibold mb-1">Descrição do Tratamento</label>
+                      <label class="prontuario-campo-label form-label small fw-semibold mb-1">Planejamento do Tratamento</label>
                       <div class="prontuario-campo-textarea" id="prontuarioDescricao">—</div>
                       <textarea class="form-control d-none" id="editDescricao" rows="4" style="font-size:0.88rem;" placeholder="Descreva o tratamento..."></textarea>
                     </div>
                   </div>
                   <div class="prontuario-detalhes-dir col-12 col-md-5">
                     <div class="prontuario-obs-card rounded p-3 h-100 d-flex flex-column">
-                      <h4 class="prontuario-obs-titulo fw-bold mb-2">Observações Clínicas</h4>
+                      <h4 class="prontuario-obs-titulo fw-bold mb-2">Procedimento Realizado</h4>
                       <div class="prontuario-obs-texto small flex-grow-1" id="prontuarioObsTexto">—</div>
                       <textarea class="form-control d-none" id="editObsTexto" rows="5" style="font-size:0.88rem;" placeholder="Observações clínicas..."></textarea>
                     </div>
@@ -811,13 +763,13 @@ coodihoo</textarea>
                       <div class="prontuario-campo-valor" id="finalizarCondicao">—</div>
                     </div>
                     <div class="prontuario-campo">
-                      <label class="prontuario-campo-label form-label small fw-semibold mb-1">Descrição do Tratamento</label>
+                      <label class="prontuario-campo-label form-label small fw-semibold mb-1">Planejamento do Tratamento</label>
                       <div class="prontuario-campo-textarea" id="finalizarDescricao">—</div>
                     </div>
                   </div>
                   <div class="finalizar-detalhes-dir col-12 col-md-5">
                     <div class="prontuario-obs-card rounded p-3 h-100 d-flex flex-column">
-                      <h4 class="prontuario-obs-titulo fw-bold mb-2">Observações Clínicas</h4>
+                      <h4 class="prontuario-obs-titulo fw-bold mb-2">Procedimento Realizado</h4>
                       <div class="prontuario-obs-texto small flex-grow-1" id="finalizarObservacoes">—</div>
                     </div>
                   </div>
@@ -860,29 +812,6 @@ coodihoo</textarea>
                 </div>
               </div>
 
-              <div class="alerta-clinico rounded p-3">
-                <h4 class="alerta-titulo fw-bold mb-2 d-flex align-items-center gap-2">
-                  <i class="fa-solid fa-triangle-exclamation"></i> Alerta Clínico
-                </h4>
-                <div class="alerta-grid row row-cols-2 g-2">
-                  <div class="alerta-item col d-flex flex-column">
-                    <span class="alerta-label small fw-semibold">Alergias:</span>
-                    <span class="alerta-valor small">—</span>
-                  </div>
-                  <div class="alerta-item col d-flex flex-column">
-                    <span class="alerta-label small fw-semibold">Condições:</span>
-                    <span class="alerta-valor small">—</span>
-                  </div>
-                  <div class="alerta-item col d-flex flex-column">
-                    <span class="alerta-label small fw-semibold">Medicamentos:</span>
-                    <span class="alerta-valor small">—</span>
-                  </div>
-                  <div class="alerta-item col d-flex flex-column">
-                    <span class="alerta-label small fw-semibold">Cirurgias Anteriores:</span>
-                    <span class="alerta-valor small">—</span>
-                  </div>
-                </div>
-              </div>
 
             </div>
 
@@ -953,12 +882,12 @@ coodihoo</textarea>
               <select class="form-select" id="editRegServico"><option value="">Nenhum</option></select>
             </div>
             <div class="col-12">
-              <label class="form-label fw-semibold" style="font-size:0.85rem;">Descrição do Tratamento</label>
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">Planejamento do Tratamento</label>
               <textarea class="form-control" id="editRegDescricao" rows="3" placeholder="Descreva o tratamento realizado..."></textarea>
             </div>
             <div class="col-12">
-              <label class="form-label fw-semibold" style="font-size:0.85rem;">Observações Clínicas</label>
-              <textarea class="form-control" id="editRegObservacao" rows="3" placeholder="Observações clínicas..."></textarea>
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">Procedimento Realizado</label>
+              <textarea class="form-control" id="editRegObservacao" rows="3" placeholder="Descreva o procedimento realizado..."></textarea>
             </div>
             <div class="col-12">
               <label class="form-label fw-semibold d-block mb-2" style="font-size:0.85rem;">Dentes Tratados</label>

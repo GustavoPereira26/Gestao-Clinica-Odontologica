@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="../css/base.css"/>
   <link rel="stylesheet" href="../css/layout.css"/>
   <link rel="stylesheet" href="../css/components.css"/>
-  <link rel="stylesheet" href="../css/dentista/dashboard.css"/>
+  <link rel="stylesheet" href="../css/dentista/dashboard.css?v=3"/>
 </head>
 
 <body>
@@ -78,6 +78,14 @@
       <!-- ─ COLUNA ESQUERDA: Tabela de fila ─ -->
       <section class="dash-fila">
         <h2 class="dash-section-title">Consultas de Hoje</h2>
+
+        <!-- Banner de pacientes aguardando -->
+        <div id="bannerAguardando" style="display:none; align-items:center; gap:0.6rem;
+             background:#d97706; color:#fff; font-weight:600; font-size:0.88rem;
+             border-radius:8px; padding:0.65rem 1rem; margin-bottom:0.75rem;">
+          <i class="fa-solid fa-person-walking-arrow-right"></i>
+          <span id="bannerAguardandoTexto"></span>
+        </div>
 
         <div class="table-container" style="max-height: 65vh;">
           <table class="table table-custom mb-0 w-100" id="tabelaFila">
@@ -316,7 +324,7 @@
             </div>
 
             <div class="it-campo">
-              <label class="it-campo-label" for="itTextareaDescricao">Descrição do Tratamento</label>
+              <label class="it-campo-label" for="itTextareaDescricao">Planejamento do Tratamento</label>
               <textarea id="itTextareaDescricao" class="it-campo-textarea" rows="6">Tratamento endodôntico necessário. Obturação temporária aplicada</textarea>
             </div>
 
@@ -509,7 +517,7 @@
 <script src="../js/auth.js"></script>
 
 <!-- Lógica da página -->
-<script src="../js/dentista/dashboard.js?v=7"></script>
+<script src="../js/dentista/dashboard.js?v=9"></script>
 
 </body>
 </html>

@@ -18,6 +18,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   configurarAutocompleteAgendar();
   configurarAutocompleteEditar();
 
+  document.getElementById('editDentista')?.addEventListener('change', async (e) => {
+    await _preencherSelectServicoPorDentista('editServico', parseInt(e.target.value));
+  });
+
   updateAll();
 });
 
@@ -158,6 +162,27 @@ function _preencherSelectServico(id) {
   if (!sel) return;
   sel.innerHTML = '<option value="">Nenhum</option>' +
     servicosCache.map(s => `<option value="${s.id}">${s.nome}</option>`).join('');
+}
+
+async function _preencherSelectServicoPorDentista(selectId, dentistaId, selectedId = null) {
+  const sel = document.getElementById(selectId);
+  if (!sel) return;
+
+  const dentista = dentistasCache.find(d => d.id == dentistaId);
+  const idEspecialidade = dentista?.idEspecialidade;
+
+  let servicos = servicosCache;
+  if (idEspecialidade) {
+    try {
+      const res = await apiGetServicosPorEspecialidade(idEspecialidade);
+      servicos = res?.dados ?? res ?? servicosCache;
+    } catch { /* fallback para lista completa */ }
+  }
+
+  sel.innerHTML = '<option value="">Nenhum</option>' +
+    servicos.map(s =>
+      `<option value="${s.id}" ${s.id === selectedId ? 'selected' : ''}>${s.nome}</option>`
+    ).join('');
 }
 
 /* ══════════════════════════════════════
@@ -459,7 +484,7 @@ function configurarNavegacao() {
 const AgendaRec = {
 
   /* ── Abrir modal de agendamento (slot vazio) ── */
-  abrirModalAgendar({ dentistaId, data, hora }) {
+  async abrirModalAgendar({ dentistaId, data, hora }) {
     slotSelecionado = { dentistaId: parseInt(dentistaId), data, hora };
 
     document.getElementById('modalNomeDentista').textContent  = getDentistaNome();
@@ -469,7 +494,7 @@ const AgendaRec = {
     document.getElementById('slotPacienteId').value           = '';
     document.getElementById('slotRetorno').checked            = false;
     document.getElementById('alertaAgendarSlot').classList.add('d-none');
-    _preencherSelectServico('slotServico');
+    await _preencherSelectServicoPorDentista('slotServico', dentistaId);
 
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalAgendarSlot')).show();
   },
@@ -521,6 +546,22 @@ const AgendaRec = {
     slotSelecionado = { dentistaId: null, data: null, hora: null };
   },
 
+  async marcarPacienteChegou() {
+    if (!consultaEmEdicao) return;
+    const btn = document.getElementById('btnMarcarChegou');
+    btn.disabled = true; btn.textContent = 'Registrando…';
+    try {
+      await apiAtualizarStatusConsulta(consultaEmEdicao.id, 'Aguardando');
+      bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalhe')).hide();
+      this.resetarModalDetalhe();
+      await updateAll();
+    } catch (e) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-person-walking-arrow-right me-1"></i>Paciente Chegou';
+      alert('Erro ao atualizar status: ' + e.message);
+    }
+  },
+
   /* ── Abrir modal de detalhe (slot ocupado) ── */
   abrirModalDetalhe(slot) {
     consultaEmEdicao = slot;
@@ -539,6 +580,7 @@ const AgendaRec = {
     const editavel = !['Encerrada', 'Cancelada'].includes(slot.status);
     document.getElementById('btnEditarConsulta').classList.toggle('d-none', !editavel);
     document.getElementById('btnCancelarConsulta').classList.toggle('d-none', !editavel);
+    document.getElementById('btnMarcarChegou').classList.toggle('d-none', slot.status !== 'Agendada');
 
     this._mostrarView('viewInfo');
     bootstrap.Modal.getOrCreateInstance(document.getElementById('modalDetalhe')).show();
@@ -555,7 +597,7 @@ const AgendaRec = {
   voltarInfo()          { this._mostrarView('viewInfo'); },
   mostrarViewCancelar() { this._mostrarView('viewCancelar'); },
 
-  mostrarViewEditar() {
+  async mostrarViewEditar() {
     if (!consultaEmEdicao) return;
     const c = consultaEmEdicao;
 
@@ -570,9 +612,7 @@ const AgendaRec = {
     document.getElementById('editData').value = c.data;
     document.getElementById('editHora').value = c.hora;
 
-    const selServico = document.getElementById('editServico');
-    selServico.innerHTML = '<option value="">Nenhum</option>' +
-      servicosCache.map(s => `<option value="${s.id}" ${s.id === c.idServico ? 'selected' : ''}>${s.nome}</option>`).join('');
+    await _preencherSelectServicoPorDentista('editServico', c.idDentista, c.idServico);
 
     document.getElementById('editRetorno').checked = !!c.retorno;
 

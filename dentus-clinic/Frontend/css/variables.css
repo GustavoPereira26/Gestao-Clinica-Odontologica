@@ -66,6 +66,23 @@ html.dark-mode .modal-content * {
   color: var(--dm-text) !important;
 }
 
+/* ── Autocomplete de paciente (agenda recepcionista) ── */
+html.dark-mode .list-group-item {
+  background-color: var(--dm-card) !important;
+  border-color: var(--dm-border) !important;
+  color: var(--dm-text) !important;
+}
+
+html.dark-mode .list-group-item:hover,
+html.dark-mode .list-group-item:focus {
+  background-color: var(--dm-surface) !important;
+  color: var(--dm-text) !important;
+}
+
+html.dark-mode .list-group-item .text-muted {
+  color: var(--dm-text-2) !important;
+}
+
 /* ── Fundos — área de conteúdo ── */
 html.dark-mode .app-content {
   background-color: var(--dm-bg) !important;

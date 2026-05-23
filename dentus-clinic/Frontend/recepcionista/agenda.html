@@ -172,11 +172,14 @@
             <div class="mt-2 d-none" id="dtlRetorno">
               <span class="badge-retorno"><i class="fa-solid fa-rotate-left me-1"></i>Retorno</span>
             </div>
-            <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top">
+            <div class="d-flex gap-2 justify-content-end mt-4 pt-3 border-top flex-wrap">
               <button type="button" class="btn px-3 text-dark bg-white border" data-bs-dismiss="modal" onclick="AgendaRec.resetarModalDetalhe()">Fechar</button>
               <button type="button" class="btn px-3" id="btnCancelarConsulta"
                       style="background:#fdf0ee;color:#c0392b;border:1.5px solid #fca5a5;"
                       onclick="AgendaRec.mostrarViewCancelar()"><i class="fa-solid fa-ban me-1"></i>Cancelar Consulta</button>
+              <button type="button" class="btn px-3 d-none" id="btnMarcarChegou"
+                      style="background:#d97706;border-color:#d97706;color:#fff;"
+                      onclick="AgendaRec.marcarPacienteChegou()"><i class="fa-solid fa-person-walking-arrow-right me-1"></i>Paciente Chegou</button>
               <button type="button" class="btn px-3 text-white" id="btnEditarConsulta"
                       style="background-color:#0d6efd;border-color:#0d6efd;"
                       onclick="AgendaRec.mostrarViewEditar()"><i class="fa-solid fa-pen me-1"></i>Editar</button>
@@ -256,6 +259,6 @@
   <script src="../components/settings.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/api.js"></script>
-  <script src="../js/recepcionista/agenda.js?v=7"></script>
+  <script src="../js/recepcionista/agenda.js?v=9"></script>
 </body>
 </html>
