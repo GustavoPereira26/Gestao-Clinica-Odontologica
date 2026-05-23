@@ -9,9 +9,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "minify-css": "find css -name '*.css' | xargs -I{} cleancss -o {} {}"
   },
   "devDependencies": {
+    "clean-css-cli": "^5.6.3",
     "dotenv": "^17.4.2",
     "vite": "^8.0.9"
   }
