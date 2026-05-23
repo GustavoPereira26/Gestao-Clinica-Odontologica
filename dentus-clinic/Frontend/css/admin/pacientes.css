@@ -286,19 +286,19 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border: 1.5px solid var(--c4);
+  border: 1.5px solid #c0392b;
   border-radius: var(--radius-md);
-  background: #fff;
-  color: var(--c3);
+  background: #fdf0ee;
+  color: #c0392b;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all var(--transition);
 }
 
 .btn-delete:hover {
-  border-color: #c0392b;
-  background: #fdf0ee;
-  color: #c0392b;
+  border-color: #a93226;
+  background: #fadbd8;
+  color: #a93226;
   transform: scale(1.08);
 }
 

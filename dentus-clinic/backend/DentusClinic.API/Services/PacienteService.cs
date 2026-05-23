@@ -18,7 +18,7 @@ public class PacienteService : IPacienteService
 
     public async Task<IEnumerable<PacienteResponse>> ListarTodosAsync()
     {
-        var lista = await _context.Pacientes.ToListAsync();
+        var lista = await _context.Pacientes.Where(p => p.Ativo).ToListAsync();
         return lista.Select(MapearResponse);
     }
 
@@ -91,9 +91,9 @@ public class PacienteService : IPacienteService
     public async Task<bool> RemoverAsync(int id)
     {
         var paciente = await _context.Pacientes.FindAsync(id);
-        if (paciente is null) return false;
+        if (paciente is null || !paciente.Ativo) return false;
 
-        _context.Pacientes.Remove(paciente);
+        paciente.Ativo = false;
         await _context.SaveChangesAsync();
         return true;
     }

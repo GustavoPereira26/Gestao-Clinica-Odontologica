@@ -16,6 +16,8 @@ public class Paciente : Usuario
     [StringLength(100)]
     public string Endereco { get; set; }
 
+    public bool Ativo { get; set; } = true;
+
     public ICollection<Consulta> Consultas { get; set; } = new List<Consulta>();
     public Prontuario? Prontuario { get; set; }
 }

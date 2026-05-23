@@ -246,6 +246,7 @@ const PacientesPage = (() => {
       document.body.style.paddingRight = '';
     } catch (erro) {
       console.error('Erro ao inativar paciente:', erro.message);
+      alert('Não foi possível inativar o paciente: ' + erro.message);
     }
 
     pacienteParaExcluir = null;
