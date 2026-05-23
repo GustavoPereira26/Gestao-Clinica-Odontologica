@@ -1,24 +1,18 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DentusClinic.API.Models;
 
-public class Funcionario
+public class Funcionario : Usuario
 {
+    [Key]
     public int Id { get; set; }
 
     [Required]
-    public string Nome { get; set; } = string.Empty;
+    [CargoPermitido]
+    public string Cargo { get; set; } = string.Empty;
 
-    [Required]
-    public string Cpf { get; set; } = string.Empty;
-
-    public DateOnly DataNascimento { get; set; }
-
-    public string? Telefone { get; set; }
-
-    [Required]
-    public string Cargo { get; set; } = string.Empty; // "Secretaria" ou "ADM"
-
+    [ForeignKey(nameof(Login))]
     public int IdAcesso { get; set; }
     public Login Login { get; set; } = null!;
 }

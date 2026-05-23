@@ -1,18 +1,17 @@
 using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Request;
 using DentusClinic.API.DTOs.Response;
-using DentusClinic.API.Interfaces;
+using DentusClinic.API.Enums;
+using DentusClinic.API.Services.Interfaces;
 using DentusClinic.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace DentusClinic.API.Services;
 
-public class DentistaService : IDentistaService
-{
+public class DentistaService : IDentistaService {
     private readonly AppDbContext _context;
 
-    public DentistaService(AppDbContext context)
-    {
+    public DentistaService(AppDbContext context) {
         _context = context;
     }
 
@@ -25,7 +24,7 @@ public class DentistaService : IDentistaService
         return lista.Select(MapearResponse);
     }
 
-    public async Task<DentistaResponse?> BuscarPorIdAsync(int id)
+    public async Task<DentistaResponse?> BuscarPorIdAsync(int id)  // ← long
     {
         var dentista = await _context.Dentistas
             .Include(d => d.Especialidade)
@@ -34,8 +33,7 @@ public class DentistaService : IDentistaService
         return dentista is null ? null : MapearResponse(dentista);
     }
 
-    public async Task<DentistaResponse> CadastrarAsync(DentistaRequest request)
-    {
+    public async Task<DentistaResponse> CadastrarAsync(DentistaRequest request) {
         if (await _context.Dentistas.AnyAsync(d => d.Cpf == request.Cpf))
             throw new InvalidOperationException("CPF já cadastrado no sistema.");
 
@@ -45,23 +43,21 @@ public class DentistaService : IDentistaService
         if (await _context.Logins.AnyAsync(l => l.Email == request.Email))
             throw new InvalidOperationException("E-mail já cadastrado no sistema.");
 
-        var login = new Login
-        {
+        var login = new Login {
             Email = request.Email,
             Senha = BCrypt.Net.BCrypt.HashPassword(request.Senha),
-            TipoAcesso = "Dentista"
+            TipoAcesso = TiposAcessoEnum.DENTISTA  // ← Enum
         };
         _context.Logins.Add(login);
         await _context.SaveChangesAsync();
 
-        var dentista = new Dentista
-        {
+        var dentista = new Dentista {
             Nome = request.Nome,
             Cpf = request.Cpf,
             Cro = request.Cro,
-            Telefone = request.Telefone,
+            Telefone = request.Telefone ?? string.Empty,
             IdEspecialidade = request.IdEspecialidade,
-            IdAcesso = login.Id
+            IdAcesso = (int)login.Id  // ← cast de long para int
         };
         _context.Dentistas.Add(dentista);
         await _context.SaveChangesAsync();
@@ -71,7 +67,7 @@ public class DentistaService : IDentistaService
         return MapearResponse(dentista);
     }
 
-    public async Task<DentistaResponse?> EditarAsync(int id, DentistaRequest request)
+    public async Task<DentistaResponse?> EditarAsync(int id, DentistaUpdateRequest request)
     {
         var dentista = await _context.Dentistas
             .Include(d => d.Especialidade)
@@ -79,18 +75,21 @@ public class DentistaService : IDentistaService
             .FirstOrDefaultAsync(d => d.Id == id);
         if (dentista is null) return null;
 
-        if (await _context.Dentistas.AnyAsync(d => d.Cpf == request.Cpf && d.Id != id))
-            throw new InvalidOperationException("CPF já cadastrado no sistema.");
+        if (request.Nome != null)
+            dentista.Nome = request.Nome;
 
-        if (await _context.Dentistas.AnyAsync(d => d.Cro == request.Cro && d.Id != id))
-            throw new InvalidOperationException("CRO já cadastrado no sistema.");
+        if (request.Telefone != null)
+            dentista.Telefone = request.Telefone;
 
-        dentista.Nome = request.Nome;
-        dentista.Cpf = request.Cpf;
-        dentista.Cro = request.Cro;
-        dentista.Telefone = request.Telefone;
-        dentista.IdEspecialidade = request.IdEspecialidade;
-        dentista.Login.Email = request.Email;
+        if (request.IdEspecialidade.HasValue)
+            dentista.IdEspecialidade = request.IdEspecialidade.Value;
+
+        if (request.Email != null)
+        {
+            if (await _context.Logins.AnyAsync(l => l.Email == request.Email && l.Id != dentista.IdAcesso))
+                throw new InvalidOperationException("E-mail já cadastrado no sistema.");
+            dentista.Login.Email = request.Email;
+        }
 
         if (!string.IsNullOrWhiteSpace(request.Senha))
             dentista.Login.Senha = BCrypt.Net.BCrypt.HashPassword(request.Senha);
@@ -100,9 +99,11 @@ public class DentistaService : IDentistaService
         return MapearResponse(dentista);
     }
 
-    public async Task<bool> RemoverAsync(int id)
+    public async Task<bool> RemoverAsync(int id)  // ← long
     {
-        var dentista = await _context.Dentistas.Include(d => d.Login).FirstOrDefaultAsync(d => d.Id == id);
+        var dentista = await _context.Dentistas
+            .Include(d => d.Login)
+            .FirstOrDefaultAsync(d => d.Id == id);
         if (dentista is null) return false;
 
         _context.Dentistas.Remove(dentista);
@@ -111,8 +112,7 @@ public class DentistaService : IDentistaService
         return true;
     }
 
-    private static DentistaResponse MapearResponse(Dentista d) => new()
-    {
+    private static DentistaResponse MapearResponse(Dentista d) => new() {
         Id = d.Id,
         Nome = d.Nome,
         Cpf = d.Cpf,

@@ -1,4 +1,5 @@
-using DentusClinic.API.Interfaces;
+using DentusClinic.API.DTOs.Request;
+using DentusClinic.API.Services.Interfaces;
 using DentusClinic.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -7,7 +8,7 @@ namespace DentusClinic.API.Controllers;
 
 [ApiController]
 [Route("api/prontuarios")]
-[Authorize]
+[Authorize(Roles = "DENTISTA")]
 public class ProntuarioController : ControllerBase
 {
     private readonly IProntuarioService _prontuarioService;
@@ -31,6 +32,13 @@ public class ProntuarioController : ControllerBase
         if (prontuario is null)
             return NotFound(ApiResponse<object>.Erro("Prontuário não encontrado."));
 
+        return Ok(ApiResponse<object>.Ok(prontuario));
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ObterOuCriar([FromBody] ProntuarioRequest request)
+    {
+        var prontuario = await _prontuarioService.ObterOuCriarAsync(request.IdPaciente);
         return Ok(ApiResponse<object>.Ok(prontuario));
     }
 

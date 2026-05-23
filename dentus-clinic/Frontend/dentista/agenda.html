@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dentu's Clinic — Agenda</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../css/variables.css" />
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/dentista/agenda.css" />
+</head>
+
+<body>
+
+  <button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <div class="app-layout">
+    <div id="sidebarContainer"></div>
+
+    <main class="app-content">
+
+      <!-- Notificação toast (desktop) -->
+      <div class="tcal-notif" id="tcalNotif">
+        <div class="tcal-notif-icon"><i class="fa-solid fa-bell"></i></div>
+        <div class="tcal-notif-body">
+          <span class="tcal-notif-title">Novo Paciente na Fila</span>
+          <div class="tcal-notif-tags">
+            <span>João Silva</span>
+            <span>Limpeza</span>
+          </div>
+        </div>
+        <button class="tcal-notif-close" id="tcalNotifClose"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- ══ CALENDÁRIO DESKTOP —  ══ -->
+      <div class="tcal-wrapper" id="tcalWrapper">
+
+        <!-- Toolbar -->
+        <div class="tcal-toolbar">
+          <div class="tcal-toolbar-left">
+            <button class="tcal-btn-today" id="btnToday">Hoje</button>
+            <div class="tcal-nav-group">
+              <button class="tcal-btn-nav" id="btnPrevWeek" aria-label="Semana anterior">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button class="tcal-btn-nav" id="btnNextWeek" aria-label="Próxima semana">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
+            <span class="tcal-period" id="monthYearLabel">Maio 2026</span>
+          </div>
+        </div>
+
+        <div class="tcal-scroll-area" id="tcalScrollArea">
+          <div class="tcal-head" id="tcalHead">
+            <div class="tcal-head-gutter"></div>
+            <div class="tcal-head-day" id="day-0"><span class="tcal-abbr">Seg</span><span class="tcal-num">19</span></div>
+            <div class="tcal-head-day" id="day-1"><span class="tcal-abbr">Ter</span><span class="tcal-num">20</span></div>
+            <div class="tcal-head-day" id="day-2"><span class="tcal-abbr">Qua</span><span class="tcal-num">21</span></div>
+            <div class="tcal-head-day" id="day-3"><span class="tcal-abbr">Qui</span><span class="tcal-num">22</span></div>
+            <div class="tcal-head-day" id="day-4"><span class="tcal-abbr">Sex</span><span class="tcal-num">23</span></div>
+            <div class="tcal-head-day" id="day-5"><span class="tcal-abbr">Sáb</span><span class="tcal-num">24</span></div>
+            <div class="tcal-head-day" id="day-6"><span class="tcal-abbr">Dom</span><span class="tcal-num">25</span></div>
+          </div>
+
+          <div class="tcal-body" id="tcalBody">
+            <div class="tcal-time-col" id="tcalTimeCol"></div>
+            <div class="tcal-grid" id="tcalGrid"></div>
+          </div>
+        </div>
+      </div>
+      <!-- END DESKTOP -->
+
+      <!-- ══ AGENDA MOBILE ══ -->
+      <div class="agenda-mobile" id="agendaMobile">
+
+        <div class="am-notif" id="amNotif">
+          <div class="am-notif-icon"><i class="fa-solid fa-bell"></i></div>
+          <div class="am-notif-body">
+            <span class="am-notif-titulo">Novo Paciente na Fila</span>
+            <div class="am-notif-tags">
+              <span class="am-tag">João Silva</span>
+              <span class="am-tag">Limpeza</span>
+            </div>
+          </div>
+          <button class="am-notif-fechar" id="amNotifFechar"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="am-nav">
+          <button class="am-nav-btn" id="amPrev"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="am-nav-info">
+            <span class="am-nav-semana" id="amSemana">Semana 12</span>
+            <span class="am-nav-mes" id="amMes">Março 2026</span>
+          </div>
+          <button class="am-nav-btn" id="amNext"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <div class="am-strip-wrap">
+          <div class="am-strip" id="amStrip"></div>
+        </div>
+
+        <div class="am-slots" id="amSlots"></div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal Detalhes do Agendamento -->
+  <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="appointmentModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header border-0 pb-0">
+          <p class="modal-title text-muted mb-0" id="appointmentModalLabel">Quinta-Feira &nbsp;|&nbsp; 11:00</p>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body pt-3 px-5 pb-4">
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <small class="text-muted d-block mb-1">Paciente</small>
+              <span class="fs-4 fw-medium text-dark" id="modalPaciente">Jonatan</span>
+            </div>
+            <div class="col-md-6">
+              <small class="text-muted d-block mb-1">Serviço</small>
+              <span class="fs-4 fw-medium text-dark" id="modalServico">Clareamento</span>
+            </div>
+          </div>
+          <div class="mb-5">
+            <h6 class="fw-medium text-dark mb-3">Status</h6>
+            <p class="text-muted small mb-0" id="modalStatus">—</p>
+          </div>
+          <div class="text-center mt-4">
+            <button type="button" class="btn btn-primary px-4 py-2 rounded-3 fw-medium shadow-sm" data-bs-dismiss="modal">
+              <i class="fa-solid fa-arrow-left me-2"></i> Voltar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Impotação do VLibras-->
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>
+    new window.VLibras.Widget('https://vlibras.gov.br/app');
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../components/sidebar.js"></script>
+  <!-- Componente de Configurações -->
+  <script src="../components/settings.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/dentista/agenda.js?v=4"></script>
+
+</body>
+</html>

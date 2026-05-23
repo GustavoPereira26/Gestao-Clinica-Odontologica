@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Gerenciamento de serviços da Dentus Clinic — cadastre e gerencie os serviços disponíveis." />
+    <title>Dentus Clinic — Serviços</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+    <!-- CSS do projeto -->
+    <link rel="stylesheet" href="../css/variables.css" />
+    <link rel="stylesheet" href="../css/base.css" />
+    <link rel="stylesheet" href="../css/layout.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/admin/servicos.css" />
+</head>
+
+<body>
+
+    <!-- ═══ LAYOUT ═══ -->
+    <div class="app-layout">
+
+        <!-- Botão Hamburger (mobile) -->
+        <button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
+            <i class="bi bi-list"></i>
+        </button>
+
+        <!-- Sidebar (renderizada via JS) -->
+        <div id="sidebarContainer"></div>
+
+        <!-- ═══ CONTEÚDO PRINCIPAL ═══ -->
+        <main class="app-content" id="mainContent">
+
+            <!-- Header da página -->
+            <header class="page-header" id="pageHeader">
+                <div class="page-header-left">
+                    <h1 class="page-title">
+                        <i class="fa-solid fa-tooth page-title-icon"></i>
+                        Serviços
+                    </h1>
+                    <p class="page-subtitle">Cadastre e gerencie os serviços disponíveis na clínica</p>
+                </div>
+                <div class="page-header-right d-flex align-items-center gap-3">
+                    <span class="badge-total" id="badgeTotal">0 serviços</span>
+                    <button class="btn-novo" id="btnNovoServico">
+                        <i class="fa-solid fa-plus me-1"></i>
+                        Cadastrar Serviço
+                    </button>
+                </div>
+            </header>
+
+            <!-- ═══ BARRA DE FILTROS ═══ -->
+            <section class="filter-bar" id="filterBar">
+                <div class="filter-field">
+                    <label class="filter-label" for="filtroNome">Serviço</label>
+                    <div class="filter-input-wrapper">
+                        <i class="bi bi-search filter-input-icon"></i>
+                        <input
+                            type="text"
+                            class="filter-input"
+                            id="filtroNome"
+                            placeholder="Buscar por nome..."
+                            autocomplete="off"
+                        />
+                    </div>
+                </div>
+
+                <div class="filter-field">
+                    <label class="filter-label" for="filtroEspecialidade">Especialidade</label>
+                    <div class="filter-input-wrapper">
+                        <i class="bi bi-tag filter-input-icon"></i>
+                        <select class="filter-input filter-select" id="filtroEspecialidade">
+                            <option value="">Todas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="filter-actions">
+                    <button class="btn-filter-clear" id="btnLimparFiltros" title="Limpar filtros">
+                        <i class="bi bi-x-lg"></i>
+                        Limpar
+                    </button>
+                </div>
+            </section>
+
+            <!-- ═══ TABELA (Desktop / Tablet) ═══ -->
+            <section class="table-container" id="tableContainer">
+                <div class="table-scroll">
+                    <table class="table-servicos" id="tableServicos">
+                        <thead>
+                            <tr>
+                                <th class="th-nome">
+                                    <button class="th-sort" data-col="nome" id="sortNome">
+                                        Nome do serviço <i class="bi bi-chevron-expand"></i>
+                                    </button>
+                                </th>
+                                <th class="th-especialidade">Especialidade</th>
+                                <th class="th-acoes">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyServicos">
+                            <!-- Renderizado via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Estado vazio -->
+                <div class="empty-state hidden" id="emptyState">
+                    <i class="fa-solid fa-tooth-slash"></i>
+                    <p>Nenhum serviço encontrado</p>
+                </div>
+            </section>
+
+            <!-- ═══ LISTA CARDS (Mobile) ═══ -->
+            <section class="cards-mobile hidden" id="cardsMobile">
+                <!-- Renderizado via JS -->
+            </section>
+
+        </main>
+    </div>
+
+    <!-- ═══ MODAL CADASTRAR SERVIÇO ═══ -->
+    <div class="modal fade" id="modalCadastrarServico" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Cadastrar Serviço</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" id="btnFecharModalCadastro"></button>
+                </div>
+                <div class="modal-body px-4 pt-3 pb-2">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="inputNomeServico" style="font-size:0.85rem;">Nome do serviço</label>
+                        <input type="text" class="form-control" id="inputNomeServico" placeholder="Ex: Limpeza, Clareamento..." maxlength="100" />
+                        <div class="invalid-feedback" id="erroNomeServico"></div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="selectEspecialidadeServico" style="font-size:0.85rem;">Especialidade</label>
+                        <select class="form-select" id="selectEspecialidadeServico">
+                            <option value="">Selecione uma especialidade...</option>
+                        </select>
+                        <div class="invalid-feedback" id="erroEspecialidadeServico"></div>
+                    </div>
+                    <div id="erroGeralCadastro" class="alert alert-danger py-2 d-none" style="font-size:0.82rem;"></div>
+                </div>
+                <div class="modal-footer border-0 pt-1 pb-3 justify-content-center gap-2">
+                    <button type="button" class="btn px-4 text-dark bg-white border" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn px-4 text-white" id="btnConfirmarCadastro"
+                        style="background-color:#0d6efd; border-color:#0d6efd;">
+                        Cadastrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ MODAL CONFIRMAR EXCLUSÃO ═══ -->
+    <div class="modal fade" id="modalExcluirServico" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0 pt-3 pe-3 justify-content-between align-items-center">
+                    <h5 class="modal-title fs-6 ms-2">Remover Serviço</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body d-flex flex-column align-items-center text-center mt-2 px-4 pb-4">
+                    <div class="d-flex align-items-center gap-3 w-100 mb-4 justify-content-center">
+                        <div class="p-3 border rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width:50px; height:50px;">
+                            <i class="bi bi-trash fs-3 text-dark"></i>
+                        </div>
+                        <div class="text-start">
+                            <h6 class="fw-semibold mb-1" style="font-size:1rem;">Tem certeza que deseja remover este serviço?</h6>
+                            <small class="text-muted" style="font-size:0.85rem;">Essa ação não pode ser revertida</small>
+                        </div>
+                    </div>
+
+                    <div class="text-center" style="font-size:0.9rem; line-height:1.6;">
+                        <div>Nome: <strong id="mdlNomeServico"></strong></div>
+                        <div>Especialidade: <span id="mdlEspecialidadeServico"></span></div>
+                    </div>
+
+                    <div id="erroRemocao" class="alert alert-danger py-2 w-100 d-none" style="font-size:0.82rem;"></div>
+
+                    <div class="d-flex justify-content-center gap-3 mt-4 w-100">
+                        <button type="button" class="btn btn-outline-secondary px-4 text-dark bg-white border-dark" data-bs-dismiss="modal" style="border-radius:8px;">Cancelar</button>
+                        <button type="button" class="btn px-4 text-white d-flex align-items-center gap-2" id="btnConfirmarExclusao"
+                            style="border-radius:8px; background-color:#c0392b; border-color:#c0392b;">
+                            <i class="bi bi-trash"></i> Remover
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Auth e API (ordem obrigatória) -->
+    <script src="../js/auth.js"></script>
+    <script src="../js/api.js"></script>
+    <!-- Componentes -->
+    <script src="../components/sidebar.js"></script>
+    <!-- JS da página -->
+    <script src="../js/admin/servicos.js"></script>
+</body>
+</html>

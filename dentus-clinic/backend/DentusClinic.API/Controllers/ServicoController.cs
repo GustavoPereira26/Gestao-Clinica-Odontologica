@@ -1,5 +1,5 @@
 using DentusClinic.API.DTOs.Request;
-using DentusClinic.API.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 using DentusClinic.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -25,6 +25,13 @@ public class ServicoController : ControllerBase
         return Ok(ApiResponse<object>.Ok(servicos));
     }
 
+    [HttpGet("especialidade/{idEspecialidade}")]
+    public async Task<IActionResult> ListarPorEspecialidade(int idEspecialidade)
+    {
+        var servicos = await _servicoService.ListarPorEspecialidadeAsync(idEspecialidade);
+        return Ok(ApiResponse<object>.Ok(servicos));
+    }
+
     [HttpGet("{id}")]
     public async Task<IActionResult> BuscarPorId(int id)
     {
@@ -36,7 +43,7 @@ public class ServicoController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Cadastrar([FromBody] ServicoRequest request)
     {
         var servico = await _servicoService.CadastrarAsync(request);
@@ -45,7 +52,7 @@ public class ServicoController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Editar(int id, [FromBody] ServicoRequest request)
     {
         var servico = await _servicoService.EditarAsync(id, request);
@@ -56,7 +63,7 @@ public class ServicoController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _servicoService.RemoverAsync(id);

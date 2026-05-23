@@ -6,4 +6,5 @@ public class ProntuarioResponse
     public int IdPaciente { get; set; }
     public string NomePaciente { get; set; } = string.Empty;
     public DateOnly DataAbertura { get; set; }
+    public DateOnly? DataUltimaAtualizacao { get; set; }
 }

@@ -1,5 +1,5 @@
 using DentusClinic.API.DTOs.Request;
-using DentusClinic.API.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 using DentusClinic.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -36,27 +36,41 @@ public class DentistaController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Cadastrar([FromBody] DentistaRequest request)
     {
-        var dentista = await _dentistaService.CadastrarAsync(request);
-        return CreatedAtAction(nameof(BuscarPorId), new { id = dentista.Id },
-            ApiResponse<object>.Ok(dentista, "Dentista cadastrado com sucesso."));
+        try
+        {
+            var dentista = await _dentistaService.CadastrarAsync(request);
+            return CreatedAtAction(nameof(BuscarPorId), new { id = dentista.Id },
+                ApiResponse<object>.Ok(dentista, "Dentista cadastrado com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponse<object>.Erro(ex.Message));
+        }
     }
 
-    [HttpPut("{id}")]
-    [Authorize(Roles = "ADM")]
-    public async Task<IActionResult> Editar(int id, [FromBody] DentistaRequest request)
+    [HttpPatch("{id}")]
+    [Authorize(Roles = "ADMINISTRADOR")]
+    public async Task<IActionResult> Editar(int id, [FromBody] DentistaUpdateRequest request)
     {
-        var dentista = await _dentistaService.EditarAsync(id, request);
-        if (dentista is null)
-            return NotFound(ApiResponse<object>.Erro("Dentista não encontrado."));
+        try
+        {
+            var dentista = await _dentistaService.EditarAsync(id, request);
+            if (dentista is null)
+                return NotFound(ApiResponse<object>.Erro("Dentista não encontrado."));
 
-        return Ok(ApiResponse<object>.Ok(dentista, "Dentista atualizado com sucesso."));
+            return Ok(ApiResponse<object>.Ok(dentista, "Dentista atualizado com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponse<object>.Erro(ex.Message));
+        }
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _dentistaService.RemoverAsync(id);

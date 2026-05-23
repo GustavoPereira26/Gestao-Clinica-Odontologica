@@ -35,26 +35,42 @@ public class PacienteController : ControllerBase
         return Ok(ApiResponse<object>.Ok(paciente));
     }
 
-    [HttpPost]
+    [HttpPost("cadastrar")]
+    [Authorize(Roles = "SECRETARIA")]
     public async Task<IActionResult> Cadastrar([FromBody] PacienteRequest request)
     {
-        var paciente = await _pacienteService.CadastrarAsync(request);
-        return CreatedAtAction(nameof(BuscarPorId), new { id = paciente.Id },
-            ApiResponse<object>.Ok(paciente, "Paciente cadastrado com sucesso."));
+        try
+        {
+            var paciente = await _pacienteService.CadastrarAsync(request);
+            return CreatedAtAction(nameof(BuscarPorId), new { id = paciente.Id },
+                ApiResponse<object>.Ok(paciente, "Paciente cadastrado com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponse<object>.Erro(ex.Message));
+        }
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Editar(int id, [FromBody] PacienteRequest request)
+    [HttpPatch("{id}")]
+    [Authorize(Roles = "SECRETARIA,ADMINISTRADOR")]
+    public async Task<IActionResult> Editar(int id, [FromBody] PacienteEditarRequest request)
     {
-        var paciente = await _pacienteService.EditarAsync(id, request);
-        if (paciente is null)
-            return NotFound(ApiResponse<object>.Erro("Paciente não encontrado."));
+        try
+        {
+            var paciente = await _pacienteService.EditarAsync(id, request);
+            if (paciente is null)
+                return NotFound(ApiResponse<object>.Erro("Paciente não encontrado."));
 
-        return Ok(ApiResponse<object>.Ok(paciente, "Paciente atualizado com sucesso."));
+            return Ok(ApiResponse<object>.Ok(paciente, "Paciente atualizado com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponse<object>.Erro(ex.Message));
+        }
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "SECRETARIA,ADMINISTRADOR")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _pacienteService.RemoverAsync(id);

@@ -1,53 +1,61 @@
-using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Request;
 using DentusClinic.API.DTOs.Response;
-using DentusClinic.API.Interfaces;
 using DentusClinic.API.Models;
-using Microsoft.EntityFrameworkCore;
+using DentusClinic.API.Repositories.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 
 namespace DentusClinic.API.Services;
 
 public class ConsultaService : IConsultaService
 {
-    private readonly AppDbContext _context;
+    private readonly IConsultaRepository _consultaRepository;
+    private readonly IPacienteRepository _pacienteRepository;
 
-    public ConsultaService(AppDbContext context)
+    public ConsultaService(IConsultaRepository consultaRepository, IPacienteRepository pacienteRepository)
     {
-        _context = context;
+        _consultaRepository = consultaRepository;
+        _pacienteRepository = pacienteRepository;
     }
 
     public async Task<IEnumerable<ConsultaResponse>> ListarTodosAsync()
     {
-        var lista = await _context.Consultas
-            .Include(c => c.Dentista)
-            .Include(c => c.Paciente)
-            .ToListAsync();
+        var lista = await _consultaRepository.ListarTodosAsync();
+        return lista.Select(MapearResponse);
+    }
+
+    public async Task<IEnumerable<ConsultaResponse>> ListarHojeAsync()
+    {
+        var lista = await _consultaRepository.ListarHojeAsync();
+        return lista.Select(MapearResponse);
+    }
+
+    public async Task<IEnumerable<ConsultaResponse>> ListarPorDentistaEDataAsync(int idDentista, DateOnly data)
+    {
+        var lista = await _consultaRepository.ListarPorDentistaEDataAsync(idDentista, data);
         return lista.Select(MapearResponse);
     }
 
     public async Task<ConsultaResponse?> BuscarPorIdAsync(int id)
     {
-        var consulta = await _context.Consultas
-            .Include(c => c.Dentista)
-            .Include(c => c.Paciente)
-            .FirstOrDefaultAsync(c => c.Id == id);
+        var consulta = await _consultaRepository.BuscarPorIdAsync(id);
         return consulta is null ? null : MapearResponse(consulta);
     }
 
     public async Task<ConsultaResponse> AgendarAsync(ConsultaRequest request)
     {
-        // Regra: paciente deve estar cadastrado
-        var paciente = await _context.Pacientes.FindAsync(request.IdPaciente)
+        var hoje = DateOnly.FromDateTime(DateTime.Today);
+        var horaAgora = TimeOnly.FromDateTime(DateTime.Now);
+
+        if (request.DataConsulta < hoje)
+            throw new InvalidOperationException("Não é possível agendar uma consulta em uma data passada.");
+
+        if (request.DataConsulta == hoje && request.HoraConsulta < horaAgora)
+            throw new InvalidOperationException("Não é possível agendar uma consulta em um horário que já passou.");
+
+        var paciente = await _pacienteRepository.BuscarPorIdAsync(request.IdPaciente)
             ?? throw new InvalidOperationException("Paciente não encontrado.");
 
-        // Regra: dentista não pode ter duas consultas no mesmo horário na mesma data
-        var conflito = await _context.Consultas.AnyAsync(c =>
-            c.IdDentista == request.IdDentista &&
-            c.DataConsulta == request.DataConsulta &&
-            c.HoraConsulta == request.HoraConsulta &&
-            c.Status != "Cancelada");
-
-        if (conflito)
+        if (await _consultaRepository.ExisteConflitoAsync(request.IdDentista, request.DataConsulta, request.HoraConsulta))
             throw new InvalidOperationException("Dentista já possui consulta agendada nesse horário.");
 
         var consulta = new Consulta
@@ -57,66 +65,90 @@ public class ConsultaService : IConsultaService
             Retorno = request.Retorno,
             Status = "Agendada",
             IdDentista = request.IdDentista,
-            IdPaciente = request.IdPaciente
+            IdPaciente = request.IdPaciente,
+            IdServico = request.IdServico ?? null
         };
 
-        _context.Consultas.Add(consulta);
-        await _context.SaveChangesAsync();
-        await _context.Entry(consulta).Reference(c => c.Dentista).LoadAsync();
-        consulta.Paciente = paciente;
+        await _consultaRepository.AdicionarAsync(consulta);
 
-        return MapearResponse(consulta);
+        var consultaSalva = await _consultaRepository.BuscarPorIdAsync(consulta.Id);
+        return MapearResponse(consultaSalva!);
     }
 
-    public async Task<ConsultaResponse?> EditarAsync(int id, ConsultaRequest request)
+    public async Task<ConsultaResponse?> EditarAsync(int id, ConsultaUpdateRequest request)
     {
-        var consulta = await _context.Consultas
-            .Include(c => c.Dentista)
-            .Include(c => c.Paciente)
-            .FirstOrDefaultAsync(c => c.Id == id);
-
+        var consulta = await _consultaRepository.BuscarPorIdAsync(id);
         if (consulta is null) return null;
 
-        var conflito = await _context.Consultas.AnyAsync(c =>
-            c.IdDentista == request.IdDentista &&
-            c.DataConsulta == request.DataConsulta &&
-            c.HoraConsulta == request.HoraConsulta &&
-            c.Status != "Cancelada" &&
-            c.Id != id);
+        var idDentista = request.IdDentista ?? consulta.IdDentista;
+        var data = request.DataConsulta ?? consulta.DataConsulta;
+        var hora = request.HoraConsulta ?? consulta.HoraConsulta;
 
-        if (conflito)
+        var hoje = DateOnly.FromDateTime(DateTime.Today);
+        var horaAgora = TimeOnly.FromDateTime(DateTime.Now);
+
+        if (request.DataConsulta is not null && request.DataConsulta.Value < hoje)
+            throw new InvalidOperationException("Não é possível alterar uma consulta para uma data passada.");
+
+        if (request.DataConsulta is not null && request.DataConsulta.Value == hoje && request.HoraConsulta is not null && request.HoraConsulta.Value < horaAgora)
+            throw new InvalidOperationException("Não é possível alterar uma consulta para um horário que já passou.");
+
+        if (await _consultaRepository.ExisteConflitoAsync(idDentista, data, hora, id))
             throw new InvalidOperationException("Dentista já possui consulta agendada nesse horário.");
 
-        consulta.DataConsulta = request.DataConsulta;
-        consulta.HoraConsulta = request.HoraConsulta;
-        consulta.Retorno = request.Retorno;
-        consulta.IdDentista = request.IdDentista;
-        consulta.IdPaciente = request.IdPaciente;
+        if (request.DataConsulta is not null) consulta.DataConsulta = request.DataConsulta.Value;
+        if (request.HoraConsulta is not null) consulta.HoraConsulta = request.HoraConsulta.Value;
+        if (request.Retorno is not null) consulta.Retorno = request.Retorno.Value;
+        if (request.IdDentista is not null) consulta.IdDentista = request.IdDentista.Value;
+        if (request.IdPaciente is not null) consulta.IdPaciente = request.IdPaciente.Value;
+        if (request.IdServico is not null) consulta.IdServico = request.IdServico.Value;
 
-        await _context.SaveChangesAsync();
-        await _context.Entry(consulta).Reference(c => c.Dentista).LoadAsync();
-        await _context.Entry(consulta).Reference(c => c.Paciente).LoadAsync();
+        await _consultaRepository.AtualizarAsync(consulta);
 
-        return MapearResponse(consulta);
+        var consultaAtualizada = await _consultaRepository.BuscarPorIdAsync(id);
+        return MapearResponse(consultaAtualizada!);
     }
 
     public async Task<bool> RegistrarChegadaAsync(int id)
     {
-        var consulta = await _context.Consultas.FindAsync(id);
+        var consulta = await _consultaRepository.BuscarPorIdAsync(id);
         if (consulta is null) return false;
 
         consulta.Status = "Aguardando";
-        await _context.SaveChangesAsync();
+        await _consultaRepository.AtualizarAsync(consulta);
+        return true;
+    }
+
+    public async Task<bool> AtualizarStatusAsync(int id, string novoStatus)
+    {
+        string[] validos = ["Agendada", "Aguardando", "Em Consulta", "Encerrada"];
+        if (!validos.Contains(novoStatus)) return false;
+
+        var consulta = await _consultaRepository.BuscarPorIdAsync(id);
+        if (consulta is null || consulta.Status == "Cancelada" || consulta.Status == "Inativa") return false;
+
+        consulta.Status = novoStatus;
+        await _consultaRepository.AtualizarAsync(consulta);
         return true;
     }
 
     public async Task<bool> CancelarAsync(int id)
     {
-        var consulta = await _context.Consultas.FindAsync(id);
+        var consulta = await _consultaRepository.BuscarPorIdAsync(id);
         if (consulta is null) return false;
 
         consulta.Status = "Cancelada";
-        await _context.SaveChangesAsync();
+        await _consultaRepository.AtualizarAsync(consulta);
+        return true;
+    }
+
+    public async Task<bool> InativarAsync(int id)
+    {
+        var consulta = await _consultaRepository.BuscarPorIdAsync(id);
+        if (consulta is null) return false;
+
+        consulta.Status = "Inativa";
+        await _consultaRepository.AtualizarAsync(consulta);
         return true;
     }
 
@@ -128,8 +160,10 @@ public class ConsultaService : IConsultaService
         Retorno = c.Retorno,
         Status = c.Status,
         IdDentista = c.IdDentista,
-        NomeDentista = c.Dentista?.Nome ?? string.Empty,
         IdPaciente = c.IdPaciente,
-        NomePaciente = c.Paciente?.Nome ?? string.Empty
+        IdServico = c.IdServico,
+        NomeDentista = c.Dentista?.Nome ?? string.Empty,
+        NomePaciente = c.Paciente?.Nome ?? string.Empty,
+        NomeServico = c.Servico?.Nome ?? string.Empty
     };
 }

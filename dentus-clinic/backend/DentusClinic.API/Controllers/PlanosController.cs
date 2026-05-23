@@ -1,5 +1,5 @@
 using DentusClinic.API.DTOs.Request;
-using DentusClinic.API.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 using DentusClinic.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +22,13 @@ public class PlanosController : ControllerBase
     public async Task<IActionResult> ListarTodos()
     {
         var planos = await _planosService.ListarTodosAsync();
+        return Ok(ApiResponse<object>.Ok(planos));
+    }
+
+    [HttpGet("prontuario/{idProntuario}")]
+    public async Task<IActionResult> ListarPorProntuario(int idProntuario)
+    {
+        var planos = await _planosService.ListarPorProntuarioAsync(idProntuario);
         return Ok(ApiResponse<object>.Ok(planos));
     }
 
@@ -54,7 +61,7 @@ public class PlanosController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _planosService.RemoverAsync(id);

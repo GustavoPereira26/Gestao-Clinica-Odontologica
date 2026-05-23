@@ -1,5 +1,5 @@
 using DentusClinic.API.DTOs.Request;
-using DentusClinic.API.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 using DentusClinic.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +8,7 @@ namespace DentusClinic.API.Controllers;
 
 [ApiController]
 [Route("api/atendimentos")]
-[Authorize]
+[Authorize(Roles = "DENTISTA")]
 public class AtendimentoController : ControllerBase
 {
     private readonly IAtendimentoService _atendimentoService;
@@ -38,9 +38,16 @@ public class AtendimentoController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Registrar([FromBody] AtendimentoRequest request)
     {
-        var atendimento = await _atendimentoService.RegistrarAsync(request);
-        return CreatedAtAction(nameof(BuscarPorId), new { id = atendimento.Id },
-            ApiResponse<object>.Ok(atendimento, "Atendimento registrado com sucesso."));
+        try
+        {
+            var atendimento = await _atendimentoService.RegistrarAsync(request);
+            return CreatedAtAction(nameof(BuscarPorId), new { id = atendimento.Id },
+                ApiResponse<object>.Ok(atendimento, "Atendimento registrado com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(ApiResponse<object>.Erro(ex.Message));
+        }
     }
 
     [HttpPut("{id}")]
@@ -54,7 +61,6 @@ public class AtendimentoController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADM")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _atendimentoService.RemoverAsync(id);

@@ -1,0 +1,216 @@
+/**
+ * funcionarios.js — Página de gerenciamento de funcionários (recepcionista)
+ * Componentes: CardFuncionario, GridFuncionarios, Header, Toolbar
+ */
+
+let FUNCIONARIOS = [];
+
+
+/* ══════════════════════════════════════
+   COMPONENTE — CardFuncionario
+══════════════════════════════════════ */
+const CardFuncionario = {
+    /**
+     * Gera o HTML de um card individual
+     * @param {Object} func - objeto do funcionário
+     * @param {number} index - índice para delay de animação
+     * @returns {string} HTML do card
+     */
+    render(func, index = 0) {
+        const delay = index * 0.08;
+
+        return `
+      <article class="card-funcionario" 
+               data-tipo="${func.tipo}" 
+               data-nome="${func.nome.toLowerCase()}"
+               style="animation: cardAppear 0.4s ease-out ${delay}s both;"
+               id="card-${func.id}">
+        
+        <!-- Avatar / Placeholder -->
+        <div class="card-avatar" id="avatar-${func.id}">
+          <i class="fa-solid fa-user card-avatar-icon"></i>
+        </div>
+
+        <!-- Informações -->
+        <h3 class="card-nome">${func.nome}</h3>
+        <span class="cargo-badge ${func.tipo}">${func.cargo}</span>
+
+      </article>
+    `;
+    }
+};
+
+
+/* ══════════════════════════════════════
+   COMPONENTE — GridFuncionarios
+══════════════════════════════════════ */
+const GridFuncionarios = {
+
+    /**
+     * Renderiza todos os cards no grid
+     * @param {Array} lista - lista de funcionários
+     */
+    render(lista) {
+        const grid = document.getElementById('gridFuncionarios');
+        if (!grid) return;
+
+        if (lista.length === 0) {
+            grid.innerHTML = `
+        <div class="empty-state" id="emptyState">
+          <i class="fa-solid fa-user-xmark"></i>
+          <p>Nenhum funcionário encontrado</p>
+        </div>
+      `;
+            return;
+        }
+
+        grid.innerHTML = lista
+            .map((func, i) => CardFuncionario.render(func, i))
+            .join('');
+    }
+};
+
+
+/* ══════════════════════════════════════
+   CONTROLADOR DA PÁGINA
+══════════════════════════════════════ */
+const FuncionariosPage = (() => {
+    let filtroAtivo = 'todos';
+    let termoBusca  = '';
+
+    async function carregarFuncionarios() {
+        const grid = document.getElementById('gridFuncionarios');
+        try {
+            const [resFuncionarios, resDentistas] = await Promise.all([
+                apiGetFuncionarios(),
+                apiGetDentistas()
+            ]);
+
+            const tipoMap = { administrador: 'administrador', recepcionista: 'secretaria', secretaria: 'secretaria', ti: 'administrador' };
+            const funcionarios = (resFuncionarios?.dados || []).map(f => {
+                const cargoKey = (f.cargo || '').toLowerCase();
+                return {
+                    id:    f.id,
+                    nome:  f.nome,
+                    cargo: f.cargo || '—',
+                    tipo:  tipoMap[cargoKey] ?? cargoKey
+                };
+            });
+
+            const dentistas = (resDentistas?.dados || []).map(d => ({
+                id:    d.id,
+                nome:  d.nome,
+                cargo: 'Dentista',
+                tipo:  'dentista'
+            }));
+
+            FUNCIONARIOS = [...funcionarios, ...dentistas];
+            atualizar();
+        } catch (erro) {
+            console.error('Erro ao carregar funcionários:', erro);
+            if (grid) grid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <p>Erro ao carregar: ${erro.message}</p>
+                </div>`;
+        }
+    }
+
+    /**
+     * Retorna a lista filtrada
+     */
+    function listaFiltrada() {
+        return FUNCIONARIOS.filter(func => {
+            const matchFiltro = filtroAtivo === 'todos' || func.tipo === filtroAtivo;
+            const matchBusca  = termoBusca === '' ||
+                func.nome.toLowerCase().includes(termoBusca) ||
+                func.cargo.toLowerCase().includes(termoBusca);
+            return matchFiltro && matchBusca;
+        });
+    }
+
+    /**
+     * Atualiza o grid com filtros aplicados
+     */
+    function atualizar() {
+        GridFuncionarios.render(listaFiltrada());
+    }
+
+    /**
+     * Ação mock de visualizar funcionário
+     */
+    function visualizar(id) {
+        const func = FUNCIONARIOS.find(f => f.id === id);
+        if (func) {
+            // Toggle visibility
+            document.getElementById('listaFuncionarios').classList.add('d-none');
+            document.getElementById('visualizarFuncionario').classList.remove('d-none');
+
+            // Update form values
+            document.getElementById('visCargo').value = func.cargo;
+            document.getElementById('visNome').value = func.nome;
+
+            // Update headers
+            document.getElementById('pageTitle').textContent = `Visualizar: ${func.nome}`;
+            document.getElementById('pageSubtitle').textContent = func.cargo;
+        }
+    }
+
+    /**
+     * Inicializa a página
+     */
+    function init() {
+        verificarAutenticacao();
+
+        // 1. Renderiza a sidebar
+        SidebarComponent.render('sidebarContainer', {
+            perfil: 'recepcionista',
+            ativo: 'funcionarios',
+            nome: sessionStorage.getItem('nome') || 'Secretária',
+            cargo: 'Secretária'
+        });
+
+        // 2. Botão hamburger (mobile)
+        const btnHamburger = document.getElementById('btnHamburger');
+        if (btnHamburger) {
+            btnHamburger.addEventListener('click', () => {
+                SidebarComponent.toggleSidebar();
+            });
+        }
+
+        // 3. Carrega funcionários da API
+        carregarFuncionarios();
+
+        // 4. Filtros por cargo
+        const filterChips = document.querySelectorAll('.filter-chip');
+        filterChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                filterChips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                filtroAtivo = chip.dataset.filter;
+                atualizar();
+            });
+        });
+
+        // 5. Busca com debounce
+        const searchInput = document.getElementById('searchInput');
+        let debounceTimer;
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    termoBusca = e.target.value.toLowerCase().trim();
+                    atualizar();
+                }, 250);
+            });
+        }
+    }
+
+    return { init, visualizar};
+})();
+
+
+/* ══════════════════════════════════════
+   INICIALIZAÇÃO
+══════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', FuncionariosPage.init);

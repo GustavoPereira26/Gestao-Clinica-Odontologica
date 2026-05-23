@@ -79,6 +79,8 @@ public class AppDbContext : DbContext
             e.Property(x => x.Nome).IsRequired().HasMaxLength(150);
             e.Property(x => x.Cpf).IsRequired().HasMaxLength(14);
             e.HasIndex(x => x.Cpf).IsUnique();
+            e.Property(x => x.Email).IsRequired().HasMaxLength(150);
+            e.HasIndex(x => x.Email).IsUnique();
         });
 
         // Consulta
@@ -93,6 +95,10 @@ public class AppDbContext : DbContext
             e.HasOne(x => x.Paciente)
              .WithMany(x => x.Consultas)
              .HasForeignKey(x => x.IdPaciente)
+             .OnDelete(DeleteBehavior.Restrict);
+            e.HasOne(x => x.Servico)
+             .WithMany()
+             .HasForeignKey(x => x.IdServico)
              .OnDelete(DeleteBehavior.Restrict);
         });
 
@@ -121,6 +127,10 @@ public class AppDbContext : DbContext
         {
             e.HasKey(x => x.Id);
             e.Property(x => x.Nome).IsRequired().HasMaxLength(100);
+            e.HasOne(x => x.Especialidade)
+             .WithMany()
+             .HasForeignKey(x => x.IdEspecialidade)
+             .OnDelete(DeleteBehavior.Restrict);
         });
 
         // Planos
@@ -135,6 +145,7 @@ public class AppDbContext : DbContext
             e.HasOne(x => x.Servico)
              .WithMany(x => x.Planos)
              .HasForeignKey(x => x.IdServico)
+             .IsRequired(false)
              .OnDelete(DeleteBehavior.Restrict);
         });
     }

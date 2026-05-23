@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dentu's Clinic — Tratamentos</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="../css/variables.css" />
+  <link rel="stylesheet" href="../css/base.css" />
+  <link rel="stylesheet" href="../css/layout.css" />
+  <link rel="stylesheet" href="../css/components.css" />
+  <link rel="stylesheet" href="../css/dentista/tratamentos.css?v=17" />
+</head>
+
+<body>
+
+  <button class="btn-hamburger" id="btnHamburger" aria-label="Abrir menu">
+    <i class="fa-solid fa-bars"></i>
+  </button>
+
+  <div class="app-layout">
+    <div id="sidebarContainer"></div>
+
+    <main class="app-content">
+      <div class="page-container">
+
+        <!-- Header Mobile -->
+        <header class="mobile-header d-flex align-items-center mb-4 d-lg-none">
+          <h1 class="mobile-header-title mb-0">Tratamentos</h1>
+        </header>
+
+        <!-- ── Barra de Filtros ── -->
+        <div class="filter-bar bg-white border rounded-3 p-3 p-lg-4 mb-4">
+          <div class="row g-2 align-items-end">
+            <div class="filter-field col-12 col-sm-8 col-lg-4">
+              <label class="filter-label d-block small fw-semibold text-uppercase mb-1">Paciente</label>
+              <div class="filter-input-wrapper position-relative">
+                <i class="fa-solid fa-user filter-input-icon"></i>
+                <input type="text" class="filter-input form-control form-control-sm" id="filtroPaciente" placeholder="Nome do paciente" />
+              </div>
+            </div>
+            <div class="filter-actions col-12 col-sm-4 col-lg-2 d-flex align-items-end">
+              <button class="btn-filter-clear btn btn-sm btn-outline-secondary w-100" id="btnLimparFiltros">
+                <i class="fa-solid fa-xmark"></i> Limpar
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Área principal: Tabela + Resumo ── -->
+        <div class="tratamentos-layout-grid" id="tratamentosLayout">
+
+          <div class="tratamentos-tabela-col">
+            <div class="tratamentos-lista-wrapper">
+              <div class="tratamentos-lista-titulo">Pacientes</div>
+              <ul class="tratamentos-pacientes-list" id="listaPacientes" role="listbox" aria-label="Pacientes"></ul>
+            </div>
+          </div>
+
+          <!-- Coluna Resumo -->
+          <div class="tratamentos-resumo-col" id="painelResumo">
+            <div class="resumo-card bg-white border rounded p-3 shadow-sm">
+
+              <h3 class="resumo-titulo fw-bold text-center mb-3 pb-3">Paciente</h3>
+
+              <div class="resumo-foto d-flex justify-content-center mb-3">
+                <div class="foto-placeholder">
+                  <div class="foto-x"></div>
+                </div>
+              </div>
+
+              <div class="resumo-paciente-info d-flex flex-column text-center mb-3">
+                <span class="resumo-label-small">Nome</span>
+                <span class="resumo-nome fw-bold" id="resumoNome">—</span>
+              </div>
+
+              <div class="resumo-acoes d-flex flex-column gap-2 mt-2">
+                <button class="btn-resumo-prontuario btn btn-sm w-100" id="btnResumoProntuario">
+                  <i class="fa-regular fa-eye"></i> Prontuário
+                </button>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ══════════════════════════════════════════════════
+         TELA EDITAR PLANO
+         ══════════════════════════════════════════════════ -->
+        <div class="editar-plano-view" id="editarPlanoView" style="display:none;">
+
+          <button class="btn-voltar btn btn-sm btn-outline-secondary mb-3 d-inline-flex align-items-center gap-2" id="btnVoltarPlano">
+            <i class="fa-solid fa-arrow-left"></i> Voltar
+          </button>
+
+          <div class="editar-plano-layout row g-3">
+
+            <!-- Coluna Esquerda -->
+            <div class="editar-plano-main col-12 col-lg-8">
+
+              <div class="odontograma-section bg-white border rounded p-3 shadow-sm mb-4">
+                <h3 class="odontograma-titulo fw-bold mb-3">Odontograma</h3>
+                <div class="odontograma-chart">
+                  <div class="arcada-row">
+                    <div class="arcada-grupo">
+                      <div class="dente saudavel" data-num="18">18</div>
+                      <div class="dente selecao" data-num="17">17</div>
+                      <div class="dente selecao" data-num="16">16</div>
+                      <div class="dente selecao" data-num="15">15</div>
+                      <div class="dente selecao" data-num="14">14</div>
+                      <div class="dente selecao" data-num="13">13</div>
+                      <div class="dente selecao" data-num="12">12</div>
+                      <div class="dente selecao" data-num="11">11</div>
+                    </div>
+                    <div class="arcada-gap"></div>
+                    <div class="arcada-grupo">
+                      <div class="dente saudavel" data-num="21">21</div>
+                      <div class="dente saudavel" data-num="22">22</div>
+                      <div class="dente saudavel" data-num="23">23</div>
+                      <div class="dente saudavel" data-num="24">24</div>
+                      <div class="dente saudavel" data-num="25">25</div>
+                      <div class="dente saudavel" data-num="26">26</div>
+                      <div class="dente saudavel" data-num="27">27</div>
+                      <div class="dente saudavel" data-num="28">28</div>
+                    </div>
+                  </div>
+                  <div class="arcada-row">
+                    <div class="arcada-grupo">
+                      <div class="dente saudavel" data-num="48">48</div>
+                      <div class="dente saudavel" data-num="47">47</div>
+                      <div class="dente saudavel" data-num="46">46</div>
+                      <div class="dente saudavel" data-num="45">45</div>
+                      <div class="dente saudavel" data-num="44">44</div>
+                      <div class="dente saudavel" data-num="43">43</div>
+                      <div class="dente saudavel" data-num="42">42</div>
+                      <div class="dente saudavel" data-num="41">41</div>
+                    </div>
+                    <div class="arcada-gap"></div>
+                    <div class="arcada-grupo">
+                      <div class="dente tratado" data-num="31">31</div>
+                      <div class="dente saudavel" data-num="32">32</div>
+                      <div class="dente selecao" data-num="33">33</div>
+                      <div class="dente saudavel" data-num="34">34</div>
+                      <div class="dente saudavel" data-num="35">35</div>
+                      <div class="dente saudavel" data-num="36">36</div>
+                      <div class="dente saudavel" data-num="37">37</div>
+                      <div class="dente saudavel" data-num="38">38</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="odontograma-legenda d-flex flex-wrap gap-3 mt-2">
+                  <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor saudavel-bg"></span> Saudável</span>
+                  <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor selecao-bg"></span> Seleção</span>
+                  <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor tratado-bg"></span> Tratado</span>
+                  <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor ausente-bg"></span> Ausente</span>
+                </div>
+              </div>
+
+              <div class="etapas-section bg-white border rounded p-3 shadow-sm">
+                <h3 class="etapas-titulo fw-bold mb-3">Etapas do planejamento</h3>
+                <div class="etapas-scroll" id="etapasScroll">
+
+                  <div class="etapa-card" data-etapa="1" draggable="true">
+                    <div class="etapa-header">
+                      <i class="fa-solid fa-grip-vertical etapa-drag-handle" title="Arrastar para reordenar"></i>
+                      <span class="etapa-numero">1º</span>
+                      <span class="etapa-header-titulo">Diagnóstico e Planejamento</span>
+                      <button class="etapa-menu-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    </div>
+                    <div class="etapa-body">
+                      <div class="etapa-campo">
+                        <label>Dente Selecionado <button class="etapa-edit-btn"><i class="fa-solid fa-pen fa-xs"></i></button></label>
+                        <input type="text" class="etapa-input form-control form-control-sm" value="Todos" readonly />
+                      </div>
+                      <div class="etapa-campo">
+                        <label>Condição</label>
+                        <input type="text" class="etapa-input form-control form-control-sm" value="Limpeza" readonly />
+                      </div>
+                      <div class="etapa-campo">
+                        <label>Planejamento do Tratamento</label>
+                        <textarea class="etapa-textarea form-control form-control-sm" readonly>Limpeza
+foweydufhiouoehfiohuodfhouiwduo
+dhfuohowodhouonfooejioohjowdho
+uowhdouohwuofhowofploowdlooido
+oiowdfioo</textarea>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="etapa-card active" data-etapa="2" draggable="true">
+                    <div class="etapa-header">
+                      <i class="fa-solid fa-grip-vertical etapa-drag-handle" title="Arrastar para reordenar"></i>
+                      <span class="etapa-numero">2º</span>
+                      <span class="etapa-header-titulo">Diagnóstico e Planejamento</span>
+                      <button class="etapa-menu-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    </div>
+                    <div class="etapa-body">
+                      <div class="etapa-campo">
+                        <label>Dente Selecionado <button class="etapa-edit-btn"><i class="fa-solid fa-pen fa-xs"></i></button></label>
+                        <input type="text" class="etapa-input form-control form-control-sm" value="Todos" readonly />
+                      </div>
+                      <div class="etapa-campo">
+                        <label>Condição</label>
+                        <input type="text" class="etapa-input form-control form-control-sm" value="Clareamento I" readonly />
+                      </div>
+                      <div class="etapa-campo">
+                        <label>Planejamento do Tratamento</label>
+                        <textarea class="etapa-textarea form-control form-control-sm" readonly>Clareamento
+ogwidboiwbdiohodtheisthooehfabi
+uefhoeuiihfoeghfeuihfsuojculoeh7
+89fhohiebcvuiochfulooghflznovhisuj
+coodihoo</textarea>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="etapa-card" data-etapa="3" draggable="true">
+                    <div class="etapa-header">
+                      <i class="fa-solid fa-grip-vertical etapa-drag-handle" title="Arrastar para reordenar"></i>
+                      <span class="etapa-numero">3º</span>
+                      <span class="etapa-header-titulo">Diagnóstico e Planejamento</span>
+                      <button class="etapa-menu-btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
+                    </div>
+                    <div class="etapa-body">
+                      <div class="etapa-campo">
+                        <label>Dente Selecionado <button class="etapa-edit-btn"><i class="fa-solid fa-pen fa-xs"></i></button></label>
+                        <input type="text" class="etapa-input form-control form-control-sm" value="todos" readonly />
+                      </div>
+                      <div class="etapa-campo">
+                        <label>Condição</label>
+                        <input type="text" class="etapa-input form-control form-control-sm" value="Clareamento II" readonly />
+                      </div>
+                      <div class="etapa-campo">
+                        <label>Planejamento do Tratamento</label>
+                        <textarea class="etapa-textarea form-control form-control-sm" readonly>Tratamento endodôntico necessário. Obturação temporária aplicada.</textarea>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Coluna Direita -->
+            <div class="editar-plano-sidebar col-12 col-lg-4">
+
+              <div class="resumo-card editar-resumo-card bg-white border rounded p-3 shadow-sm">
+
+                <div class="resumo-foto d-flex justify-content-center mb-3">
+                  <div class="foto-placeholder"><div class="foto-x"></div></div>
+                </div>
+
+                <div class="resumo-paciente-info d-flex flex-column text-center mb-3">
+                  <span class="resumo-label-small">Nome</span>
+                  <span class="resumo-nome fw-bold" id="editarResumoNome">—</span>
+                  <span class="resumo-label-small mt-2">serviço</span>
+                  <span class="resumo-servico fw-semibold" id="editarResumoServico">Clareamento</span>
+                </div>
+
+                <div class="resumo-progresso-wrapper mb-3">
+                  <div class="resumo-progresso-header d-flex justify-content-between align-items-center mb-1">
+                    <span class="resumo-label-small">Progresso</span>
+                    <span class="resumo-etapas" id="editarResumoEtapas">—</span>
+                  </div>
+                  <div class="resumo-progresso-bar">
+                    <div class="resumo-progresso-fill" id="editarResumoProgressoFill" style="width: 33%"></div>
+                  </div>
+                </div>
+
+                <div class="resumo-etapas-info d-flex justify-content-between mb-3">
+                  <div class="resumo-etapa-item d-flex flex-column">
+                    <span class="resumo-label-small">Última etapa Feita</span>
+                    <span class="resumo-etapa-nome" id="editarUltimaEtapa">—</span>
+                  </div>
+                  <div class="resumo-etapa-item text-end d-flex flex-column">
+                    <span class="resumo-label-small">Próxima Etapa</span>
+                    <span class="resumo-etapa-nome" id="editarProximaEtapa">Clareamento</span>
+                  </div>
+                </div>
+
+                <div class="datas-calendario-row row g-2">
+                  <div class="datas-consultas col-12 col-sm-6 col-lg-12 col-xl-6">
+                    <h4 class="datas-titulo fw-semibold small text-uppercase mb-2">Datas Consultas</h4>
+                    <div class="datas-lista d-flex flex-column gap-1" id="datasLista">
+                      <div class="data-item d-flex align-items-center gap-2 small">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span>20/03/2026</span>
+                      </div>
+                      <div class="data-item destaque d-flex align-items-center gap-2 small">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span>05/04/2026</span>
+                      </div>
+                      <div class="data-item d-flex align-items-center gap-2 small">
+                        <i class="fa-regular fa-calendar"></i>
+                        <span>20/03/2026</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="calendario-wrapper col-12 col-sm-6 col-lg-12 col-xl-6">
+                    <div class="calendario-header">
+                      <button class="calendario-nav" id="calPrev"><i class="fa-solid fa-chevron-left"></i></button>
+                      <span class="calendario-mes" id="calMesAno">APRIL 2026</span>
+                      <button class="calendario-nav" id="calNext"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    <table class="calendario-table">
+                      <thead>
+                        <tr>
+                          <th>D</th><th>S</th><th>T</th><th>Q</th><th>Q</th><th>S</th><th>S</th>
+                        </tr>
+                      </thead>
+                      <tbody id="calBody"></tbody>
+                    </table>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ══════════════════════════════════════════════════
+         TELA CONSULTA EM ANDAMENTO
+         ══════════════════════════════════════════════════ -->
+        <div class="consulta-view" id="consultaView" style="display:none;">
+
+          <div class="consulta-header-row">
+            <div class="consulta-header-left">
+              <div class="consulta-header-item">
+                <span class="consulta-header-label">Paciente</span>
+                <span class="consulta-header-nome" id="consultaNomePaciente">maria Souza</span>
+              </div>
+              <div class="consulta-header-divider"></div>
+              <div class="consulta-header-item">
+                <span class="consulta-header-label">Serviço</span>
+                <span class="consulta-header-servico" id="consultaServico">—</span>
+              </div>
+              <span class="consulta-badge-atendimento"><i class="fa-solid fa-circle fa-xs"></i> Em Atendimento</span>
+            </div>
+          </div>
+
+          <div class="consulta-layout row g-3">
+
+            <div class="consulta-main col-12 col-lg-8">
+
+              <div class="consulta-odontograma-section bg-white border rounded p-3 shadow-sm mb-3">
+                <div class="consulta-odontograma-header d-flex justify-content-between align-items-start mb-3">
+                  <div>
+                    <h3 class="odontograma-titulo fw-bold mb-1" style="text-align:left;">Odontograma</h3>
+                    <p class="consulta-odontograma-sub small text-muted mb-0">Selecione o dente que fez planejamento</p>
+                  </div>
+                  <label class="consulta-selecionar-todos d-flex align-items-center gap-2 small fw-semibold">
+                    <input type="checkbox" id="chkSelecionarTodos" />
+                    Selecionar Todos
+                  </label>
+                </div>
+
+                <div class="odontograma-chart">
+                  <div class="arcada-row">
+                    <div class="arcada-grupo">
+                      <div class="dente-consulta saudavel" data-num="18">18</div>
+                      <div class="dente-consulta saudavel" data-num="17">17</div>
+                      <div class="dente-consulta saudavel" data-num="16">16</div>
+                      <div class="dente-consulta saudavel" data-num="15">15</div>
+                      <div class="dente-consulta saudavel" data-num="14">14</div>
+                      <div class="dente-consulta saudavel" data-num="13">13</div>
+                      <div class="dente-consulta saudavel" data-num="12">12</div>
+                      <div class="dente-consulta saudavel" data-num="11">11</div>
+                    </div>
+                    <div class="arcada-gap"></div>
+                    <div class="arcada-grupo">
+                      <div class="dente-consulta saudavel" data-num="21">21</div>
+                      <div class="dente-consulta saudavel" data-num="22">22</div>
+                      <div class="dente-consulta saudavel" data-num="23">23</div>
+                      <div class="dente-consulta saudavel" data-num="24">24</div>
+                      <div class="dente-consulta saudavel" data-num="25">25</div>
+                      <div class="dente-consulta saudavel" data-num="26">26</div>
+                      <div class="dente-consulta saudavel" data-num="27">27</div>
+                      <div class="dente-consulta saudavel" data-num="28">28</div>
+                    </div>
+                  </div>
+                  <div class="arcada-row">
+                    <div class="arcada-grupo">
+                      <div class="dente-consulta saudavel" data-num="48">48</div>
+                      <div class="dente-consulta saudavel" data-num="47">47</div>
+                      <div class="dente-consulta tratamento" data-num="46">46</div>
+                      <div class="dente-consulta saudavel" data-num="45">45</div>
+                      <div class="dente-consulta saudavel" data-num="44">44</div>
+                      <div class="dente-consulta saudavel" data-num="43">43</div>
+                      <div class="dente-consulta saudavel" data-num="42">42</div>
+                      <div class="dente-consulta saudavel" data-num="41">41</div>
+                    </div>
+                    <div class="arcada-gap"></div>
+                    <div class="arcada-grupo">
+                      <div class="dente-consulta saudavel" data-num="31">31</div>
+                      <div class="dente-consulta saudavel" data-num="32">32</div>
+                      <div class="dente-consulta saudavel" data-num="33">33</div>
+                      <div class="dente-consulta saudavel" data-num="34">34</div>
+                      <div class="dente-consulta saudavel" data-num="35">35</div>
+                      <div class="dente-consulta saudavel" data-num="36">36</div>
+                      <div class="dente-consulta saudavel" data-num="37">37</div>
+                      <div class="dente-consulta saudavel" data-num="38">38</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="odontograma-legenda d-flex flex-wrap gap-3 mt-2">
+                  <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor tratamento-bg"></span> Em Tratamento</span>
+                </div>
+              </div>
+
+              <div class="consulta-campos-row row g-3">
+                <div class="consulta-condicao-col consulta-campo-card col-12 bg-white border rounded p-3 shadow-sm">
+                  <h4 class="consulta-campo-card-titulo fw-bold mb-3 small text-uppercase">
+                    <i class="fa-solid fa-tooth fa-xs"></i> Diagnóstico
+                  </h4>
+                  <div class="consulta-campo mb-3">
+                    <label class="consulta-campo-label form-label small fw-semibold">Condição</label>
+                    <input type="text" class="consulta-campo-input form-control" id="consultaCondicao" placeholder="Ex: Cárie profunda..." />
+                  </div>
+                  <div class="consulta-campo">
+                    <label class="consulta-campo-label form-label small fw-semibold">Planejamento do Tratamento</label>
+                    <textarea class="consulta-campo-textarea form-control" id="consultaDescricao" placeholder="Descreva o tratamento realizado..."></textarea>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="consulta-sidebar col-12 col-lg-4">
+              <div class="observacoes-card bg-white border rounded p-3 h-100 d-flex flex-column">
+                <h4 class="observacoes-titulo fw-bold mb-2">Procedimento Realizado</h4>
+                <textarea class="observacoes-textarea form-control flex-grow-1" id="observacoesClinicas"
+                  placeholder="Descreva o procedimento realizado..."></textarea>
+                <p class="observacoes-aviso small text-muted mt-2 mb-0">essas informações serão adicionadas ao prontuário ao encerrar a consulta</p>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="consulta-footer">
+            <button class="btn-prontuario-footer btn btn-sm btn-outline-secondary" id="btnProntuarioConsulta">
+              <i class="fa-regular fa-eye"></i> Prontuário
+            </button>
+            <button class="btn-finalizar-consulta btn btn-sm btn-success" id="btnFinalizarConsulta">
+              <i class="fa-solid fa-check"></i> Finalizar Consulta
+            </button>
+          </div>
+
+        </div>
+
+        <!-- ══════════════════════════════════════════════════
+         TELA PRONTUÁRIO
+         ══════════════════════════════════════════════════ -->
+        <div class="prontuario-view" id="prontuarioView" style="display:none;">
+
+          <div class="prontuario-header">
+            <button class="btn-voltar btn btn-sm btn-outline-secondary mb-3 d-inline-flex align-items-center gap-2" id="btnVoltarProntuario">
+              <i class="fa-solid fa-arrow-left"></i> Voltar
+            </button>
+            <div class="prontuario-paciente-header">
+              <div class="prontuario-foto-placeholder">
+                <div class="foto-x"></div>
+              </div>
+              <div class="prontuario-paciente-dados d-flex flex-column">
+                <span class="prontuario-label small text-muted">Paciente</span>
+                <span class="prontuario-nome fw-bold" id="prontuarioNome">—</span>
+                <span class="prontuario-cpf small text-muted" id="prontuarioCPF">CPF: —</span>
+              </div>
+              <div class="prontuario-contatos d-flex gap-4 ms-auto flex-wrap">
+                <span class="prontuario-contato d-flex align-items-center gap-2 small fw-medium">
+                  <i class="fa-solid fa-phone text-muted"></i> <span id="prontuarioTel">—</span>
+                </span>
+                <span class="prontuario-contato d-flex align-items-center gap-2 small fw-medium">
+                  <i class="fa-solid fa-envelope text-muted"></i> <span id="prontuarioEmail">—</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="prontuario-layout row g-3">
+
+            <div class="prontuario-main col-12 col-lg-8">
+
+              <div class="prontuario-plano-section bg-white border rounded p-3 shadow-sm">
+                <div class="prontuario-plano-header d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
+                  <h3 class="prontuario-plano-titulo fw-bold mb-0">Plano Selecionado</h3>
+                  <div class="prontuario-plano-info-right d-flex flex-column align-items-end">
+                    <span class="prontuario-plano-servico fw-bold" id="prontuarioPlanoServico">—</span>
+                    <span class="prontuario-plano-data small text-muted" id="prontuarioPlanoData">—</span>
+                  </div>
+                </div>
+
+                <div class="prontuario-odontograma mb-3" id="prontuarioOdontograma">
+                  <h4 class="prontuario-sub-titulo fw-bold mb-2">Odontograma
+                    <small id="odontogramaHint" class="d-none" style="font-size:0.72rem;font-weight:400;color:#6366f1;margin-left:0.4rem;">— clique para selecionar/desmarcar</small>
+                  </h4>
+                  <div class="odontograma-chart">
+                    <div class="arcada-row">
+                      <div class="arcada-grupo">
+                        <div class="dente-prontuario saudavel" data-num="18">18</div>
+                        <div class="dente-prontuario saudavel" data-num="17">17</div>
+                        <div class="dente-prontuario saudavel" data-num="16">16</div>
+                        <div class="dente-prontuario saudavel" data-num="15">15</div>
+                        <div class="dente-prontuario saudavel" data-num="14">14</div>
+                        <div class="dente-prontuario saudavel" data-num="13">13</div>
+                        <div class="dente-prontuario saudavel" data-num="12">12</div>
+                        <div class="dente-prontuario saudavel" data-num="11">11</div>
+                      </div>
+                      <div class="arcada-gap"></div>
+                      <div class="arcada-grupo">
+                        <div class="dente-prontuario saudavel" data-num="21">21</div>
+                        <div class="dente-prontuario saudavel" data-num="22">22</div>
+                        <div class="dente-prontuario saudavel" data-num="23">23</div>
+                        <div class="dente-prontuario saudavel" data-num="24">24</div>
+                        <div class="dente-prontuario saudavel" data-num="25">25</div>
+                        <div class="dente-prontuario saudavel" data-num="26">26</div>
+                        <div class="dente-prontuario saudavel" data-num="27">27</div>
+                        <div class="dente-prontuario saudavel" data-num="28">28</div>
+                      </div>
+                    </div>
+                    <div class="arcada-row">
+                      <div class="arcada-grupo">
+                        <div class="dente-prontuario tratado-consulta" data-num="48">48</div>
+                        <div class="dente-prontuario saudavel" data-num="47">47</div>
+                        <div class="dente-prontuario saudavel" data-num="46">46</div>
+                        <div class="dente-prontuario saudavel" data-num="45">45</div>
+                        <div class="dente-prontuario saudavel" data-num="44">44</div>
+                        <div class="dente-prontuario saudavel" data-num="43">43</div>
+                        <div class="dente-prontuario saudavel" data-num="42">42</div>
+                        <div class="dente-prontuario saudavel" data-num="41">41</div>
+                      </div>
+                      <div class="arcada-gap"></div>
+                      <div class="arcada-grupo">
+                        <div class="dente-prontuario saudavel" data-num="31">31</div>
+                        <div class="dente-prontuario saudavel" data-num="32">32</div>
+                        <div class="dente-prontuario saudavel" data-num="33">33</div>
+                        <div class="dente-prontuario saudavel" data-num="34">34</div>
+                        <div class="dente-prontuario saudavel" data-num="35">35</div>
+                        <div class="dente-prontuario saudavel" data-num="36">36</div>
+                        <div class="dente-prontuario saudavel" data-num="37">37</div>
+                        <div class="dente-prontuario saudavel" data-num="38">38</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="odontograma-legenda d-flex flex-wrap gap-3 mt-2">
+                    <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor tratado-consulta-bg"></span> Tratado em Consulta</span>
+                  </div>
+                </div>
+
+                <div class="prontuario-detalhes-row row g-3 mb-3">
+                  <div class="prontuario-detalhes-esq col-12 col-md-7">
+                    <div class="prontuario-campo mb-3">
+                      <label class="prontuario-campo-label form-label small fw-semibold mb-1">Condição</label>
+                      <div class="prontuario-campo-valor" id="prontuarioCondicao">—</div>
+                      <input type="text" class="form-control d-none" id="editCondicao" style="font-size:0.88rem;" placeholder="Ex: Cárie profunda..." />
+                    </div>
+                    <div class="prontuario-campo">
+                      <label class="prontuario-campo-label form-label small fw-semibold mb-1">Planejamento do Tratamento</label>
+                      <div class="prontuario-campo-textarea" id="prontuarioDescricao">—</div>
+                      <textarea class="form-control d-none" id="editDescricao" rows="4" style="font-size:0.88rem;" placeholder="Descreva o tratamento..."></textarea>
+                    </div>
+                  </div>
+                  <div class="prontuario-detalhes-dir col-12 col-md-5">
+                    <div class="prontuario-obs-card rounded p-3 h-100 d-flex flex-column">
+                      <h4 class="prontuario-obs-titulo fw-bold mb-2">Procedimento Realizado</h4>
+                      <div class="prontuario-obs-texto small flex-grow-1" id="prontuarioObsTexto">—</div>
+                      <textarea class="form-control d-none" id="editObsTexto" rows="5" style="font-size:0.88rem;" placeholder="Observações clínicas..."></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="prontuario-dentista mt-3 small fw-semibold">
+                  <span class="prontuario-dentista-label">Dentista Responsável:</span>
+                  <span class="prontuario-dentista-nome" id="prontuarioDentista">—</span>
+                </div>
+
+                <div class="prontuario-editar-acao" id="prontuarioEditarAcao" style="display:none;margin-top:1rem;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+                  <button class="btn btn-sm px-3" id="btnEditarRegistroProntuario"
+                          style="background:#eef2ff;color:#3730a3;border:1.5px solid #c7d2fe;border-radius:8px;font-size:0.82rem;">
+                    <i class="fa-solid fa-pen-to-square me-1"></i>Editar este registro
+                  </button>
+                  <div id="prontuarioAcoesEditar" style="display:none;gap:0.5rem;">
+                    <button class="btn btn-sm px-3" id="btnCancelarEdicaoInline"
+                            style="background:#f3f4f6;color:#374151;border:1px solid #d1d5db;border-radius:8px;font-size:0.82rem;">
+                      <i class="fa-solid fa-xmark me-1"></i>Cancelar
+                    </button>
+                    <button class="btn btn-sm px-3 text-white" id="btnSalvarEdicaoInline"
+                            style="background-color:#0d6efd;border-color:#0d6efd;border-radius:8px;font-size:0.82rem;">
+                      <i class="fa-solid fa-floppy-disk me-1"></i>Salvar e Atualizar Data
+                    </button>
+                  </div>
+                  <div id="erroSalvarRegistro" style="display:none;color:#dc2626;font-size:0.8rem;margin-top:0.4rem;width:100%;"></div>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div class="prontuario-sidebar col-12 col-lg-4">
+
+              <div class="prontuario-card bg-white border rounded p-3 shadow-sm mb-3">
+                <h4 class="prontuario-card-titulo fw-semibold mb-2">Consultas Agendadas</h4>
+                <div class="prontuario-table-wrapper overflow-auto">
+                  <table class="prontuario-table">
+                    <thead>
+                      <tr><th>Data</th><th>Hora</th><th>Procedimento</th></tr>
+                    </thead>
+                    <tbody id="tbodyConsultasAgendadas"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="prontuario-card bg-white border rounded p-3 shadow-sm mb-3">
+                <h4 class="prontuario-card-titulo fw-semibold mb-2">Plano Realizados</h4>
+                <div class="prontuario-table-wrapper overflow-auto">
+                  <table class="prontuario-table" id="tabelaPlanosRealizados">
+                    <thead>
+                      <tr><th>Data</th><th>Serviço</th><th>Dentista</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="prontuario-card bg-white border rounded p-3 shadow-sm mb-3">
+                <div class="prontuario-card-titulo-row d-flex justify-content-between align-items-center mb-2">
+                  <h4 class="prontuario-card-titulo fw-semibold mb-0">Informações do paciente</h4>
+                  <button class="prontuario-edit-btn btn btn-sm btn-link p-0"><i class="fa-solid fa-pen fa-xs"></i></button>
+                </div>
+                <div class="prontuario-info-grid d-flex flex-column gap-2">
+                  <div class="prontuario-info-item d-flex flex-column">
+                    <span class="prontuario-info-label small fw-semibold">Última atualização:</span>
+                    <span class="prontuario-info-valor small" id="prontuarioUltimaAtualizacao">—</span>
+                  </div>
+                  <div class="prontuario-info-item d-flex flex-column">
+                    <span class="prontuario-info-label small fw-semibold">E-mail:</span>
+                    <span class="prontuario-info-valor small" id="prontuarioInfoEmail">—</span>
+                  </div>
+                  <div class="prontuario-info-item d-flex flex-column">
+                    <span class="prontuario-info-label small fw-semibold">Endereço:</span>
+                    <span class="prontuario-info-valor small" id="prontuarioInfoEndereco">—</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- ══════════════════════════════════════════════════
+         TELA FINALIZAR CONSULTA
+         ══════════════════════════════════════════════════ -->
+        <div class="finalizar-consulta-view" id="finalizarConsultaView" style="display:none;">
+
+          <div class="finalizar-header-row">
+            <div class="finalizar-header-left">
+              <div class="consulta-header-item">
+                <span class="consulta-header-label">Paciente</span>
+                <span class="consulta-header-nome" id="finalizarNomePaciente">—</span>
+              </div>
+              <div class="consulta-header-divider"></div>
+              <div class="consulta-header-item">
+                <span class="consulta-header-label">Serviço</span>
+                <span class="consulta-header-servico" id="finalizarServico">—</span>
+              </div>
+              <span class="finalizar-badge">
+                <i class="fa-solid fa-circle-check fa-xs"></i> Finalizando Consulta
+              </span>
+            </div>
+          </div>
+
+          <div class="finalizar-aviso-bar">
+            <i class="fa-solid fa-circle-info"></i>
+            Revise as informações abaixo antes de confirmar. As observações serão salvas no prontuário do paciente.
+          </div>
+
+          <div class="finalizar-layout row g-3">
+
+            <div class="finalizar-main col-12 col-lg-8">
+              <div class="finalizar-section bg-white border rounded p-3 shadow-sm">
+                <h3 class="finalizar-section-titulo fw-bold mb-3 pb-2 border-bottom">Resumo da Consulta</h3>
+
+                <div class="finalizar-odontograma mb-3">
+                  <h4 class="prontuario-sub-titulo fw-bold mb-2">Dentes Tratados</h4>
+                  <div class="odontograma-chart">
+                    <div class="arcada-row">
+                      <div class="arcada-grupo">
+                        <div class="dente-finalizar saudavel" data-num="18">18</div>
+                        <div class="dente-finalizar saudavel" data-num="17">17</div>
+                        <div class="dente-finalizar saudavel" data-num="16">16</div>
+                        <div class="dente-finalizar saudavel" data-num="15">15</div>
+                        <div class="dente-finalizar saudavel" data-num="14">14</div>
+                        <div class="dente-finalizar saudavel" data-num="13">13</div>
+                        <div class="dente-finalizar saudavel" data-num="12">12</div>
+                        <div class="dente-finalizar saudavel" data-num="11">11</div>
+                      </div>
+                      <div class="arcada-gap"></div>
+                      <div class="arcada-grupo">
+                        <div class="dente-finalizar saudavel" data-num="21">21</div>
+                        <div class="dente-finalizar saudavel" data-num="22">22</div>
+                        <div class="dente-finalizar saudavel" data-num="23">23</div>
+                        <div class="dente-finalizar saudavel" data-num="24">24</div>
+                        <div class="dente-finalizar saudavel" data-num="25">25</div>
+                        <div class="dente-finalizar saudavel" data-num="26">26</div>
+                        <div class="dente-finalizar saudavel" data-num="27">27</div>
+                        <div class="dente-finalizar saudavel" data-num="28">28</div>
+                      </div>
+                    </div>
+                    <div class="arcada-row">
+                      <div class="arcada-grupo">
+                        <div class="dente-finalizar saudavel" data-num="48">48</div>
+                        <div class="dente-finalizar saudavel" data-num="47">47</div>
+                        <div class="dente-finalizar saudavel" data-num="46">46</div>
+                        <div class="dente-finalizar saudavel" data-num="45">45</div>
+                        <div class="dente-finalizar saudavel" data-num="44">44</div>
+                        <div class="dente-finalizar saudavel" data-num="43">43</div>
+                        <div class="dente-finalizar saudavel" data-num="42">42</div>
+                        <div class="dente-finalizar saudavel" data-num="41">41</div>
+                      </div>
+                      <div class="arcada-gap"></div>
+                      <div class="arcada-grupo">
+                        <div class="dente-finalizar saudavel" data-num="31">31</div>
+                        <div class="dente-finalizar saudavel" data-num="32">32</div>
+                        <div class="dente-finalizar saudavel" data-num="33">33</div>
+                        <div class="dente-finalizar saudavel" data-num="34">34</div>
+                        <div class="dente-finalizar saudavel" data-num="35">35</div>
+                        <div class="dente-finalizar saudavel" data-num="36">36</div>
+                        <div class="dente-finalizar saudavel" data-num="37">37</div>
+                        <div class="dente-finalizar saudavel" data-num="38">38</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="odontograma-legenda d-flex flex-wrap gap-3 mt-2">
+                    <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor tratado-consulta-bg"></span> Tratado na Consulta</span>
+                  </div>
+                </div>
+
+                <div class="finalizar-detalhes-row row g-3">
+                  <div class="finalizar-detalhes-esq col-12 col-md-7">
+                    <div class="prontuario-campo mb-3">
+                      <label class="prontuario-campo-label form-label small fw-semibold mb-1">Condição</label>
+                      <div class="prontuario-campo-valor" id="finalizarCondicao">—</div>
+                    </div>
+                    <div class="prontuario-campo">
+                      <label class="prontuario-campo-label form-label small fw-semibold mb-1">Planejamento do Tratamento</label>
+                      <div class="prontuario-campo-textarea" id="finalizarDescricao">—</div>
+                    </div>
+                  </div>
+                  <div class="finalizar-detalhes-dir col-12 col-md-5">
+                    <div class="prontuario-obs-card rounded p-3 h-100 d-flex flex-column">
+                      <h4 class="prontuario-obs-titulo fw-bold mb-2">Procedimento Realizado</h4>
+                      <div class="prontuario-obs-texto small flex-grow-1" id="finalizarObservacoes">—</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="finalizar-sidebar col-12 col-lg-4">
+
+              <div class="resumo-card bg-white border rounded p-3 shadow-sm mb-3">
+                <h3 class="resumo-titulo fw-bold text-center mb-3 pb-3">Resumo do Paciente</h3>
+                <div class="resumo-foto d-flex justify-content-center mb-3">
+                  <div class="foto-placeholder"><div class="foto-x"></div></div>
+                </div>
+                <div class="resumo-paciente-info d-flex flex-column text-center mb-3">
+                  <span class="resumo-label-small">Nome</span>
+                  <span class="resumo-nome fw-bold" id="finalizarResumoNome">—</span>
+                  <span class="resumo-label-small mt-2">Serviço</span>
+                  <span class="resumo-servico fw-semibold" id="finalizarResumoServico">—</span>
+                </div>
+                <div class="resumo-progresso-wrapper mb-3">
+                  <div class="resumo-progresso-header d-flex justify-content-between align-items-center mb-1">
+                    <span class="resumo-label-small">Progresso Atual</span>
+                    <span class="resumo-etapas" id="finalizarResumoEtapas">— Etapas</span>
+                  </div>
+                  <div class="resumo-progresso-bar">
+                    <div class="resumo-progresso-fill" id="finalizarResumoProgressoFill" style="width:0%"></div>
+                  </div>
+                </div>
+                <div class="resumo-etapas-info d-flex justify-content-between mb-3">
+                  <div class="resumo-etapa-item d-flex flex-column">
+                    <span class="resumo-label-small">Última etapa Feita</span>
+                    <span class="resumo-etapa-nome" id="finalizarResumoUltimaEtapa">—</span>
+                  </div>
+                  <div class="resumo-etapa-item text-end d-flex flex-column">
+                    <span class="resumo-label-small">Próxima Etapa</span>
+                    <span class="resumo-etapa-nome" id="finalizarResumoProximaEtapa">—</span>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+
+          </div>
+
+          <div class="finalizar-footer">
+            <button class="btn-cancelar-finalizar btn btn-sm btn-outline-secondary" id="btnCancelarFinalizar">
+              <i class="fa-solid fa-arrow-left"></i> Voltar à Consulta
+            </button>
+            <div class="finalizar-aviso-info">
+              <i class="fa-solid fa-circle-info fa-xs"></i>
+              Observações serão adicionadas ao prontuário
+            </div>
+            <button class="btn-confirmar-finalizar btn btn-sm btn-success" id="btnConfirmarFinalizar">
+              <i class="fa-solid fa-check"></i> Confirmar Finalização
+            </button>
+          </div>
+
+          <div id="finalizarEscolha" style="display:none;padding:1rem 1.5rem;background:#f0f4ff;border-top:1px solid #c7d2fe;flex-wrap:wrap;align-items:center;gap:0.75rem;">
+            <span style="flex:1;min-width:200px;font-size:0.88rem;color:#374151;">
+              <i class="fa-solid fa-file-circle-question me-1" style="color:#6366f1;"></i>
+              Este paciente já possui registros no prontuário. O que deseja fazer?
+            </span>
+            <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+              <button class="btn btn-sm px-3" id="btnAtualizarPlano"
+                      style="background:#eef2ff;color:#3730a3;border:1.5px solid #c7d2fe;border-radius:8px;font-size:0.82rem;">
+                <i class="fa-solid fa-pen-to-square me-1"></i>Atualizar último registro
+              </button>
+              <button class="btn btn-sm px-3" id="btnCriarNovoPlano"
+                      style="background:#f0fdf4;color:#166534;border:1.5px solid #bbf7d0;border-radius:8px;font-size:0.82rem;">
+                <i class="fa-solid fa-plus me-1"></i>Criar novo registro
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </div><!-- /page-container -->
+    </main>
+  </div><!-- /app-layout -->
+
+  <div vw class="enabled">
+    <div vw-access-button class="active"></div>
+    <div vw-plugin-wrapper>
+      <div class="vw-plugin-top-wrapper"></div>
+    </div>
+  </div>
+  <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+  <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+
+  <!-- Modal: Editar Registro do Prontuário -->
+  <div class="modal fade" id="modalEditarRegistro" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title fs-6"><i class="fa-solid fa-pen-to-square me-2"></i>Editar Registro do Prontuário</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body px-4 pb-4">
+          <div id="alertaEditarRegistro" class="alert alert-danger d-none mb-3" style="font-size:0.82rem;"></div>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">Condição</label>
+              <input type="text" class="form-control" id="editRegCondicao" placeholder="Ex: Cárie profunda..." />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">Serviço</label>
+              <select class="form-select" id="editRegServico"><option value="">Nenhum</option></select>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">Planejamento do Tratamento</label>
+              <textarea class="form-control" id="editRegDescricao" rows="3" placeholder="Descreva o tratamento realizado..."></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold" style="font-size:0.85rem;">Procedimento Realizado</label>
+              <textarea class="form-control" id="editRegObservacao" rows="3" placeholder="Descreva o procedimento realizado..."></textarea>
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-semibold d-block mb-2" style="font-size:0.85rem;">Dentes Tratados</label>
+              <div class="odontograma-chart" id="editRegOdontograma" style="gap:2px;">
+                <div class="arcada-row">
+                  <div class="arcada-grupo">
+                    <div class="dente-consulta saudavel dente-modal" data-num="18">18</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="17">17</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="16">16</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="15">15</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="14">14</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="13">13</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="12">12</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="11">11</div>
+                  </div>
+                  <div class="arcada-gap"></div>
+                  <div class="arcada-grupo">
+                    <div class="dente-consulta saudavel dente-modal" data-num="21">21</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="22">22</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="23">23</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="24">24</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="25">25</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="26">26</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="27">27</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="28">28</div>
+                  </div>
+                </div>
+                <div class="arcada-row">
+                  <div class="arcada-grupo">
+                    <div class="dente-consulta saudavel dente-modal" data-num="48">48</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="47">47</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="46">46</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="45">45</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="44">44</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="43">43</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="42">42</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="41">41</div>
+                  </div>
+                  <div class="arcada-gap"></div>
+                  <div class="arcada-grupo">
+                    <div class="dente-consulta saudavel dente-modal" data-num="31">31</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="32">32</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="33">33</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="34">34</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="35">35</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="36">36</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="37">37</div>
+                    <div class="dente-consulta saudavel dente-modal" data-num="38">38</div>
+                  </div>
+                </div>
+              </div>
+              <div class="odontograma-legenda d-flex mt-1">
+                <span class="legenda-item d-flex align-items-center gap-1 small"><span class="legenda-cor tratamento-bg"></span> Em Tratamento</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn px-4 text-dark bg-white border" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn px-4 text-white" id="btnSalvarEditarRegistro"
+                  style="background-color:#0d6efd;border-color:#0d6efd;">
+            <i class="fa-solid fa-floppy-disk me-1"></i>Salvar e Atualizar Data
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../components/sidebar.js"></script>
+  <script src="../components/settings.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/dentista/tratamentos.js?v=30"></script>
+
+</body>
+</html>

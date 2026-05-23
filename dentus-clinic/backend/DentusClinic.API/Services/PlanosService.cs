@@ -1,32 +1,37 @@
-using DentusClinic.API.Data;
 using DentusClinic.API.DTOs.Request;
 using DentusClinic.API.DTOs.Response;
-using DentusClinic.API.Interfaces;
 using DentusClinic.API.Models;
-using Microsoft.EntityFrameworkCore;
+using DentusClinic.API.Repositories.Interfaces;
+using DentusClinic.API.Services.Interfaces;
 
 namespace DentusClinic.API.Services;
 
 public class PlanosService : IPlanosService
 {
-    private readonly AppDbContext _context;
+    private readonly IPlanosRepository _planosRepository;
+    private readonly IProntuarioRepository _prontuarioRepository;
 
-    public PlanosService(AppDbContext context)
+    public PlanosService(IPlanosRepository planosRepository, IProntuarioRepository prontuarioRepository)
     {
-        _context = context;
+        _planosRepository = planosRepository;
+        _prontuarioRepository = prontuarioRepository;
     }
 
     public async Task<IEnumerable<PlanosResponse>> ListarTodosAsync()
     {
-        var lista = await _context.Planos
-            .Include(p => p.Servico)
-            .ToListAsync();
+        var lista = await _planosRepository.ListarTodosAsync();
+        return lista.Select(MapearResponse);
+    }
+
+    public async Task<IEnumerable<PlanosResponse>> ListarPorProntuarioAsync(int idProntuario)
+    {
+        var lista = await _planosRepository.ListarPorProntuarioAsync(idProntuario);
         return lista.Select(MapearResponse);
     }
 
     public async Task<PlanosResponse?> BuscarPorIdAsync(int id)
     {
-        var plano = await _context.Planos.Include(p => p.Servico).FirstOrDefaultAsync(p => p.Id == id);
+        var plano = await _planosRepository.BuscarPorIdAsync(id);
         return plano is null ? null : MapearResponse(plano);
     }
 
@@ -39,18 +44,19 @@ public class PlanosService : IPlanosService
             Descricao = request.Descricao,
             Condicao = request.Condicao,
             Status = request.Status,
-            Observacao = request.Observacao
+            Observacao = request.Observacao,
+            Dente = request.Dente
         };
 
-        _context.Planos.Add(plano);
-        await _context.SaveChangesAsync();
-        await _context.Entry(plano).Reference(p => p.Servico).LoadAsync();
-        return MapearResponse(plano);
+        await _planosRepository.AdicionarAsync(plano);
+
+        var planoSalvo = await _planosRepository.BuscarPorIdAsync(plano.Id);
+        return MapearResponse(planoSalvo!);
     }
 
     public async Task<PlanosResponse?> EditarAsync(int id, PlanosRequest request)
     {
-        var plano = await _context.Planos.Include(p => p.Servico).FirstOrDefaultAsync(p => p.Id == id);
+        var plano = await _planosRepository.BuscarPorIdAsync(id);
         if (plano is null) return null;
 
         plano.IdServico = request.IdServico;
@@ -58,19 +64,22 @@ public class PlanosService : IPlanosService
         plano.Condicao = request.Condicao;
         plano.Status = request.Status;
         plano.Observacao = request.Observacao;
+        plano.Dente = request.Dente;
+        plano.DataAtualizacao = DateOnly.FromDateTime(DateTime.Today);
 
-        await _context.SaveChangesAsync();
-        await _context.Entry(plano).Reference(p => p.Servico).LoadAsync();
-        return MapearResponse(plano);
+        await _planosRepository.AtualizarAsync(plano);
+        await _prontuarioRepository.AtualizarDataAsync(plano.IdProntuario, plano.DataAtualizacao.Value);
+
+        var planoAtualizado = await _planosRepository.BuscarPorIdAsync(id);
+        return MapearResponse(planoAtualizado!);
     }
 
     public async Task<bool> RemoverAsync(int id)
     {
-        var plano = await _context.Planos.FindAsync(id);
+        var plano = await _planosRepository.BuscarPorIdAsync(id);
         if (plano is null) return false;
 
-        _context.Planos.Remove(plano);
-        await _context.SaveChangesAsync();
+        await _planosRepository.RemoverAsync(plano);
         return true;
     }
 
@@ -83,6 +92,9 @@ public class PlanosService : IPlanosService
         Descricao = p.Descricao,
         Condicao = p.Condicao,
         Status = p.Status,
-        Observacao = p.Observacao
+        Observacao = p.Observacao,
+        Dente = p.Dente,
+        DataCriacao = p.DataCriacao,
+        DataAtualizacao = p.DataAtualizacao
     };
 }

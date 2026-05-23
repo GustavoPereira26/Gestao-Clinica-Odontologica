@@ -36,27 +36,38 @@ public class FuncionarioController : ControllerBase
     }
 
     [HttpPost]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Cadastrar([FromBody] FuncionarioRequest request)
     {
-        var funcionario = await _funcionarioService.CadastrarAsync(request);
-        return CreatedAtAction(nameof(BuscarPorId), new { id = funcionario.Id },
-            ApiResponse<object>.Ok(funcionario, "Funcionário cadastrado com sucesso."));
+        try {
+            var resultado = await _funcionarioService.CadastrarAsync(request);
+            return Ok(ApiResponse<object>.Ok(resultado, "Funcionário cadastrado com sucesso."));
+        }
+        catch (InvalidOperationException ex) {
+            return BadRequest(new { mensagem = ex.Message });
+        }
     }
 
-    [HttpPut("{id}")]
-    [Authorize(Roles = "ADM")]
-    public async Task<IActionResult> Editar(int id, [FromBody] FuncionarioRequest request)
+    [HttpPatch("{id}")]
+    [Authorize(Roles = "ADMINISTRADOR")]
+    public async Task<IActionResult> Editar(int id, [FromBody] FuncionarioEditarRequest request)
     {
-        var funcionario = await _funcionarioService.EditarAsync(id, request);
-        if (funcionario is null)
-            return NotFound(ApiResponse<object>.Erro("Funcionário não encontrado."));
+        try
+        {
+            var funcionario = await _funcionarioService.EditarAsync(id, request);
+            if (funcionario is null)
+                return NotFound(ApiResponse<object>.Erro("Funcionário não encontrado."));
 
-        return Ok(ApiResponse<object>.Ok(funcionario, "Funcionário atualizado com sucesso."));
+            return Ok(ApiResponse<object>.Ok(funcionario, "Funcionário atualizado com sucesso."));
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { mensagem = ex.Message });
+        }
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Roles = "ADM")]
+    [Authorize(Roles = "ADMINISTRADOR")]
     public async Task<IActionResult> Remover(int id)
     {
         var removido = await _funcionarioService.RemoverAsync(id);
