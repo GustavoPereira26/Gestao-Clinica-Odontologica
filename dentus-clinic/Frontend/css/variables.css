@@ -958,3 +958,16 @@ html.dark-mode #erroSalvarRegistro {
   color: #fca5a5 !important;
 }
 
+/* ── Botão de inativar (admin — pacientes/funcionários) ── */
+html.dark-mode .btn-delete {
+  background-color: var(--dm-card) !important;
+  border-color: var(--dm-border) !important;
+  color: #e5e0d8 !important;
+}
+
+html.dark-mode .btn-delete:hover {
+  background-color: #3b1111 !important;
+  border-color: #c0392b !important;
+  color: #f87171 !important;
+}
+

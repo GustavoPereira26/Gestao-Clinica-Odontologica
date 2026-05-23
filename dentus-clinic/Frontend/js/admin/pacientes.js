@@ -75,7 +75,7 @@ const TabelaPacientes = {
                   onclick="PacientesPage.confirmarExclusao(${p.id})"
                   title="Inativar ${p.nome}"
                   id="btnDelete-${p.id}">
-            <i class="bi bi-person-slash"></i>
+            <i class="fa-solid fa-user-slash"></i>
           </button>
         </td>
       </tr>
@@ -112,8 +112,8 @@ const CardMobilePaciente = {
         <div class="card-mobile-info">
           <div class="card-mobile-nome">${p.nome}</div>
           <div class="card-mobile-detail">
-            <span><i class="bi bi-credit-card"></i> ${mascaraCPF(p.cpf)}</span>
-            <span><i class="bi bi-calendar3"></i> ${p.dataNascimento ? formatarData(p.dataNascimento) : '—'}</span>
+            <span><i class="fa-regular fa-id-card"></i> ${mascaraCPF(p.cpf)}</span>
+            <span><i class="fa-regular fa-calendar"></i> ${p.dataNascimento ? formatarData(p.dataNascimento) : '—'}</span>
           </div>
         </div>
         <div class="card-mobile-actions">
@@ -121,7 +121,7 @@ const CardMobilePaciente = {
                   onclick="PacientesPage.confirmarExclusao(${p.id})"
                   title="Inativar ${p.nome}"
                   id="btnDeleteMobile-${p.id}">
-            <i class="bi bi-person-slash"></i>
+            <i class="fa-solid fa-user-slash"></i>
           </button>
         </div>
       </div>
