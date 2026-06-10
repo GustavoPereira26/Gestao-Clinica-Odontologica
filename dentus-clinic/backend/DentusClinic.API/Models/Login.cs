@@ -9,7 +9,7 @@ public class Login
 
     [Required(ErrorMessage = "O campo Email é obrigatório")]
     [EmailAddress(ErrorMessage = "E-mail inválido")]
-    [StringLength(100, MinimumLength = 100, ErrorMessage = "E-mail Inválido")]
+    [StringLength(150, MinimumLength = 5, ErrorMessage = "E-mail inválido")]
     public string Email { get; set; } = string.Empty;
 
     [Required]
@@ -17,7 +17,8 @@ public class Login
     public string Senha { get; set; } = string.Empty;
 
     [Required]
-    public TiposAcessoEnum TipoAcesso { get; set; } 
+    public TiposAcessoEnum TipoAcesso { get; set; }
+
     public Funcionario? Funcionario { get; set; }
     public Dentista? Dentista { get; set; }
 }
