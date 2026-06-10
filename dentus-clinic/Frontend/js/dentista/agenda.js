@@ -343,15 +343,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("amPrev")?.addEventListener("click",      () => { weekOffset--; diaAtivo = 0; updateAll(); });
   document.getElementById("amNext")?.addEventListener("click",      () => { weekOffset++; diaAtivo = 0; updateAll(); });
 
-  // ── Notificações ─────────────────────────────────────────────────
-  document.getElementById("tcalNotifClose")?.addEventListener("click", () => {
-    const n = document.getElementById("tcalNotif");
-    if (n) n.style.display = "none";
-  });
-  document.getElementById("amNotifFechar")?.addEventListener("click", () => {
-    const n = document.getElementById("amNotif");
-    if (n) n.style.display = "none";
-  });
 
   // ── Inicialização ─────────────────────────────────────────────────
   updateAll().then(scrollToNow);

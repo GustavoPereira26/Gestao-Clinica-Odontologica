@@ -152,8 +152,6 @@ async function carregarServicos() {
   try {
     const res = await apiGetServicos();
     servicosCache = res?.dados ?? res ?? [];
-    _preencherSelectServico('slotServico');
-    _preencherSelectServico('editServico');
   } catch { /* mantém vazio */ }
 }
 
@@ -172,11 +170,18 @@ async function _preencherSelectServicoPorDentista(selectId, dentistaId, selected
   const idEspecialidade = dentista?.idEspecialidade;
 
   let servicos = servicosCache;
-  if (idEspecialidade) {
+  if (idEspecialidade && idEspecialidade > 0) {
     try {
       const res = await apiGetServicosPorEspecialidade(idEspecialidade);
-      servicos = res?.dados ?? res ?? servicosCache;
-    } catch { /* fallback para lista completa */ }
+      const lista = res?.dados;
+      if (Array.isArray(lista)) {
+        servicos = lista;
+      } else if (Array.isArray(res)) {
+        servicos = res;
+      }
+    } catch (e) {
+      console.error('[agenda] Erro ao buscar serviços por especialidade:', e);
+    }
   }
 
   sel.innerHTML = '<option value="">Nenhum</option>' +

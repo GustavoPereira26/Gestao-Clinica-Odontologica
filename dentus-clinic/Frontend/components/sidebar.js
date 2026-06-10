@@ -12,7 +12,7 @@ const SidebarComponent = (() => {
       { id: 'funcionarios', icon: 'fa-solid fa-id-card',        label: 'Funcionários',   href: '../recepcionista/funcionarios.html' },
     ],
     dentista: [
-      { id: 'dashboard', icon: 'fa-solid fa-tooth', label: 'Planejar Tratamento', href: '../dentista/dashboard.html' },
+      { id: 'dashboard', icon: 'fa-solid fa-tooth', label: 'Página Inicial', href: '../dentista/dashboard.html' },
       { id: 'tratamentos', icon: 'fa-solid fa-file', label: 'Tratamentos', href: '../dentista/tratamentos.html' },
       { id: 'agenda', icon: 'fa-solid fa-calendar-days', label: 'Agenda', href: '../dentista/agenda.html' },
       { id: 'pacientes', icon: 'fa-solid fa-user-injured', label: 'Meus Pacientes', href: '../dentista/pacientes.html' },
