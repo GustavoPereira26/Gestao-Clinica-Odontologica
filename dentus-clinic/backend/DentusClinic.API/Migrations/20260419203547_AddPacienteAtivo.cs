@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -10,12 +10,14 @@ namespace DentusClinic.API.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // Adiciona a coluna Ativo com default true para que pacientes existentes
+            // ja sejam considerados ativos sem precisar de UPDATE posterior.
             migrationBuilder.AddColumn<bool>(
                 name: "Ativo",
                 table: "Pacientes",
                 type: "bit",
                 nullable: false,
-                defaultValue: false);
+                defaultValue: true);
         }
 
         /// <inheritdoc />
