@@ -10,15 +10,34 @@ namespace DentusClinic.API.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // A coluna Ativo já existe no banco (adicionada por AddPacienteAtivo com default 0).
-            // Ativa todos os pacientes existentes para que a listagem continue funcionando.
-            migrationBuilder.Sql("UPDATE [Pacientes] SET [Ativo] = 1 WHERE [Ativo] = 0");
+            // Garante que a coluna Ativo existe antes de tentar atualizar os dados.
+            // Necessário pois em bancos limpos a coluna pode ainda não ter sido adicionada
+            // pela migration anterior dependendo da ordem de execução.
+            migrationBuilder.Sql(@"
+                IF EXISTS (
+                    SELECT 1 FROM sys.columns
+                    WHERE Name = 'Ativo'
+                    AND Object_ID = Object_ID('Pacientes')
+                )
+                BEGIN
+                    UPDATE [Pacientes] SET [Ativo] = 1 WHERE [Ativo] = 0;
+                END
+            ");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql("UPDATE [Pacientes] SET [Ativo] = 0");
+            migrationBuilder.Sql(@"
+                IF EXISTS (
+                    SELECT 1 FROM sys.columns
+                    WHERE Name = 'Ativo'
+                    AND Object_ID = Object_ID('Pacientes')
+                )
+                BEGIN
+                    UPDATE [Pacientes] SET [Ativo] = 0;
+                END
+            ");
         }
     }
 }
