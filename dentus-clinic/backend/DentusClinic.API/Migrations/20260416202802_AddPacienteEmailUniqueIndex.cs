@@ -10,15 +10,30 @@ namespace DentusClinic.API.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // Dropa o índice caso exista de execução parcial anterior,
+            // pois o SQL Server não permite ALTER COLUMN em coluna indexada.
+            migrationBuilder.Sql(@"
+                IF EXISTS (
+                    SELECT 1 FROM sys.indexes
+                    WHERE name = 'IX_Pacientes_Email'
+                    AND object_id = OBJECT_ID('Pacientes')
+                )
+                BEGIN
+                    DROP INDEX [IX_Pacientes_Email] ON [Pacientes];
+                END
+            ");
+
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
                 table: "Pacientes",
                 type: "nvarchar(150)",
                 maxLength: 150,
                 nullable: false,
+                defaultValue: "",
                 oldClrType: typeof(string),
                 oldType: "nvarchar(100)",
-                oldMaxLength: 100);
+                oldMaxLength: 100,
+                oldNullable: true);
 
             // Remove duplicatas e seus registros dependentes, mantendo apenas o de menor Id por email
             migrationBuilder.Sql(@"
@@ -74,7 +89,7 @@ namespace DentusClinic.API.Migrations
                 table: "Pacientes",
                 type: "nvarchar(100)",
                 maxLength: 100,
-                nullable: false,
+                nullable: true,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(150)",
                 oldMaxLength: 150);
