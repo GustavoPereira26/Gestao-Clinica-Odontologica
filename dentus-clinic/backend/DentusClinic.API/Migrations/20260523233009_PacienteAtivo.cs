@@ -10,17 +10,17 @@ namespace DentusClinic.API.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            // Garante que a coluna Ativo existe antes de tentar atualizar os dados.
-            // Necessário pois em bancos limpos a coluna pode ainda não ter sido adicionada
-            // pela migration anterior dependendo da ordem de execução.
+            // SQL Server compila o batch inteiro antes de executar, por isso o IF EXISTS
+            // simples nao funciona quando a coluna nao existe ainda.
+            // Usar EXEC com SQL dinamico evita a compilacao antecipada.
             migrationBuilder.Sql(@"
                 IF EXISTS (
                     SELECT 1 FROM sys.columns
-                    WHERE Name = 'Ativo'
-                    AND Object_ID = Object_ID('Pacientes')
+                    WHERE name = 'Ativo'
+                    AND object_id = OBJECT_ID(N'Pacientes')
                 )
                 BEGIN
-                    UPDATE [Pacientes] SET [Ativo] = 1 WHERE [Ativo] = 0;
+                    EXEC(N'UPDATE [Pacientes] SET [Ativo] = 1 WHERE [Ativo] = 0');
                 END
             ");
         }
@@ -31,11 +31,11 @@ namespace DentusClinic.API.Migrations
             migrationBuilder.Sql(@"
                 IF EXISTS (
                     SELECT 1 FROM sys.columns
-                    WHERE Name = 'Ativo'
-                    AND Object_ID = Object_ID('Pacientes')
+                    WHERE name = 'Ativo'
+                    AND object_id = OBJECT_ID(N'Pacientes')
                 )
                 BEGIN
-                    UPDATE [Pacientes] SET [Ativo] = 0;
+                    EXEC(N'UPDATE [Pacientes] SET [Ativo] = 0');
                 END
             ");
         }
