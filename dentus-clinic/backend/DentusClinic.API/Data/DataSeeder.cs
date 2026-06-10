@@ -8,8 +8,7 @@ public static class DataSeeder
 {
     public static async Task SeedAsync(AppDbContext context)
     {
-        // ─── 1. ESPECIALIDADES ───────────────────────────────────────────
-        // Insere apenas as que ainda não existem (upsert por Nome)
+        // ─── 1. ESPECIALIDADES (upsert por Nome) ───────────────────────────
         var especialidadesNomes = new[]
         {
             "Clínica Geral", "Ortodontia", "Endodontia", "Periodontia", "Implantodontia"
@@ -21,16 +20,32 @@ public static class DataSeeder
         }
         await context.SaveChangesAsync();
 
-        // ─── 2. SERVIÇOS ─────────────────────────────────────────────────
-        var servicosNomes = new[]
+        // Carrega especialidades para uso nos próximos blocos
+        var espClinicaGeral   = await context.Especialidades.FirstOrDefaultAsync(e => e.Nome == "Clínica Geral");
+        var espOrtodontia     = await context.Especialidades.FirstOrDefaultAsync(e => e.Nome == "Ortodontia");
+        var espEndodontia     = await context.Especialidades.FirstOrDefaultAsync(e => e.Nome == "Endodontia");
+        var espPeriodontia    = await context.Especialidades.FirstOrDefaultAsync(e => e.Nome == "Periodontia");
+        var espImplantodontia = await context.Especialidades.FirstOrDefaultAsync(e => e.Nome == "Implantodontia");
+
+        // ─── 2. SERVIÇOS (upsert por Nome, com IdEspecialidade correto) ────────
+        // Cada serviço vinculado à especialidade correspondente
+        var servicosMock = new[]
         {
-            "Consulta de Rotina", "Limpeza", "Restauração", "Extração",
-            "Canal", "Ortodontia", "Clareamento", "Raio-X"
+            ("Consulta de Rotina",  espClinicaGeral?.Id),
+            ("Limpeza",             espClinicaGeral?.Id),
+            ("Restauração",        espClinicaGeral?.Id),
+            ("Extração",           espClinicaGeral?.Id),
+            ("Canal",               espEndodontia?.Id),
+            ("Ortodontia",          espOrtodontia?.Id),
+            ("Clareamento",         espClinicaGeral?.Id),
+            ("Raio-X",              espClinicaGeral?.Id),
+            ("Limpeza Periodontal", espPeriodontia?.Id),
+            ("Implante",            espImplantodontia?.Id)
         };
-        foreach (var nome in servicosNomes)
+        foreach (var (nome, idEsp) in servicosMock)
         {
             if (!await context.Servicos.AnyAsync(s => s.Nome == nome))
-                context.Servicos.Add(new Servico { Nome = nome });
+                context.Servicos.Add(new Servico { Nome = nome, IdEspecialidade = idEsp });
         }
         await context.SaveChangesAsync();
 
@@ -46,23 +61,20 @@ public static class DataSeeder
         foreach (var (email, senha, tipo) in loginsMock)
         {
             if (!await context.Logins.AnyAsync(l => l.Email == email))
-            {
                 context.Logins.Add(new Login
                 {
                     Email = email,
                     Senha = BCrypt.Net.BCrypt.HashPassword(senha),
                     TipoAcesso = tipo
                 });
-            }
         }
         await context.SaveChangesAsync();
 
-        // ─── 4. FUNCIONÁRIOS ─────────────────────────────────────────────
+        // ─── 4. FUNCIONÁRIOS (upsert por CPF) ─────────────────────────────
         if (!await context.Funcionarios.AnyAsync(f => f.Cpf == "32165498700"))
         {
             var loginSecretaria = await context.Logins
                 .FirstOrDefaultAsync(l => l.Email == "julia.mendes@dentusclinic.com");
-
             if (loginSecretaria != null)
             {
                 context.Funcionarios.Add(new Funcionario
@@ -81,15 +93,11 @@ public static class DataSeeder
         // ─── 5. DENTISTAS (upsert por CRO) ───────────────────────────────
         if (!await context.Dentistas.AnyAsync())
         {
-            var espClinica    = await context.Especialidades.FirstOrDefaultAsync(e => e.Nome == "Clínica Geral");
-            var espOrtodontia = await context.Especialidades.FirstOrDefaultAsync(e => e.Nome == "Ortodontia");
-            var espEndodontia = await context.Especialidades.FirstOrDefaultAsync(e => e.Nome == "Endodontia");
-
             var loginAna     = await context.Logins.FirstOrDefaultAsync(l => l.Email == "ana.souza@dentusclinic.com");
             var loginCarlos  = await context.Logins.FirstOrDefaultAsync(l => l.Email == "carlos.lima@dentusclinic.com");
             var loginMariana = await context.Logins.FirstOrDefaultAsync(l => l.Email == "mariana.faria@dentusclinic.com");
 
-            if (espClinica != null && loginAna != null)
+            if (espClinicaGeral != null && loginAna != null)
                 context.Dentistas.Add(new Dentista
                 {
                     Nome = "Dra. Ana Souza",
@@ -97,7 +105,7 @@ public static class DataSeeder
                     Telefone = "(11) 98765-4321",
                     DataNascimento = new DateOnly(1985, 3, 15),
                     Cro = "SP-12345",
-                    IdEspecialidade = espClinica.Id,
+                    IdEspecialidade = espClinicaGeral.Id,
                     IdAcesso = loginAna.Id
                 });
 
@@ -131,11 +139,11 @@ public static class DataSeeder
         // ─── 6. PACIENTES (upsert por CPF) ───────────────────────────────
         var pacientesMock = new[]
         {
-            ("Lucas Oliveira",   "98765432100", "(11) 91111-2222", new DateOnly(1992,  6, 10), "lucas.oliveira@email.com",   "Rua das Flores, 123 - Sorocaba/SP"),
-            ("Fernanda Costa",   "65432109800", "(11) 92222-3333", new DateOnly(1998,  1, 25), "fernanda.costa@email.com",   "Av. Brasil, 456 - Sorocaba/SP"),
-            ("Roberto Alves",    "32109876500", "(11) 93333-4444", new DateOnly(1975,  9, 14), "roberto.alves@email.com",    "Rua XV de Novembro, 789 - Sorocaba/SP"),
-            ("Camila Rocha",     "10987654300", "(11) 94444-5555", new DateOnly(2001,  3, 30), "camila.rocha@email.com",     "Rua da Paz, 321 - Sorocaba/SP"),
-            ("Thiago Pereira",   "21098765400", "(11) 95555-6666", new DateOnly(1988, 12,  5), "thiago.pereira@email.com",   "Alameda Santos, 654 - Sorocaba/SP")
+            ("Lucas Oliveira",  "98765432100", "(11) 91111-2222", new DateOnly(1992,  6, 10), "lucas.oliveira@email.com",  "Rua das Flores, 123 - Sorocaba/SP"),
+            ("Fernanda Costa",  "65432109800", "(11) 92222-3333", new DateOnly(1998,  1, 25), "fernanda.costa@email.com",  "Av. Brasil, 456 - Sorocaba/SP"),
+            ("Roberto Alves",   "32109876500", "(11) 93333-4444", new DateOnly(1975,  9, 14), "roberto.alves@email.com",   "Rua XV de Novembro, 789 - Sorocaba/SP"),
+            ("Camila Rocha",    "10987654300", "(11) 94444-5555", new DateOnly(2001,  3, 30), "camila.rocha@email.com",    "Rua da Paz, 321 - Sorocaba/SP"),
+            ("Thiago Pereira",  "21098765400", "(11) 95555-6666", new DateOnly(1988, 12,  5), "thiago.pereira@email.com",  "Alameda Santos, 654 - Sorocaba/SP")
         };
         foreach (var (nome, cpf, tel, nasc, email, endereco) in pacientesMock)
         {
@@ -168,7 +176,6 @@ public static class DataSeeder
             var svcCanal       = await context.Servicos.FirstOrDefaultAsync(s => s.Nome == "Canal");
             var svcOrtodontia  = await context.Servicos.FirstOrDefaultAsync(s => s.Nome == "Ortodontia");
 
-            // Só insere se todos os dentistas e pacientes estiverem disponíveis
             if (dentistaCG != null && dentistaOrto != null && dentistaEndo != null
                 && pLucas != null && pFernanda != null && pRoberto != null
                 && pCamila != null && pThiago != null)
@@ -176,71 +183,61 @@ public static class DataSeeder
                 context.Consultas.AddRange(
                     new Consulta
                     {
-                        DataConsulta = new DateOnly(2025, 5, 10),
-                        HoraConsulta = new TimeOnly(9, 0),
+                        DataConsulta = new DateOnly(2025, 5, 10), HoraConsulta = new TimeOnly(9, 0),
                         Retorno = false, Status = "Concluida",
                         IdDentista = dentistaCG.Id, IdPaciente = pLucas.Id, IdServico = svcLimpeza?.Id
                     },
                     new Consulta
                     {
-                        DataConsulta = new DateOnly(2025, 5, 15),
-                        HoraConsulta = new TimeOnly(10, 30),
+                        DataConsulta = new DateOnly(2025, 5, 15), HoraConsulta = new TimeOnly(10, 30),
                         Retorno = false, Status = "Concluida",
                         IdDentista = dentistaOrto.Id, IdPaciente = pFernanda.Id, IdServico = svcOrtodontia?.Id
                     },
                     new Consulta
                     {
-                        DataConsulta = new DateOnly(2025, 5, 20),
-                        HoraConsulta = new TimeOnly(14, 0),
+                        DataConsulta = new DateOnly(2025, 5, 20), HoraConsulta = new TimeOnly(14, 0),
                         Retorno = false, Status = "Concluida",
                         IdDentista = dentistaEndo.Id, IdPaciente = pRoberto.Id, IdServico = svcCanal?.Id
                     },
                     new Consulta
                     {
-                        DataConsulta = new DateOnly(2025, 5, 22),
-                        HoraConsulta = new TimeOnly(8, 0),
+                        DataConsulta = new DateOnly(2025, 5, 22), HoraConsulta = new TimeOnly(8, 0),
                         Retorno = true, Status = "Concluida",
                         IdDentista = dentistaCG.Id, IdPaciente = pLucas.Id, IdServico = svcRestauracao?.Id
                     },
                     new Consulta
                     {
-                        DataConsulta = new DateOnly(2025, 5, 28),
-                        HoraConsulta = new TimeOnly(11, 0),
+                        DataConsulta = new DateOnly(2025, 5, 28), HoraConsulta = new TimeOnly(11, 0),
                         Retorno = false, Status = "Cancelada",
                         IdDentista = dentistaOrto.Id, IdPaciente = pCamila.Id, IdServico = svcOrtodontia?.Id
                     },
                     new Consulta
                     {
-                        DataConsulta = DateOnly.FromDateTime(DateTime.Today.AddDays(2)),
-                        HoraConsulta = new TimeOnly(9, 0),
+                        DataConsulta = DateOnly.FromDateTime(DateTime.Today.AddDays(2)), HoraConsulta = new TimeOnly(9, 0),
                         Retorno = false, Status = "Agendada",
                         IdDentista = dentistaCG.Id, IdPaciente = pCamila.Id, IdServico = svcLimpeza?.Id
                     },
                     new Consulta
                     {
-                        DataConsulta = DateOnly.FromDateTime(DateTime.Today.AddDays(3)),
-                        HoraConsulta = new TimeOnly(10, 0),
+                        DataConsulta = DateOnly.FromDateTime(DateTime.Today.AddDays(3)), HoraConsulta = new TimeOnly(10, 0),
                         Retorno = false, Status = "Agendada",
                         IdDentista = dentistaEndo.Id, IdPaciente = pThiago.Id, IdServico = svcCanal?.Id
                     },
                     new Consulta
                     {
-                        DataConsulta = DateOnly.FromDateTime(DateTime.Today.AddDays(5)),
-                        HoraConsulta = new TimeOnly(14, 30),
+                        DataConsulta = DateOnly.FromDateTime(DateTime.Today.AddDays(5)), HoraConsulta = new TimeOnly(14, 30),
                         Retorno = true, Status = "Agendada",
                         IdDentista = dentistaOrto.Id, IdPaciente = pFernanda.Id, IdServico = svcOrtodontia?.Id
                     },
                     new Consulta
                     {
-                        DataConsulta = DateOnly.FromDateTime(DateTime.Today),
-                        HoraConsulta = new TimeOnly(8, 30),
+                        DataConsulta = DateOnly.FromDateTime(DateTime.Today), HoraConsulta = new TimeOnly(8, 30),
                         Retorno = false, Status = "EmAtendimento",
                         IdDentista = dentistaCG.Id, IdPaciente = pRoberto.Id, IdServico = svcRotina?.Id
                     },
                     new Consulta
                     {
-                        DataConsulta = DateOnly.FromDateTime(DateTime.Today),
-                        HoraConsulta = new TimeOnly(9, 30),
+                        DataConsulta = DateOnly.FromDateTime(DateTime.Today), HoraConsulta = new TimeOnly(9, 30),
                         Retorno = false, Status = "Aguardando",
                         IdDentista = dentistaOrto.Id, IdPaciente = pThiago.Id, IdServico = svcOrtodontia?.Id
                     }
