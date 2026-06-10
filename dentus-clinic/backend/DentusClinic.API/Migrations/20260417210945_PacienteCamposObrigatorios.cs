@@ -30,20 +30,36 @@ namespace DentusClinic.API.Migrations
                 oldType: "nvarchar(max)",
                 oldNullable: true);
 
+            // O SQL Server não permite ALTER COLUMN enquanto há índice na coluna.
+            // Dropa o índice único antes, altera a coluna e o recria em seguida.
+            migrationBuilder.DropIndex(
+                name: "IX_Pacientes_Email",
+                table: "Pacientes");
+
             migrationBuilder.AlterColumn<string>(
                 name: "Email",
                 table: "Pacientes",
-                type: "nvarchar(max)",
+                type: "nvarchar(450)",
                 nullable: false,
                 defaultValue: "",
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)",
                 oldNullable: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pacientes_Email",
+                table: "Pacientes",
+                column: "Email",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropIndex(
+                name: "IX_Pacientes_Email",
+                table: "Pacientes");
+
             migrationBuilder.AlterColumn<string>(
                 name: "Telefone",
                 table: "Pacientes",
@@ -67,6 +83,13 @@ namespace DentusClinic.API.Migrations
                 nullable: true,
                 oldClrType: typeof(string),
                 oldType: "nvarchar(max)");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pacientes_Email",
+                table: "Pacientes",
+                column: "Email",
+                unique: true,
+                filter: "[Email] IS NOT NULL");
         }
     }
 }
